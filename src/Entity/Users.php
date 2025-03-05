@@ -28,6 +28,9 @@ class Users
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
+    #[ORM\Column(lenght: 255)]
+    private ?string $role = null;
+
     #[ORM\Column(type: 'boolean')]
     private ?bool $theme = null;
 
@@ -97,6 +100,17 @@ class Users
     public function setPassword(string $password): self
     {
         $this->password = $password;
+        return $this;
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): self
+    {
+        $this->role = $role;
         return $this;
     }
 
