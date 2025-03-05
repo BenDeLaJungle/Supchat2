@@ -34,7 +34,7 @@ class ReactionController extends AbstractController
 
         // Création de la réaction
         $reaction = new Reactions();
-        $reaction->setEmoji($data['emoji']);
+        $reaction->setEmojiCode($data['emoji']);  // Correction ici
         $reaction->setUser($user);
         $reaction->setMessage($message);
 
@@ -45,7 +45,7 @@ class ReactionController extends AbstractController
             'message' => 'Réaction ajoutée',
             'reaction' => [
                 'id' => $reaction->getId(),
-                'emoji' => $reaction->getEmoji(),
+                'emoji' => $reaction->getEmojiCode(), // Correction ici
                 'user' => [
                     'id' => $user->getId(),
                     'username' => $user->getUserName(),
@@ -72,4 +72,5 @@ class ReactionController extends AbstractController
         return new JsonResponse(['message' => 'Réaction supprimée']);
     }
 }
+
 
