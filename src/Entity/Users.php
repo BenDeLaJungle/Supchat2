@@ -28,9 +28,12 @@ class Users
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
+<<<<<<< HEAD
+=======
     #[ORM\Column(lenght: 255)]
     private ?string $role = null;
 
+>>>>>>> a660af378ea80abecaf7e611cf6a0660db33863f
     #[ORM\Column(type: 'boolean')]
     private ?bool $theme = null;
 
@@ -103,6 +106,8 @@ class Users
         return $this;
     }
 
+<<<<<<< HEAD
+=======
     public function getRole(): ?string
     {
         return $this->role;
@@ -114,6 +119,7 @@ class Users
         return $this;
     }
 
+>>>>>>> a660af378ea80abecaf7e611cf6a0660db33863f
     public function getTheme(): ?bool
     {
         return $this->theme;
