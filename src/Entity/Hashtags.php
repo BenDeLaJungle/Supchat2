@@ -6,6 +6,7 @@ use App\Repository\HashtagsRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Channels;
 use App\Entity\Messages;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HashtagsRepository::class)]
 class Hashtags
@@ -17,10 +18,12 @@ class Hashtags
 
     #[ORM\ManyToOne(targetEntity: Channels::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: "L'Entiter est obligatoire.")]
     private ?Channels $channel = null;
 
     #[ORM\ManyToOne(targetEntity: Messages::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: "L'Entiter est obligatoire.")]
     private ?Messages $message = null;
 
     public function getId(): ?int

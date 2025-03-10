@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UsersRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
 class Users
@@ -14,33 +15,107 @@ class Users
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Type(type: "string", message: "Le nom doit être une chaîne de caractères.")]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Type(type: "string", message: "Le nom doit être une chaîne de caractères.")]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank(message: "Le nom ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Type(type: "string", message: "Le nom doit être une chaîne de caractères.")]
     private ?string $userName = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank(message: "ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Type(type: "string", message: "doit être une chaîne de caractères.")]
     private ?string $emailAddress = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Type(type: "string", message: "doit être une chaîne de caractères.")]
     private ?string $password = null;
 
-    #[ORM\Column(lenght: 255)]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Type(type: "string", message: "doit être une chaîne de caractères.")]
     private ?string $role = null;
 
     #[ORM\Column(type: 'boolean')]
+    #[Assert\NotNull(message: "La valeur ne peut pas être nulle.")]
+    #[Assert\Type(type: "bool", message: "La valeur doit être un booléen.")]
     private ?bool $theme = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Type(type: "string", message: "doit être une chaîne de caractères.")]
     private ?string $status = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: "ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Type(type: "string", message: "doit être une chaîne de caractères.")]
     private ?string $oauthProvider = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: "ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Type(type: "string", message: "doit être une chaîne de caractères.")]
     private ?string $oauthID = null;
 
     public function getId(): ?int
@@ -121,6 +196,9 @@ class Users
 
     public function setTheme(bool $theme): self
     {
+        if (!is_bool($theme) && !is_null($theme)) {
+            throw new \InvalidArgumentException("doit être strictement true, false ou null.");
+        }
         $this->theme = $theme;
         return $this;
     }

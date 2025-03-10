@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\FilesRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Messages;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FilesRepository::class)]
 class Files
@@ -16,10 +17,17 @@ class Files
 
     #[ORM\ManyToOne(targetEntity: Messages::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: "L'Entiter est obligatoire.")]
     private ?Messages $message = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le chemin du fichier ne peut pas être vide.")]
+    #[Assert\Length(
+    max: 255,
+    maxMessage: "Le chemin du fichier ne peut pas dépasser {{ limit }} caractères."
+)]
     private ?string $filePath = null;
+
 
     public function getId(): ?int
     {

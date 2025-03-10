@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\RolesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RolesRepository::class)]
 class Roles
@@ -13,17 +14,32 @@ class Roles
     #[ORM\Column]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Type(type: "string", message: "Le nom doit être une chaîne de caractères.")]
     private ?string $name = null;
 
     #[ORM\Column(type: 'boolean')]
-    private ?bool $publish = null;
+    #[Assert\NotNull(message: "La valeur ne peut pas être nulle.")]
+    #[Assert\Type(type: "bool", message: "La valeur doit être un booléen.")]
+    private bool $publish;
 
     #[ORM\Column(type: 'boolean')]
-    private ?bool $moderate = null;
+    #[Assert\NotNull(message: "La valeur ne peut pas être nulle.")]
+    #[Assert\Type(type: "bool", message: "La valeur doit être un booléen.")]
+    private bool $moderate;
 
     #[ORM\Column(type: 'boolean')]
-    private ?bool $manage = null;
+    #[Assert\NotNull(message: "La valeur ne peut pas être nulle.")]
+    #[Assert\Type(type: "bool", message: "La valeur doit être un booléen.")]
+    private bool $manage;
 
     public function getId(): ?int
     {
@@ -48,6 +64,9 @@ class Roles
 
     public function setPublish(bool $publish): self
     {
+        if (!is_bool($publish) && !is_null($publish)) {
+            throw new \InvalidArgumentException("doit être strictement true, false ou null.");
+        }
         $this->publish = $publish;
         return $this;
     }
@@ -59,6 +78,9 @@ class Roles
 
     public function setModerate(bool $moderate): self
     {
+        if (!is_bool($moderate) && !is_null($moderate)) {
+            throw new \InvalidArgumentException("doit être strictement true, false ou null.");
+        }
         $this->moderate = $moderate;
         return $this;
     }
@@ -70,6 +92,9 @@ class Roles
 
     public function setManage(bool $manage): self
     {
+        if (!is_bool($manage) && !is_null($manage)) {
+            throw new \InvalidArgumentException("doit être strictement true, false ou null.");
+        }
         $this->manage = $manage;
         return $this;
     }

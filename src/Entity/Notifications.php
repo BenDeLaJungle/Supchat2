@@ -6,6 +6,7 @@ use App\Repository\NotificationsRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Messages;
 use App\Entity\Users;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: NotificationsRepository::class)]
 class Notifications
@@ -17,13 +18,17 @@ class Notifications
 
     #[ORM\ManyToOne(targetEntity: Messages::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: "L'Entiter est obligatoire.")]
     private ?Messages $message = null;
 
     #[ORM\ManyToOne(targetEntity: Users::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: "L'Entiter est obligatoire.")]
     private ?Users $user = null;
 
     #[ORM\Column(type: 'boolean')]
+    #[Assert\NotNull(message: "La valeur ne peut pas être nulle.")]
+    #[Assert\Type(type: "bool", message: "La valeur doit être un booléen.")]
     private ?bool $atRead = null;
 
     public function getId(): ?int
@@ -60,6 +65,9 @@ class Notifications
 
     public function setAtRead(bool $atRead): self
     {
+        if (!is_bool($atRead) && !is_null($atRead)) {
+            throw new \InvalidArgumentException("doit être strictement true, false ou null.");
+        }
         $this->atRead = $atRead;
         return $this;
     }
