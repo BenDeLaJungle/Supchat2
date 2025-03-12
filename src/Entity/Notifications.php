@@ -63,7 +63,7 @@ class Notifications
         return $this->atRead;
     }
 
-    public function setAtRead(bool $atRead): self
+    public function setAtRead($atRead): self
     {
         if (!is_bool($atRead) && !is_null($atRead)) {
             throw new \InvalidArgumentException("doit être strictement true, false ou null.");
