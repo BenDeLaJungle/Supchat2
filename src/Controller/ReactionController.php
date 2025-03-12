@@ -66,11 +66,20 @@ class ReactionController extends AbstractController
             return new JsonResponse(['error' => 'Réaction non trouvée'], Response::HTTP_NOT_FOUND);
         }
 
+        // Récupération de l'utilisateur connecté
+        $currentUser = $this->getUser();
+
+        // Vérification que l'utilisateur est bien l'auteur OU un administrateur
+        if ($reaction->getUser()->getId() !== $currentUser->getId() && !in_array('ROLE_ADMIN', $currentUser->getRoles())) {
+            return new JsonResponse(['error' => 'Vous n\'avez pas l\'autorisation de supprimer cette réaction'], Response::HTTP_FORBIDDEN);
+        }
+
         $em->remove($reaction);
         $em->flush();
 
         return new JsonResponse(['message' => 'Réaction supprimée']);
     }
+
 }
 
 
