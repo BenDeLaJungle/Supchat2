@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+
 use App\Repository\UsersRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
-class Users
+class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -58,27 +61,14 @@ class Users
     #[Assert\Type(type: "string", message: "doit être une chaîne de caractères.")]
     private ?string $emailAddress = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "ne peut pas être vide.")]
-    #[Assert\Length(
-        min: 3,
-        max: 255,
-        minMessage: "doit contenir au moins {{ limit }} caractères.",
-        maxMessage: "ne peut pas dépasser {{ limit }} caractères."
-    )]
-    #[Assert\Type(type: "string", message: "doit être une chaîne de caractères.")]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(min: 8, max: 255, message: "Le mot de passe doit contenir au moins {{ limit }} caractères.")]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "ne peut pas être vide.")]
-    #[Assert\Length(
-        min: 3,
-        max: 255,
-        minMessage: "doit contenir au moins {{ limit }} caractères.",
-        maxMessage: "ne peut pas dépasser {{ limit }} caractères."
-    )]
-    #[Assert\Type(type: "string", message: "doit être une chaîne de caractères.")]
-    private ?string $role = null;
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: "Le rôle ne peut pas être vide.")]
+    #[Assert\Choice(choices: ["ROLE_USER", "ROLE_ADMIN"], message: "Rôle invalide.")]
+    private ?string $role = "ROLE_USER";
 
     #[ORM\Column(type: 'boolean')]
     #[Assert\NotNull(message: "La valeur ne peut pas être nulle.")]
@@ -95,28 +85,13 @@ class Users
     )]
     #[Assert\Type(type: "string", message: "doit être une chaîne de caractères.")]
     private ?string $status = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(message: "ne peut pas être vide.")]
-    #[Assert\Length(
-        min: 3,
-        max: 255,
-        minMessage: "doit contenir au moins {{ limit }} caractères.",
-        maxMessage: "ne peut pas dépasser {{ limit }} caractères."
-    )]
-    #[Assert\Type(type: "string", message: "doit être une chaîne de caractères.")]
+    
+	#[ORM\Column(length: 255, nullable: true)]
     private ?string $oauthProvider = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(message: "ne peut pas être vide.")]
-    #[Assert\Length(
-        min: 3,
-        max: 255,
-        minMessage: "doit contenir au moins {{ limit }} caractères.",
-        maxMessage: "ne peut pas dépasser {{ limit }} caractères."
-    )]
-    #[Assert\Type(type: "string", message: "doit être une chaîne de caractères.")]
     private ?string $oauthID = null;
+
 
     public function getId(): ?int
     {
@@ -172,7 +147,7 @@ class Users
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(?string $password): self
     {
         $this->password = $password;
         return $this;
@@ -184,10 +159,13 @@ class Users
     }
 
     public function setRole(string $role): self
-    {
-        $this->role = $role;
-        return $this;
+{
+    if (!in_array($role, ["ROLE_USER", "ROLE_ADMIN"])) {
+        throw new \InvalidArgumentException("Rôle invalide.");
     }
+    $this->role = $role;
+    return $this;
+}
 
     public function getTheme(): ?bool
     {
@@ -235,5 +213,20 @@ class Users
         $this->oauthID = $oauthID;
         return $this;
     }
+	 /**
+     * Symfony attend un tableau de rôles, même si l'utilisateur n'en a qu'un.
+     */
+    public function getRoles(): array
+    {
+        return [$this->role];
+    }
+	public function getUserIdentifier(): string
+	{
+		return $this->emailAddress ?? throw new \LogicException('L\'utilisateur doit avoir un email.');
+	}
+	public function eraseCredentials(): void
+{
+    // Supprimer ici toute donnée sensible stockée temporairement (ex: mot de passe en clair).
+}
 }
 
