@@ -62,7 +62,7 @@ class AuthController extends AbstractController
     /**
      * Connexion utilisateur (Authentification classique)
      */
-    #[Route('/api/auth/login', name: 'login', methods: ['POST'])]
+    #[Route('/api/auth/login', name: 'login', methods: ['POST','OPTIONS'])]
     public function login(Request $request, UsersRepository $usersRepository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);

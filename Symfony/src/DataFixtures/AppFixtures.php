@@ -47,7 +47,7 @@ class AppFixtures extends Fixture
 
             // Simuler un utilisateur connecté via OAuth pour certains
             if ($faker->boolean(20)) { // 20% auront un provider OAuth
-                $user->setOauthProvider($faker->randomElement(['google', 'discord', 'github']));
+                $user->setOauthProvider($faker->randomElement(['google', 'facebook']));
                 $user->setOauthID($faker->uuid());
             }
 

@@ -10,7 +10,7 @@ php bin\console doctrine:migrations:migrate --no-interaction
 php bin\console doctrine:fixtures:load --no-interaction
 
 echo 🚀 Lancement du serveur Symfony...
-symfony server:start --dir=public || echo ❌ ECHEC lancement serveur
+symfony server:start --no-tls --dir=public || echo ❌ ECHEC lancement serveur
 
 echo ✅ Tout est fini ! Tapez une touche pour fermer cette fenêtre.
 pause
