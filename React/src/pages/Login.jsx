@@ -35,7 +35,7 @@ const Login = () => {
       console.log("%c✅ Connexion réussie !", "color: green; font-weight: bold;");
       console.log("🎉 Utilisateur connecté :", user);
   
-      alert("Connexion réussie ! Bienvenue " + user.userName + " 💕");
+      alert("Connexion réussie ! Bienvenue " + user.userName);
       navigate("/home")
     } catch (err) {
       console.error("❌ Erreur lors de la connexion :", err);
