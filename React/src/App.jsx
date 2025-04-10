@@ -1,10 +1,11 @@
 import AppRouter from "./router/router";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
-    <div>
+    <AuthProvider> {/* Permet à useAuth() de fonctionner partout */}
       <AppRouter />
-    </div>
+    </AuthProvider>
   );
 }
 
