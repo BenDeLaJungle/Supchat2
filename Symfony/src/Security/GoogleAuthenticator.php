@@ -97,12 +97,22 @@ class GoogleAuthenticator extends OAuth2Authenticator
         $payload = [
             'id' => $user->getId(),
             'email' => $user->getEmailAddress(),
-            'exp' => time() + 3600, // Expiration dans 1 heure
+            'exp' => time() + 3600,
         ];
 
         $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
+        $frontendUrl = $_ENV['FRONTEND_URL'] ?? 'http://localhost:5173';
 
-        return new JsonResponse(['token' => $jwt]);
+        return new Response("
+        <script>
+            if (window.opener) {
+                window.opener.postMessage({ token: '$jwt' }, '$frontendUrl');
+                window.close();
+            } else {
+                window.location.href = '$frontendUrl/login?token=$jwt';
+            }
+        </script>
+    ");
     }
 
     public function onAuthenticationFailure(Request $request, \Exception $exception): Response

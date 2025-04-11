@@ -13,9 +13,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class UserController extends AbstractController
 {
-    /**
-     * @Route("/api/user", name="api_user_info", methods={"GET"})
-     */
+    #[Route('/api/user', name: 'api_user_info', methods: ['GET'])]
     public function getUserInfo(): JsonResponse
     {
         $user = $this->getUser();
@@ -33,9 +31,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/api/user", name="api_user_update", methods={"PUT"})
-     */
+    #[Route('/api/user', name: 'api_user_update', methods: ['PUT'])]
     public function updateUser(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $user = $this->getUser();
@@ -79,9 +75,7 @@ class UserController extends AbstractController
         return new JsonResponse(['message' => 'Utilisateur mis à jour avec succès']);
     }
 
-    /**
-     * @Route("/api/user", name="api_user_delete", methods={"DELETE"})
-     */
+    #[Route('/api/user', name: 'api_user_delete', methods: ['DELETE'])]
     public function deleteUser(EntityManagerInterface $em): JsonResponse
     {
         $user = $this->getUser();
@@ -95,9 +89,7 @@ class UserController extends AbstractController
         return new JsonResponse(['message' => 'Compte supprimé avec succès']);
     }
 
-    /**
-     * @Route("/api/admin/users", name="api_admin_users", methods={"GET"})
-     */
+    #[Route('/api/admin/users', name: 'api_admin_users', methods: ['GET'])]
     public function getAllUsers(UsersRepository $userRepository, AuthorizationCheckerInterface $authChecker): JsonResponse
     {
         if (!$authChecker->isGranted('ROLE_ADMIN')) {
@@ -120,9 +112,7 @@ class UserController extends AbstractController
         return new JsonResponse($userList);
     }
 
-    /**
-     * @Route("/api/admin/user/{id}", name="api_admin_user_update", methods={"PUT"})
-     */
+    #[Route('/api/admin/user/{id}', name: 'api_admin_user_update', methods: ['PUT'])]
     public function adminUpdateUser(int $id, Request $request, UsersRepository $userRepository, EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker): JsonResponse
     {
         if (!$authChecker->isGranted('ROLE_ADMIN')) {
@@ -170,9 +160,7 @@ class UserController extends AbstractController
         return new JsonResponse(['message' => 'Utilisateur mis à jour avec succès']);
     }
 
-    /**
-     * @Route("/api/admin/user/{id}", name="api_admin_user_delete", methods={"DELETE"})
-     */
+    #[Route('/api/admin/user/{id}', name: 'api_admin_user_delete', methods: ['DELETE'])]
     public function adminDeleteUser(int $id, UsersRepository $userRepository, EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker): JsonResponse
     {
         if (!$authChecker->isGranted('ROLE_ADMIN')) {

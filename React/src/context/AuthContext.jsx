@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = getToken();
     if (token) {
-      apiFetch('/user/me')
+      apiFetch('api/user')
         .then(setUser)
         .catch(() => logout());
     }

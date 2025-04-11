@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../services/api";
 import { login } from "../services/auth";
@@ -10,31 +10,58 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [mdp, setMdp] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true); // loader pour éviter clignotement
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const { user, setUser } = useAuth();
 
   const fetchAndSetUser = async (token) => {
     try {
-      const res = await apiFetch("/api/auth/me", {
+      const user = await apiFetch("api/user", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      const user = await res.json();
       setUser(user);
       navigate("/home");
     } catch (err) {
       console.error("Erreur lors de la récupération de l'utilisateur :", err);
       setError("Impossible de récupérer les informations utilisateur.");
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Rediriger si déjà connecté
+  useEffect(() => {
+    if (user) {
+      navigate("/home");
+    } else {
+      setLoading(false);
+    }
+  }, [user, navigate]);
+
+  // Gérer le token passé en URL (OAuth fallback)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (token) {
+      login(token);
+      fetchAndSetUser(token);
+
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState(null, "", cleanUrl);
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const data = await apiFetch("/auth/login", {
+      const data = await apiFetch("api/auth/login", {
         method: "POST",
         body: JSON.stringify({
           emailAddress: email,
@@ -43,11 +70,12 @@ const Login = () => {
       });
 
       const { token } = data;
+      if (!token) throw new Error("Token manquant dans la réponse");
 
-      login(token); // stocker le token
-      await fetchAndSetUser(token); // récupérer l'utilisateur
+      login(token);
+      await fetchAndSetUser(token);
     } catch (err) {
-      console.error("❌ Erreur lors de la connexion :", err);
+      console.error("Erreur lors de la connexion :", err);
       setError(err.message || "Une erreur est survenue...");
     }
   };
@@ -59,13 +87,13 @@ const Login = () => {
     const top = window.innerHeight / 2 - height / 2;
 
     const authWindow = window.open(
-      `http://localhost:8000/api/auth/${provider}`, // ⚠️ à adapter selon ton backend
+      `http://localhost:8000/api/auth/${provider}`,
       `${provider} Login`,
       `width=${width},height=${height},top=${top},left=${left}`
     );
 
     const handleMessage = async (event) => {
-      if (event.origin !== "http://localhost:8000") return; // sécuriser selon ton domaine
+      if (event.origin !== "http://localhost:8000") return;
 
       const { token } = event.data;
       if (token) {
@@ -78,6 +106,8 @@ const Login = () => {
 
     window.addEventListener("message", handleMessage);
   };
+
+  if (loading) return <p>Chargement...</p>;
 
   return (
     <div className="login-container">

@@ -97,12 +97,19 @@ class FacebookAuthenticator extends OAuth2Authenticator
         $payload = [
             'id' => $user->getId(),
             'email' => $user->getEmailAddress(),
-            'exp' => time() + 3600, // Expiration dans 1 heure
+            'exp' => time() + 3600,
         ];
 
         $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
 
-        return new JsonResponse(['token' => $jwt]);
+        $frontendUrl = $_ENV['FRONTEND_URL'] ?? 'http://localhost:3000';
+
+        return new Response("
+        <script>
+            window.opener.postMessage({ token: '$jwt' }, '$frontendUrl');
+            window.close();
+        </script>
+        ");
     }
 
     public function onAuthenticationFailure(Request $request, \Exception $exception): Response
