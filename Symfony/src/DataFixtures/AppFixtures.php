@@ -18,42 +18,78 @@ class AppFixtures extends Fixture
     }
 
     public function load(ObjectManager $manager): void
-    {
-        $faker = Factory::create('fr_FR');
+{
+    $faker = Factory::create('fr_FR');
 
-        for ($i = 0; $i < 20; $i++) {
-            $user = new Users();
-            $user->setFirstName($faker->firstName());
-            $user->setLastName($faker->lastName());
+    //utilisateur admin
+    $admin = new Users();
+    $admin->setFirstName('Admin');
+    $admin->setLastName('Test');
+    $admin->setUserName('ADMIN');
+    $admin->setEmailAddress('admin@example.com');
 
-            $username = strtolower($user->getFirstName() . '.' . $user->getLastName());
-            $user->setUserName($username);
+    $hashedPassword = $this->passwordHasher->hashPassword($admin, 'ADMIN');
+    $admin->setPassword($hashedPassword);
 
-            $user->setEmailAddress($username . '@example.com');
+    $admin->setRole('ROLE_ADMIN');
+    $admin->setTheme(false);
+    $admin->setStatus('Actif');
 
-            // Générer un mot de passe hashé
-            $plainPassword = 'Password123!';
-            $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
-            $user->setPassword($hashedPassword);
+    $manager->persist($admin);
 
-            // Rôle : 1 admin pour 4 users
-            $user->setRole($i % 5 === 0 ? 'ROLE_ADMIN' : 'ROLE_USER');
+        for ($i = 1; $i <= 5; $i++) {
+        $user = new Users();
+        $user->setFirstName('User');
+        $user->setLastName((string)$i);
+        $user->setUserName("user$i");
+        $user->setEmailAddress("user$i@example.com");
+        $user->setPassword($this->passwordHasher->hashPassword($user, 'User123!'));
+        $user->setRole('ROLE_USER');
+        $user->setTheme(false);
+        $user->setStatus('Actif');
+        $manager->persist($user);
+    }
 
-            // Thème aléatoire (true ou false)
-            $user->setTheme($faker->boolean());
+    //utilisateur fixe
+    for ($i = 1; $i <= 5; $i++) {
+        $user = new Users();
+        $user->setFirstName('User');
+        $user->setLastName((string)$i);
+        $user->setUserName("user$i");
+        $user->setEmailAddress("user$i@example.com");
+        $user->setPassword($this->passwordHasher->hashPassword($user, 'User123!'));
+        $user->setRole('ROLE_USER');
+        $user->setTheme(false);
+        $user->setStatus('Actif');
+        $manager->persist($user);
+    }
 
-            // Status fantaisie
-            $user->setStatus($faker->randomElement(['Actif', 'Inactif', 'En attente']));
+    //utilisateurs aléatoires
+    for ($i = 0; $i < 20; $i++) {
+        $user = new Users();
+        $user->setFirstName($faker->firstName());
+        $user->setLastName($faker->lastName());
 
-            // Simuler un utilisateur connecté via OAuth pour certains
-            if ($faker->boolean(20)) { // 20% auront un provider OAuth
-                $user->setOauthProvider($faker->randomElement(['google', 'facebook']));
-                $user->setOauthID($faker->uuid());
-            }
+        $username = strtolower($user->getFirstName() . '.' . $user->getLastName());
+        $user->setUserName($username);
+        $user->setEmailAddress($username . '@example.com');
 
-            $manager->persist($user);
+        $plainPassword = 'User123!';
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
+        $user->setPassword($hashedPassword);
+
+        $user->setRole('ROLE_USER');
+        $user->setTheme($faker->boolean());
+        $user->setStatus($faker->randomElement(['Actif', 'Inactif', 'En attente']));
+
+        if ($faker->boolean(20)) {
+            $user->setOauthProvider($faker->randomElement(['google', 'facebook']));
+            $user->setOauthID($faker->uuid());
         }
 
-        $manager->flush();
+        $manager->persist($user);
+    }
+
+    $manager->flush();
     }
 }
