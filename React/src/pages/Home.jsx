@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../services/api';
 import { logout } from '../services/auth';
 import { useAuth } from '../context/AuthContext';
+import SearchBar from '../pages/SearchBar';
+import Card from '../pages/Card';
+import '../styles/index.css';
 
 export default function Home() {
   const [users, setUsers] = useState([]);
@@ -70,10 +73,79 @@ export default function Home() {
           <p>📌 Statut : {user.status}</p>
           <p>🎨 Thème : {user.theme ? 'Sombre' : 'Clair'}</p>
 		  <p>ID : {user.id }</p>
+      
+      {/* SECTION SEARCHBAR + CARDS */}
+      <SearchBar />
+
+      <div className="card-container">
+        {[
+          {
+            title: "Messagerie",
+            description: "Consultez vos conversations",
+            image: "/assets/chat.png",
+            //link: "/messages"
+          },
+          {
+            title: "Fichiers partagés",
+            description: "Accédez à vos fichiers partagés",
+            image: "/assets/files.png",
+            //link: "/files"
+          },
+          {
+            title: "Notifications",
+            description: "Consultez vos alertes",
+            image: "/assets/notifications.png",
+            //link: "/notifications"
+          },
+          {
+            title: "Workspace 1",
+            description: "Rejoignez vos espaces de travail",
+            image: "/assets/logo_supchat.png",
+            //link: "/workspaces"
+          },
+          {
+            title: "Workspace 2",
+            description: "Rejoignez vos espaces de travail",
+            image: "/assets/logo_supchat.png",
+            //link: "/workspaces"
+          },
+          {
+            title: "Tous les workspaces",
+            description: "Rejoignez vos espaces de travail",
+            image: "/assets/logo_supchat.png",
+            //link: "/workspaces"
+          },
+          {
+            title: "Calendrier",
+            description: "Accédez à votre calendrier",
+            image: "/assets/logo_supchat.png",
+            //link: "/workspaces"
+          },
+          {
+            title: "Appel",
+            description: "Rejoignez vos espaces de travail",
+            image: "/assets/logo_supchat.png",
+            //link: "/workspaces"
+          },
+          
+          {
+            title: "Paramètres",
+            description: "Accédez à votre compte",
+            image: "/assets/settings.png",
+            //link: "/settings"
+          },
+          
+        ].map((card) => (
+          <Card key={card.title} {...card} />
+        ))}
+      </div>
+      {/* FIN SECTION CARDS */}
+      
           <hr />
         </>
       )}
 
+  
       {loading && <p>Chargement des utilisateurs...</p>}
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
