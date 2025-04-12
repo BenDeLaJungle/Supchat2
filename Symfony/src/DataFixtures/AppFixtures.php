@@ -37,19 +37,6 @@ class AppFixtures extends Fixture
 
     $manager->persist($admin);
 
-        for ($i = 1; $i <= 5; $i++) {
-        $user = new Users();
-        $user->setFirstName('User');
-        $user->setLastName((string)$i);
-        $user->setUserName("user$i");
-        $user->setEmailAddress("user$i@example.com");
-        $user->setPassword($this->passwordHasher->hashPassword($user, 'User123!'));
-        $user->setRole('ROLE_USER');
-        $user->setTheme(false);
-        $user->setStatus('Actif');
-        $manager->persist($user);
-    }
-
     //utilisateur fixe
     for ($i = 1; $i <= 5; $i++) {
         $user = new Users();
