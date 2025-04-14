@@ -14,7 +14,23 @@ export async function apiFetch(endpoint, options = {}) {
     headers: { ...defaultHeaders, ...(options.headers || {}) },
   });
 
-  if (response.status === 401) logout();
+  // Gère les erreurs 401 (non autorisé)
+  if (response.status === 401) {
+    logout();
+    throw new Error("Non autorisé");
+  }
 
-  return response.json();
+  const contentType = response.headers.get('content-type');
+
+  if (contentType && contentType.includes('application/json')) {
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Erreur inconnue");
+    }
+
+    return data;
+  } else {
+    throw new Error("Réponse non valide (pas du JSON)");
+  }
 }

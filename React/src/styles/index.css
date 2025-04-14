@@ -71,39 +71,85 @@ button:focus-visible {
 
 /* HomeCards.css */
 
-.home-wrapper {
+.header-home {
+  width: 100vw; /* occupe toute la largeur de la fenêtre */
+  margin: 0;
+  padding: 1rem 2rem;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  background-color: #eef5ff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 0; /* plus de coins arrondis */
+  box-sizing: border-box;
+  margin-bottom: 2rem;
 }
 
-.search-bar-wrapper {
-  margin-bottom: 1.5rem;
+.header-barre, .header-logo, .header-logout {
+  display: flex;
+  align-items: center;
+}
+
+
+.header-logo .logo {
+  height: 100px;
+}
+
+.header-barre {
+  flex: 3;
   display: flex;
   justify-content: center;
+  padding: 0 2rem;
+}
+
+.header-barre {
+  width: 300px;
+  max-width: 800px;
+}
+
+.header-logout .logout-button {
+  background-color: #ff4d4d;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.header-logout .logout-button {
+  background-color: #add4f3; /* Bleu clair identique aux cards */
+  color: #1f1f1f;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #CA3C66; /* Rouge au hover */
+  color: white;
 }
 
 .search-input {
   padding: 10px 16px;
-  width: 100%;
-  max-width: 600px;
+  width: 500px;
   border-radius: 10px;
   border: 1px solid #ccc;
   font-size: 1rem;
 }
 
 .card-container {
-  width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr); /* 3 cartes par ligne */
+  gap: 2rem; /* espace entre les cartes */
+  padding: 2rem 3rem; /* marges autour */
 }
-
 .card {
-  background: #ffffff;
+  background: #add4f3;
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
@@ -114,6 +160,8 @@ button:focus-visible {
 
 .card:hover {
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+  background-color: #284e7b;
+  transform: scale(1.1);
 }
 
 .card img {
@@ -129,7 +177,15 @@ button:focus-visible {
   color: #333;
 }
 
+.card:hover h2 {
+  color: #8f908d;
+}
+
 .card p {
   font-size: 0.9rem;
   color: #666;
+}
+
+.card:hover p {
+  color: #eff3f5
 }

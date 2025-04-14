@@ -3,9 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../services/api';
 import { logout } from '../services/auth';
 import { useAuth } from '../context/AuthContext';
-import SearchBar from '../pages/SearchBar';
+import Header from './Header';
 import Card from '../pages/Card';
 import '../styles/index.css';
+import messenger from '../assets/messsage.png';
+import files from '../assets/share.png';
+import notif from '../assets/notif.png';
+import workspace from '../assets/workspace.png';
+import calendrier from '../assets/calendrier.png';
+import appel from '../assets/appel.png';
+import parametres from '../assets/settings.png';
+
+
+
+
 
 export default function Home() {
   const [users, setUsers] = useState([]);
@@ -60,122 +71,65 @@ export default function Home() {
 
   return (
     <div>
-      <h1>🏠 Bienvenue sur la page d’accueil</h1>
-
       {user && (
         <>
-          <h2>Bonjour, {user.username} !</h2>
-          <button onClick={handleLogout} style={{ marginBottom: '1rem' }}>
-            🚪 Se déconnecter
-          </button>
-          <p>📧 Email : {user.email}</p>
-          <p>🛡️ Rôle : {user.role}</p>
-          <p>📌 Statut : {user.status}</p>
-          <p>🎨 Thème : {user.theme ? 'Sombre' : 'Clair'}</p>
-		  <p>ID : {user.id }</p>
-      
-      {/* SECTION SEARCHBAR + CARDS */}
-      <SearchBar />
-
-      <div className="card-container">
-        {[
-          {
-            title: "Messagerie",
-            description: "Consultez vos conversations",
-            image: "/assets/chat.png",
-            //link: "/messages"
-          },
-          {
-            title: "Fichiers partagés",
-            description: "Accédez à vos fichiers partagés",
-            image: "/assets/files.png",
-            //link: "/files"
-          },
-          {
-            title: "Notifications",
-            description: "Consultez vos alertes",
-            image: "/assets/notifications.png",
-            //link: "/notifications"
-          },
-          {
-            title: "Workspace 1",
-            description: "Rejoignez vos espaces de travail",
-            image: "/assets/logo_supchat.png",
-            //link: "/workspaces"
-          },
-          {
-            title: "Workspace 2",
-            description: "Rejoignez vos espaces de travail",
-            image: "/assets/logo_supchat.png",
-            //link: "/workspaces"
-          },
-          {
-            title: "Tous les workspaces",
-            description: "Rejoignez vos espaces de travail",
-            image: "/assets/logo_supchat.png",
-            //link: "/workspaces"
-          },
-          {
-            title: "Calendrier",
-            description: "Accédez à votre calendrier",
-            image: "/assets/logo_supchat.png",
-            //link: "/workspaces"
-          },
-          {
-            title: "Appel",
-            description: "Rejoignez vos espaces de travail",
-            image: "/assets/logo_supchat.png",
-            //link: "/workspaces"
-          },
-          
-          {
-            title: "Paramètres",
-            description: "Accédez à votre compte",
-            image: "/assets/settings.png",
-            //link: "/settings"
-          },
-          
-        ].map((card) => (
-          <Card key={card.title} {...card} />
-        ))}
-      </div>
-      {/* FIN SECTION CARDS */}
-      
-          <hr />
-        </>
-      )}
-
+          {/* HEADER AVEC LOGO + BARRE DE RECHERCHE + LOGOUT */}
+          <Header />
   
-      {loading && <p>Chargement des utilisateurs...</p>}
-
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      {!loading && !error && (
-        <>
-          <h2>👥 Liste des utilisateurs :</h2>
-          <ul>
-            {users.map(user => (
-              <li key={user.id}>
-                {user.username} ({user.email}) - {user.role} - {user.status} - ID:{user.id}
-              </li>
+          {/* SECTION DES CARTES */}
+          <div className="card-container">
+            {[
+              {
+                title: "Messagerie",
+                description: "Consultez vos conversations",
+                image: messenger,
+              },
+              {
+                title: "Fichiers partagés",
+                description: "Accédez à vos fichiers partagés",
+                image: files,
+              },
+              {
+                title: "Notifications",
+                description: "Consultez vos alertes",
+                image: notif,
+              },
+              {
+                title: "Workspace 1",
+                description: "Rejoignez votre espace de travail",
+                image: workspace,
+              },
+              {
+                title: "Workspace 2",
+                description: "Rejoignez votre espace de travail",
+                image: workspace,
+              },
+              {
+                title: "Tous les workspaces",
+                description: "Rejoignez vos espaces de travail",
+                image: workspace,
+              },
+              {
+                title: "Calendrier",
+                description: "Accédez à votre calendrier",
+                image: calendrier,
+              },
+              {
+                title: "Appel",
+                description: "Contactez vos collègues",
+                image: appel,
+              },
+              {
+                title: "Paramètres",
+                description: "Accédez aux réglages de votre compte",
+                image: parametres,
+              },
+            ].map((card) => (
+              <Card key={card.title} {...card} />
             ))}
-          </ul>
-
-          <hr />
-          <h3>🗑️ Supprimer un utilisateur par ID</h3>
-          <input
-            type="number"
-            placeholder="ID utilisateur"
-            value={deleteId}
-            onChange={(e) => setDeleteId(e.target.value)}
-            style={{ marginRight: '1rem' }}
-          />
-          <button onClick={handleDeleteUserById}>
-            Supprimer
-          </button>
-          {deleteMessage && <p>{deleteMessage}</p>}
+          </div>
         </>
       )}
     </div>
-  );
+  );  
 }
