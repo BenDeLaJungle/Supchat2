@@ -113,6 +113,7 @@ export default function Home() {
                 title: "Calendrier",
                 description: "Accédez à votre calendrier",
                 image: calendrier,
+                link: "/calendrier"
               },
               {
                 title: "Appel",
