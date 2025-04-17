@@ -7,8 +7,12 @@ const Card = ({ title, description, image, link }) => {
   
     return (
       <div className="card" onClick={() => navigate(link)}>
-        <img src={image} alt={title} className='card-img' />
-        <h2>{title}</h2>
+        <img
+          src={image}
+          alt={title}
+          className={`card-img ${title === "logo-user" ? "logo-user-img" : ""}`}
+        />
+        {title !== "logo-user" && <h2>{title}</h2>}
         <p>{description}</p>
       </div>
     );

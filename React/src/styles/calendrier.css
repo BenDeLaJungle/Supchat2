@@ -3,13 +3,17 @@
     justify-content: center;
     align-items: center;
     gap: 80px;
-    margin-top: 50px;
+    margin-top: 20px;
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    padding: 2rem;
     flex-wrap: nowrap;
   }
   
-  /* Partie gauche : calendrier */
+  .calendrier-wrapper.form-open {
+    margin-top: 30px; /* Réduit l'espacement haut */
+    height: 60vh; /* Optimise la hauteur dispo */
+  }
+  
+
   .calendrier-gauche {
     display: flex;
     flex-direction: column;
@@ -18,7 +22,7 @@
   }
   
   .calendrier-title {
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     font-weight: bold;
     color: #284E7B;
     margin-bottom: 2rem;
@@ -57,7 +61,6 @@
     font-weight: bold;
   }
   
-  /* Partie droite : bouton + formulaire */
   .calendrier-droite {
     display: flex;
     flex-direction: column;
@@ -83,14 +86,15 @@
   }
   
   .form-event {
-    margin-top: 20px;
+    margin-top: 10px;
     background-color: #FCFCFC;
-    padding: 2rem;
+    padding: 1.5rem;
     border: 1px solid #ddd;
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    width: 100%;
-    max-width: 320px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    width: 320px;
+    overflow-y: auto;         /* ⬅ Scroll interne si besoin */
+    box-sizing: border-box;
   }
 
   .form-event h2 {
@@ -136,5 +140,42 @@
     text-decoration: underline;
   }
   
+/* responsive */
 
-  
+@media (max-width: 768px) {
+  .calendrier-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 1rem;
+    height: auto !important;
+  }
+
+  .calendrier-gauche,
+  .calendrier-droite {
+    width: 100%;
+    align-items: center;
+    padding: 0;
+  }
+
+  .calendrier-title {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .mon-calendrier {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .form-event {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .btn-rdv {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+  }
+}

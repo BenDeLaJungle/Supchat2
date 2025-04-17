@@ -72,7 +72,7 @@ button:focus-visible {
 /* HomeCards.css */
 
 .header-home {
-  width: 100vw; /* occupe toute la largeur de la fenêtre */
+  width: 100vw; 
   margin: 0;
   padding: 0.1rem 2rem;
   display: flex;
@@ -80,9 +80,10 @@ button:focus-visible {
   align-items: center;
   background-color: #eef5ff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 0; /* plus de coins arrondis */
+  border-radius: 0; 
   box-sizing: border-box;
   margin-bottom: 0.8rem;
+  flex-wrap: wrap;
 }
 
 .header-barre, .header-logo, .header-logout {
@@ -130,7 +131,7 @@ button:focus-visible {
 }
 
 .logout-button:hover {
-  background-color: #CA3C66; /* Rouge au hover */
+  background-color: #CA3C66; 
   color: white;
 }
 
@@ -144,7 +145,7 @@ button:focus-visible {
 
 .card-container {
   display: grid;
-  grid-template-columns: repeat(3, 120px); /* 3 colonnes de 120px */
+  grid-template-columns: repeat(3, 120px); 
   justify-content: center;
   gap: 0.7rem;
   padding: 0.5rem 1rem;
@@ -181,7 +182,7 @@ button:focus-visible {
 }
 
 .card h2 {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   margin-bottom: 0.2rem;
   color: #333;
 }
@@ -200,10 +201,95 @@ button:focus-visible {
   color: #eff3f5;
 }
 
+.logo-user-img {
+  width: 100px !important;
+  height: 100px !important;
+  object-fit: contain;
+}
+
+
+
 .welcome-name {
   text-align: center;
   margin-top: 10px;
   font-size: 1.8rem;
   font-weight: bold;
   color: #333;
+  margin-bottom: 1rem;
+}
+
+
+/* responsive */
+
+@media (max-width: 768px) {
+  .card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 0 10px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    display: flex;
+    align-items: center;
+    width: 90%;
+    padding: 10px;
+    background-color: #cbe7ff;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .card img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .card h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #284E7B;
+  }
+
+  .welcome-name {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #284E7B;
+    text-align: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem; /* ⬅️ ajoute ou augmente cette valeur */
+  }
+  
+  .header-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 1rem; 
+    box-sizing: border-box; 
+  }
+  
+  .header-logo {
+    margin-bottom: 1rem;
+  }
+  
+  .header-barre {
+    width: 60%;          
+    max-width: 350px;    
+    margin-bottom: 1rem; 
+    display: flex;      
+    justify-content: center;
+  }
+
+  .header-barre input {
+    width: 100%;
+  }
+  
+  .header-logout {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
 }

@@ -11,9 +11,9 @@ import files from '../assets/share.png';
 import notif from '../assets/notif.png';
 import workspace from '../assets/workspace.png';
 import calendrier from '../assets/calendrier.png';
-import appel from '../assets/appel.png';
 import parametres from '../assets/settings.png';
 import adminspace from '../assets/adminspace.png';
+import logo from '../assets/logo-supchat.png';
 
 
 
@@ -61,7 +61,6 @@ export default function Home() {
     try {
       const response = await apiFetch(`api/admin/user/${deleteId}`, { method: 'DELETE' });
       setDeleteMessage(response.message || "Utilisateur supprimé !");
-      // Mise à jour de la liste
       setUsers(prev => prev.filter(u => u.id !== parseInt(deleteId)));
       setDeleteId('');
     } catch (err) {
@@ -74,14 +73,12 @@ export default function Home() {
     <div>
       {user && (
         <>
-          {/* HEADER AVEC LOGO + BARRE DE RECHERCHE + LOGOUT */}
           <Header />
 
           <div className="welcome-name">
             Bonjour {user?.username}
           </div>
-  
-          {/* SECTION DES CARTES */}
+
           <div className="card-container">
             {[
               {
@@ -113,10 +110,9 @@ export default function Home() {
                 image: calendrier,
                 link: "/calendrier"
               },
-              {
-                title: "Espace Administrateur",
-                image: adminspace,
-              },
+              user?.role === 'ROLE_ADMIN'
+                ? { title: "Espace Admin", image: adminspace, link: "/AdminSpace"}
+                : { title: "logo-user", image: logo },
               {
                 title: "Paramètres",
                 image: parametres,
