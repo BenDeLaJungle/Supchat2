@@ -13,6 +13,7 @@ import workspace from '../assets/workspace.png';
 import calendrier from '../assets/calendrier.png';
 import appel from '../assets/appel.png';
 import parametres from '../assets/settings.png';
+import adminspace from '../assets/adminspace.png';
 
 
 
@@ -116,9 +117,9 @@ export default function Home() {
                 link: "/calendrier"
               },
               {
-                title: "Appel",
-                description: "Contactez vos collègues",
-                image: appel,
+                title: "Espace Admin",
+                description: "Consultez l'espace résérvé aux administrateurs",
+                image: adminspace,
               },
               {
                 title: "Paramètres",
