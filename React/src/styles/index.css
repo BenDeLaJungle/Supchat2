@@ -189,3 +189,11 @@ button:focus-visible {
 .card:hover p {
   color: #eff3f5
 }
+
+.welcome-name {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+}

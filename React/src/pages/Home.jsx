@@ -76,6 +76,10 @@ export default function Home() {
         <>
           {/* HEADER AVEC LOGO + BARRE DE RECHERCHE + LOGOUT */}
           <Header />
+
+          <div className="welcome-name">
+            Bonjour {user?.username}
+          </div>
   
           {/* SECTION DES CARTES */}
           <div className="card-container">
