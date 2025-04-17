@@ -114,7 +114,7 @@ export default function Home() {
                 link: "/calendrier"
               },
               {
-                title: "Espace Admin",
+                title: "Espace Administrateur",
                 image: adminspace,
               },
               {
