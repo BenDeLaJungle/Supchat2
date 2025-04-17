@@ -86,48 +86,39 @@ export default function Home() {
             {[
               {
                 title: "Messagerie",
-                description: "Consultez vos conversations",
                 image: messenger,
               },
               {
                 title: "Fichiers partagés",
-                description: "Accédez à vos fichiers partagés",
                 image: files,
               },
               {
                 title: "Notifications",
-                description: "Consultez vos alertes",
                 image: notif,
               },
               {
                 title: "Workspace 1",
-                description: "Rejoignez votre espace de travail",
                 image: workspace,
               },
               {
                 title: "Workspace 2",
-                description: "Rejoignez votre espace de travail",
                 image: workspace,
               },
               {
                 title: "Tous les workspaces",
-                description: "Rejoignez vos espaces de travail",
                 image: workspace,
               },
               {
                 title: "Calendrier",
-                description: "Accédez à votre calendrier",
                 image: calendrier,
                 link: "/calendrier"
               },
               {
                 title: "Espace Admin",
-                description: "Consultez l'espace résérvé aux administrateurs",
                 image: adminspace,
               },
               {
                 title: "Paramètres",
-                description: "Accédez aux réglages de votre compte",
                 image: parametres,
               },
             ].map((card) => (
