@@ -25,8 +25,8 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  justify-content: center; /* centrage horizontal */
-  align-items: start;       /* ou center si tu veux centrer aussi verticalement */
+  justify-content: center; 
+  align-items: start;       
   min-width: 320px;
   min-height: 100vh;
   background-color: #f4f4f4;
@@ -69,8 +69,6 @@ button:focus-visible {
   }
 }
 
-/* HomeCards.css */
-
 .header-home {
   width: 100vw; 
   margin: 0;
@@ -82,7 +80,7 @@ button:focus-visible {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   border-radius: 0; 
   box-sizing: border-box;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0rem;
   flex-wrap: wrap;
 }
 
@@ -120,7 +118,7 @@ button:focus-visible {
 }
 
 .header-logout .logout-button {
-  background-color: #add4f3; /* Bleu clair identique aux cards */
+  background-color: #add4f3; 
   color: #1f1f1f;
   padding: 0.6rem 1.2rem;
   border: none;
@@ -147,7 +145,7 @@ button:focus-visible {
   display: grid;
   grid-template-columns: repeat(3, 120px); 
   justify-content: center;
-  gap: 0.7rem;
+  gap: 1.2rem;
   padding: 0.5rem 1rem;
 }
 
@@ -155,7 +153,7 @@ button:focus-visible {
   background: #add4f3;
   border-radius: 1rem;
   width: 120px;
-  height: 120px; /* carré parfait */
+  height: 120px; 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   cursor: pointer;
@@ -164,6 +162,7 @@ button:focus-visible {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   
 }
 
@@ -182,7 +181,7 @@ button:focus-visible {
 }
 
 .card h2 {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   margin-bottom: 0.2rem;
   color: #333;
 }
@@ -214,7 +213,7 @@ button:focus-visible {
   margin-top: 10px;
   font-size: 1.8rem;
   font-weight: bold;
-  color: #333;
+  color: #284E7B;
   margin-bottom: 1rem;
 }
 
@@ -258,7 +257,7 @@ button:focus-visible {
     color: #284E7B;
     text-align: center;
     margin-top: 2rem;
-    margin-bottom: 2rem; /* ⬅️ ajoute ou augmente cette valeur */
+    margin-bottom: 2rem; 
   }
   
   .header-home {
