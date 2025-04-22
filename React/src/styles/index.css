@@ -166,7 +166,6 @@ button:focus-visible {
   
 }
 
-
 .card:hover {
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
   background-color: #284e7b;
@@ -206,8 +205,6 @@ button:focus-visible {
   object-fit: contain;
 }
 
-
-
 .welcome-name {
   text-align: center;
   margin-top: 10px;
@@ -217,6 +214,80 @@ button:focus-visible {
   margin-bottom: 1rem;
 }
 
+.messaging-container {
+  padding: 1rem;
+  max-width: 800px;
+  margin: auto;
+}
+
+.message-list {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.message-item {
+  margin-bottom: 1rem;
+  background: #f0f7ff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.message-input-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.start-conv-btn {
+  background-color: #add4f3;
+  color: #1f1f1f;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.new-conversation-bar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  background: #ffffff;
+  padding: 1rem;
+  border-top: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+.recipient-select, .message-input {
+  padding: 0.6rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.send-btn {
+  background-color: #CA3C66;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.send-btn:hover {
+  background-color: #a32b51;
+}
 
 /* responsive */
 

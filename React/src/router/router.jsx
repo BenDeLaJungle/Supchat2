@@ -3,6 +3,7 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Calendrier from '../pages/calendrier';
 import AdminSpace from '../pages/AdminSpace';
+import Messaging from "../pages/Messaging";
 
 export default function AppRouter() {
   return (
@@ -11,6 +12,7 @@ export default function AppRouter() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/messaging" element={<Messaging />} />
         <Route path="/calendrier" element={<Calendrier />} />
         <Route path="/AdminSpace" element={<AdminSpace />} />
       </Routes>
