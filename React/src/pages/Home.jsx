@@ -95,9 +95,11 @@ export default function Home() {
                 image: notif,
               },
               {
-                title: "Workspace 1",
+                title: "Tous les workspaces",
                 image: workspace,
+                link: "/workspaces"
               },
+              
               {
                 title: "Workspace 2",
                 image: workspace,

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
+import Header from './Header';
+import '../styles/index.css';
 import '../styles/workspaces.css';
 
 export default function Workspaces() {
@@ -34,25 +36,41 @@ export default function Workspaces() {
   };
 
   return (
-    <div className="workspaces-page">
-      <h1>🌐 Espaces de travail</h1>
+    <div>
+      <Header />
+      <div className="welcome-name">🌐 Espaces de travail – Bienvenue {user?.username}</div>
 
-      {loading && <p>Chargement...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {loading && <p className="workspace-center">Chargement...</p>}
+      {error && <p className="workspace-center" style={{ color: 'red' }}>{error}</p>}
 
       {!loading && !error && (
-        <div className="workspace-list">
-          {workspaces.map(ws => (
-            <div className="workspace-card" key={ws.id}>
-              <h3>{ws.name}</h3>
-              <p>{ws.description}</p>
-              <p><strong>Type :</strong> {ws.public ? 'Public' : 'Privé'}</p>
-              {!ws.members.includes(user.id) && (
-                <button onClick={() => handleJoin(ws.id)}>Rejoindre</button>
-              )}
-              {ws.members.includes(user.id) && <p>✅ Membre</p>}
-            </div>
-          ))}
+        <div className="workspace-table-container">
+          <table className="workspace-table">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody>
+              {workspaces.map(ws => (
+                <tr key={ws.id}>
+                  <td>{ws.name}</td>
+                  <td>{ws.description}</td>
+                  <td>{ws.public ? 'Public' : 'Privé'}</td>
+                  <td>
+                    {ws.members.includes(user.id) ? (
+                      '✅ Membre'
+                    ) : (
+                      <button onClick={() => handleJoin(ws.id)}>Rejoindre</button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
