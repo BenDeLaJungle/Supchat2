@@ -25,8 +25,8 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  justify-content: center; /* centrage horizontal */
-  align-items: start;       /* ou center si tu veux centrer aussi verticalement */
+  justify-content: center; 
+  align-items: start;       
   min-width: 320px;
   min-height: 100vh;
   background-color: #f4f4f4;
@@ -69,67 +69,297 @@ button:focus-visible {
   }
 }
 
-/* HomeCards.css */
-
-.home-wrapper {
+.header-home {
+  width: 100vw; 
+  margin: 0;
+  padding: 0.1rem 2rem;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  background-color: #eef5ff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 0; 
+  box-sizing: border-box;
+  margin-bottom: 0rem;
+  flex-wrap: wrap;
 }
 
-.search-bar-wrapper {
-  margin-bottom: 1.5rem;
+.header-barre, .header-logo, .header-logout {
+  display: flex;
+  align-items: center;
+}
+
+
+.header-logo .logo {
+  height: 80px;
+}
+
+.header-barre {
+  flex: 3;
   display: flex;
   justify-content: center;
+  padding: 0 2rem;
+}
+
+.header-barre {
+  width: 300px;
+  max-width: 800px;
+}
+
+.header-logout .logout-button {
+  background-color: #ff4d4d;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.header-logout .logout-button {
+  background-color: #add4f3; 
+  color: #1f1f1f;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #CA3C66; 
+  color: white;
 }
 
 .search-input {
   padding: 10px 16px;
-  width: 100%;
-  max-width: 600px;
+  width: 500px;
   border-radius: 10px;
   border: 1px solid #ccc;
   font-size: 1rem;
 }
 
 .card-container {
-  width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 120px); 
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 0.5rem 1rem;
 }
 
 .card {
-  background: #ffffff;
+  background: #add4f3;
   border-radius: 1rem;
-  padding: 1.5rem;
+  width: 120px;
+  height: 120px; 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   cursor: pointer;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  
 }
 
 .card:hover {
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+  background-color: #284e7b;
+  transform: scale(1.1);
 }
 
 .card img {
-  width: 70px;
-  height: 70px;
+  width: 35px;
+  height: 35px;
   object-fit: contain;
-  margin-bottom: 1rem;
+  margin-bottom: 0.4rem;
 }
 
 .card h2 {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
+  font-size: 0.7rem;
+  margin-bottom: 0.2rem;
   color: #333;
 }
 
+.card:hover h2 {
+  color: #8f908d;
+}
+
 .card p {
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   color: #666;
+  margin: 0;
+}
+
+.card:hover p {
+  color: #eff3f5;
+}
+
+.logo-user-img {
+  width: 100px !important;
+  height: 100px !important;
+  object-fit: contain;
+}
+
+.welcome-name {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #284E7B;
+  margin-bottom: 1rem;
+}
+
+.messaging-container {
+  padding: 1rem;
+  max-width: 800px;
+  margin: auto;
+}
+
+.message-list {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.message-item {
+  margin-bottom: 1rem;
+  background: #f0f7ff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.message-input-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.start-conv-btn {
+  background-color: #add4f3;
+  color: #1f1f1f;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.new-conversation-bar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  background: #ffffff;
+  padding: 1rem;
+  border-top: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+.recipient-select, .message-input {
+  padding: 0.6rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.send-btn {
+  background-color: #CA3C66;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.send-btn:hover {
+  background-color: #a32b51;
+}
+
+/* responsive */
+
+@media (max-width: 768px) {
+  .card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 0 10px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    display: flex;
+    align-items: center;
+    width: 90%;
+    padding: 10px;
+    background-color: #cbe7ff;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .card img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .card h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #284E7B;
+  }
+
+  .welcome-name {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #284E7B;
+    text-align: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem; 
+  }
+  
+  .header-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 1rem; 
+    box-sizing: border-box; 
+  }
+  
+  .header-logo {
+    margin-bottom: 1rem;
+  }
+  
+  .header-barre {
+    width: 60%;          
+    max-width: 350px;    
+    margin-bottom: 1rem; 
+    display: flex;      
+    justify-content: center;
+  }
+
+  .header-barre input {
+    width: 100%;
+  }
+  
+  .header-logout {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
 }
