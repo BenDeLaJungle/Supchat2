@@ -31,6 +31,8 @@ export async function apiFetch(endpoint, options = {}) {
 
     return data;
   } else {
+    const raw = await response.text();
+    console.error("⚠️ Réponse non JSON reçue :", raw);
     throw new Error("Réponse non valide (pas du JSON)");
   }
 }

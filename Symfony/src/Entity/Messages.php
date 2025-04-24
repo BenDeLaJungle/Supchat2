@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Channels;
 use App\Entity\Users;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\DBAL\Types\Types;
+
 
 #[ORM\Entity(repositoryClass: MessagesRepository::class)]
 class Messages
@@ -38,6 +40,9 @@ class Messages
     )]
     #[Assert\Type(type: "string", message: "Le contenu doit être une chaîne de caractères.")]
     private ?string $content = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int
     {
@@ -75,6 +80,22 @@ class Messages
     {
         $this->content = $content;
         return $this;
+    }
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    //constructeur pour le timestamp
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
     }
 }
 

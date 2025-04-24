@@ -5,6 +5,7 @@ import Register from "../pages/Register";
 import Calendrier from '../pages/calendrier';
 import AdminSpace from '../pages/AdminSpace';
 import Messaging from "../pages/Messaging";
+import PrivateMessage from "../pages/privateMessage";
 
 export default function AppRouter() {
   return (
@@ -17,6 +18,7 @@ export default function AppRouter() {
         <Route path="/messaging" element={<Messaging />} />
         <Route path="/calendrier" element={<Calendrier />} />
         <Route path="/AdminSpace" element={<AdminSpace />} />
+        <Route path="/test-messages" element={<PrivateMessage />} />
       </Routes>
     </BrowserRouter>
   );
