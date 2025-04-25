@@ -12,11 +12,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
+
+
 
 class MessageController extends AbstractController
 {
     #[Route('/messages', name: 'create_message', methods: ['POST'])]
-    public function createMessage(Request $request, EntityManagerInterface $em, ChannelsRepository $channelsRepo, UsersRepository $usersRepo): JsonResponse
+    public function createMessage(Request $request, EntityManagerInterface $em, ChannelsRepository $channelsRepo, UsersRepository $usersRepo, HubInterface $hub)
+
     {
         $data = json_decode($request->getContent(), true);
 
@@ -38,6 +43,19 @@ class MessageController extends AbstractController
 
         $em->persist($message);
         $em->flush();
+
+        //mercure
+        $update = new Update(
+            ["channel/{$channel->getId()}"],
+            json_encode([
+                'id' => $message->getId(),
+                'author' => $user->getUsername(),
+                'content' => $message->getContent(),
+                'timestamp' => $message->getCreatedAt()->format('c'),
+            ]),
+            false
+        );
+        $hub->publish($update);
 
         return new JsonResponse([
             'status' => 'Message créé',
