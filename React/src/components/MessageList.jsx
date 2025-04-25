@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Message from './Message';
 import { apiFetch } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+
 
 const MessageList = ({ channelId }) => {
   const [messages, setMessages] = useState([]);
@@ -9,6 +11,8 @@ const MessageList = ({ channelId }) => {
   const [isFetching, setIsFetching] = useState(false);
   const listRef = useRef();
   const eventSourceRef = useRef(null);
+  const { token: userAuthToken } = useAuth();
+
 
   const fetchMessages = async () => {
     try {
