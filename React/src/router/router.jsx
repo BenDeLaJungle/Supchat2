@@ -4,6 +4,8 @@ import Login from "../pages/Login";
 import Calendrier from '../pages/calendrier';
 import AdminSpace from '../pages/AdminSpace';
 import Messaging from "../pages/Messaging";
+import Parametres from '../pages/Parametres';
+
 
 export default function AppRouter() {
   return (
@@ -15,6 +17,7 @@ export default function AppRouter() {
         <Route path="/messaging" element={<Messaging />} />
         <Route path="/calendrier" element={<Calendrier />} />
         <Route path="/AdminSpace" element={<AdminSpace />} />
+        <Route path="/parametres" element={<Parametres />} />
       </Routes>
     </BrowserRouter>
   );

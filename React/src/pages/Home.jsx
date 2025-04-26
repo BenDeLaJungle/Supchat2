@@ -117,6 +117,7 @@ export default function Home() {
               {
                 title: "Paramètres",
                 image: parametres,
+                link: "/parametres"
               },
             ].map((card) => (
               <Card key={card.title} {...card} />

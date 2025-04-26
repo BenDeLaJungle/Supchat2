@@ -9,8 +9,8 @@
   }
   
   .calendrier-wrapper.form-open {
-    margin-top: 30px; /* Réduit l'espacement haut */
-    height: 60vh; /* Optimise la hauteur dispo */
+    margin-top: 30px; 
+    height: 60vh; 
   }
   
 
@@ -93,7 +93,7 @@
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     width: 320px;
-    overflow-y: auto;         /* ⬅ Scroll interne si besoin */
+    overflow-y: auto;        
     box-sizing: border-box;
   }
 
