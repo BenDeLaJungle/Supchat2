@@ -1,0 +1,80 @@
+.privateMessage {
+    background-color: #f9f9ff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 1rem;
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  .privateMessage h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #3b82f6; /* bleu doux */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .message-list {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+  }
+  
+  .message-item {
+    border-bottom: 1px solid #eee;
+    padding: 0.5rem 0;
+  }
+  
+  .message-item strong {
+    display: block;
+    color: #111;
+  }
+  
+  .message-item span {
+    font-size: 0.8rem;
+    color: #999;
+  }
+  
+  .message-item p {
+    margin: 0.2rem 0 0.5rem 0;
+    color: #444;
+  }
+  
+  /* Champ d'envoi */
+  form {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .message-input {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #111;
+  }
+  
+  .send-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #f87171;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .send-btn:hover {
+    background-color: #ef4444;
+  }
+  

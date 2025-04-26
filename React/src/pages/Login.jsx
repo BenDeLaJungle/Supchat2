@@ -130,6 +130,12 @@ const Login = () => {
         <button type="submit" className="btn">
           Se connecter
         </button>
+		<p className="signup-link">
+			Pas encore inscrit ?{" "}
+			<span onClick={() => navigate("/register")} style={{ color: "#007bff", cursor: "pointer" }}>
+				Créez un compte
+			</span>
+		</p>
         {error && <p className="error">{error}</p>}
       </form>
 

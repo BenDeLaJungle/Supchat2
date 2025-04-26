@@ -1,89 +1,162 @@
-import React, { useEffect, useState } from 'react';
-import { apiFetch } from '../services/api';
-import { useAuth } from '../context/AuthContext';
-import Header from './Header';
-import '../styles/admin.css';
+// AdminSpace.jsx - version améliorée avec listes déroulantes pour utilisateurs et workspaces
 
-export default function Admin() {
+import React, { useEffect, useState } from "react";
+import { apiFetch } from "../services/api";
+import "../styles/Admin.css";
+import AdminHeader from "./Adminheader";
+
+const AdminPanel = () => {
   const [users, setUsers] = useState([]);
-  const [deleteId, setDeleteId] = useState('');
-  const [deleteMessage, setDeleteMessage] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { user } = useAuth();
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [workspaces, setWorkspaces] = useState([]);
+  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(null);
+  const [error, setError] = useState("");
 
-  // 🆕 Fait défiler vers le haut dès que la page est montée
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    if (user?.role === 'ROLE_ADMIN') {
-      apiFetch('api/admin/users')
-        .then((data) => {
-          setUsers(data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          setError("Erreur lors du chargement des utilisateurs.");
-          setLoading(false);
-        });
-    } else {
-      setError("Accès non autorisé.");
-      setLoading(false);
-    }
-  }, [user]);
-
-  const handleDeleteUserById = async () => {
-    if (!deleteId) return alert("Veuillez entrer un ID.");
-    if (!window.confirm(`❗ Supprimer l'utilisateur ID ${deleteId} ?`)) return;
-
+  const fetchUsers = async () => {
     try {
-      const response = await apiFetch(`api/admin/user/${deleteId}`, {
-        method: 'DELETE'
-      });
-      setDeleteMessage(response.message || "Utilisateur supprimé !");
-      setUsers(prev => prev.filter(u => u.id !== parseInt(deleteId)));
-      setDeleteId('');
+      const data = await apiFetch("api/admin/users");
+      setUsers(data);
     } catch (err) {
-      console.error("Erreur suppression :", err);
-      setDeleteMessage("Erreur lors de la suppression.");
+      setError("Erreur lors de la récupération des utilisateurs");
     }
   };
 
+  const fetchWorkspaces = async () => {
+    try {
+      const data = await apiFetch("api/workspaces");
+      setWorkspaces(data);
+    } catch (err) {
+      setError("Erreur lors de la récupération des workspaces");
+    }
+  };
+
+  const handleDeleteUser = async (id) => {
+    if (!window.confirm("Supprimer cet utilisateur ?")) return;
+    try {
+      await apiFetch(`api/admin/user/${id}`, { method: "DELETE" });
+      setUsers(users.filter((u) => u.id !== id));
+      setSelectedUserId(null);
+    } catch (err) {
+      setError("Échec de la suppression utilisateur");
+    }
+  };
+
+  const handleUpdateUser = async (id, field, value) => {
+    try {
+      await apiFetch(`api/admin/user/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ [field]: value }),
+      });
+      fetchUsers();
+    } catch (err) {
+      setError("Échec de la mise à jour utilisateur");
+    }
+  };
+
+  const handleUpdateWorkspace = async (id, field, value) => {
+    try {
+      await apiFetch(`api/workspaces/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ [field]: value }),
+      });
+      fetchWorkspaces();
+    } catch (err) {
+      setError("Échec de la mise à jour workspace");
+    }
+  };
+
+  const handleDeleteWorkspace = async (id) => {
+    if (!window.confirm("Supprimer ce workspace ?")) return;
+    try {
+      await apiFetch(`api/workspaces/${id}`, { method: "DELETE" });
+      setWorkspaces(workspaces.filter((w) => w.id !== id));
+      setSelectedWorkspaceId(null);
+    } catch (err) {
+      setError("Échec de la suppression workspace");
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+    fetchWorkspaces();
+  }, []);
+
+  const selectedUser = users.find((u) => u.id === selectedUserId);
+  const selectedWorkspace = workspaces.find((w) => w.id === selectedWorkspaceId);
+
   return (
     <>
-      <Header />
-      <div className="admin-wrapper">
-        {loading && <p>Chargement des utilisateurs...</p>}
+      <AdminHeader />
+      <div className="admin-container">
+        <h1>Administration</h1>
         {error && <p className="error">{error}</p>}
 
-        {!loading && !error && (
-          <div className="admin-space">
-            <h2>👥 Liste des utilisateurs :</h2>
-            <ul className="user-liste">
-              {users.map(user => (
-                <li key={user.id}>
-                  {user.username} ({user.email}) - {user.role} - {user.status} - ID: {user.id}
-                </li>
-              ))}
-            </ul>
+        <section>
+          <h2>Utilisateurs</h2>
+          <select onChange={(e) => setSelectedUserId(parseInt(e.target.value))}>
+            <option value="">-- Sélectionner un utilisateur --</option>
+            {users.map((u) => (
+              <option key={u.id} value={u.id}>{`${u.username} (${u.email})`}</option>
+            ))}
+          </select>
 
-            <hr />
-            <h3>🗑️ Supprimer un utilisateur par ID</h3>
-            <div className="suppr-section">
-              <input
-                type="number"
-                placeholder="ID utilisateur"
-                value={deleteId}
-                onChange={(e) => setDeleteId(e.target.value)}
-              />
-              <button onClick={handleDeleteUserById}>Supprimer</button>
+          {selectedUser && (
+            <div className="admin-form">
+              <p><strong>Email:</strong> {selectedUser.email}</p>
+              <p><strong>Nom:</strong> {selectedUser.username}</p>
+              <label>Rôle:
+                <select
+                  value={selectedUser.role}
+                  onChange={(e) => handleUpdateUser(selectedUser.id, "role", e.target.value)}>
+                  <option value="ROLE_USER">Utilisateur</option>
+                  <option value="ROLE_ADMIN">Admin</option>
+                </select>
+              </label>
+              <label>Status:
+                <select
+                  value={selectedUser.status}
+                  onChange={(e) => handleUpdateUser(selectedUser.id, "status", e.target.value)}>
+                  <option value="active">Actif</option>
+                  <option value="inactive">Inactif</option>
+                </select>
+              </label>
+              <button onClick={() => handleDeleteUser(selectedUser.id)}>🗑️ Supprimer</button>
             </div>
-            {deleteMessage && <p>{deleteMessage}</p>}
-          </div>
-        )}
+          )}
+        </section>
+
+        <section>
+          <h2>Workspaces</h2>
+          <select onChange={(e) => setSelectedWorkspaceId(parseInt(e.target.value))}>
+            <option value="">-- Sélectionner un workspace --</option>
+            {workspaces.map((w) => (
+              <option key={w.id} value={w.id}>{w.name}</option>
+            ))}
+          </select>
+
+          {selectedWorkspace && (
+            <div className="admin-form">
+              <label>Nom:
+                <input
+                  value={selectedWorkspace.name}
+                  onChange={(e) => handleUpdateWorkspace(selectedWorkspace.id, "name", e.target.value)}
+                />
+              </label>
+              <label>Status:
+                <select
+                  value={selectedWorkspace.status}
+                  onChange={(e) => handleUpdateWorkspace(selectedWorkspace.id, "status", e.target.value)}>
+                  <option value="active">Actif</option>
+                  <option value="inactive">Inactif</option>
+                </select>
+              </label>
+              <button onClick={() => handleDeleteWorkspace(selectedWorkspace.id)}>🗑️ Supprimer</button>
+            </div>
+          )}
+        </section>
       </div>
     </>
   );
-}
+};
+
+export default AdminPanel;
