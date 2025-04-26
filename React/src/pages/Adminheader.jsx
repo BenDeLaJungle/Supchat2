@@ -33,7 +33,7 @@ const AdminHeader = () => {
     { title: "Tous les workspaces", image: workspace },
     { title: "Calendrier", image: calendrier, link: "/calendrier" },
     { title: "Admin", image: adminspace, link: "/AdminSpace" },
-    { title: "Paramètres", image: parametres },
+    { title: "Paramètres", image: parametres, link: "/parametres" },
   ];
 
   return (

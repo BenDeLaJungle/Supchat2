@@ -3,126 +3,162 @@ import Header from './Header';
 import '../styles/parametres.css';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
+import AdminHeader from './Adminheader';
 
 export default function Parametres() {
   const { user, setUser } = useAuth();
   const [username, setUsername] = useState(user?.username || '');
   const [email, setEmail] = useState(user?.email || '');
   const [status, setStatus] = useState(user?.status || '');
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
+
+  const [successUpdateInfos, setSuccessUpdateInfos] = useState('');
+  const [errorUpdateInfos, setErrorUpdateInfos] = useState('');
+  const [successUpdateStatut, setSuccessUpdateStatut] = useState('');
+  const [errorUpdateStatut, setErrorUpdateStatut] = useState('');
+  const [errorExport, setErrorExport] = useState('');
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    setSuccess('');
-    setError('');
+    setSuccessUpdateInfos('');
+    setErrorUpdateInfos('');
 
     try {
-      await apiFetch('api/user/update', {
+      await apiFetch('api/user', {
         method: 'PUT',
-        body: JSON.stringify({ username, email }),
+        body: JSON.stringify({ userName: username, emailAddress: email }),
       });
 
       setUser({ ...user, username, email });
-      setSuccess("Informations mises à jour !");
+      setSuccessUpdateInfos('Informations mises à jour !');
     } catch (err) {
       console.error(err);
-      setError("Erreur lors de la mise à jour.");
+      setErrorUpdateInfos('Erreur lors de la mise à jour.');
     }
   };
 
   const handleStatusUpdate = async (e) => {
     e.preventDefault();
+    setSuccessUpdateStatut('');
+    setErrorUpdateStatut('');
+
     try {
-      await apiFetch('api/user/update', {
+      await apiFetch('api/user', {
         method: 'PUT',
         body: JSON.stringify({ status }),
       });
+
       setUser({ ...user, status });
-      setSuccess("Statut mis à jour !");
+      setSuccessUpdateStatut('Statut mis à jour !');
     } catch (err) {
       console.error(err);
-      setError("Erreur lors de la mise à jour du statut.");
+      setErrorUpdateStatut('Erreur lors de la mise à jour du statut.');
+    }
+  };
+
+  const handleExportData = async () => {
+    try {
+      const data = await apiFetch('api/user');
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'mes_donnees_supchat.json';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Erreur lors de l’exportation des données :', err);
+      setErrorExport('Erreur lors de l’exportation des données.');
     }
   };
 
   return (
     <>
-      <Header />
-      <h1 className="para-titre">Paramètres de votre compte</h1>
+      <AdminHeader />
       <div className="parametres-wrapper">
-      <div className="parametres-container">
-        <div className="bloc-gauche">
-          <div className="para compte">
-            <h3>Gestion du compte</h3>
-            <form onSubmit={handleUpdate} className="form-compte">
-              <label>
-                Nom d'utilisateur :
+        <div className="parametres-container">
+          {/* Bloc gauche */}
+          <div className="bloc-gauche">
+
+            {/* Gestion statut */}
+            <div className="para statut">
+              <h3>Gestion statut</h3>
+              <form onSubmit={handleStatusUpdate}>
+                <select
+                  id="status"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                >
+                  <option value="Actif">Actif</option>
+                  <option value="En attente">En attente</option>
+                  <option value="Inactif">Inactif</option>
+                </select>
+                <button type="submit">Mettre à jour</button>
+              </form>
+              {successUpdateStatut && <p className="success">{successUpdateStatut}</p>}
+              {errorUpdateStatut && <p className="error">{errorUpdateStatut}</p>}
+            </div>
+
+            {/* Exercice droit RGPD */}
+            <div className="para rgpd">
+              <h3>Exercice du droit RGPD</h3>
+              <p>Vous pouvez exporter vos données personnelles.</p>
+              <button onClick={handleExportData}>Exporter mes données</button>
+              {errorExport && <p className="error">{errorExport}</p>}
+
+              <details className="rgpd-infos">
+                <summary>En savoir plus sur vos droits</summary>
+                <p>
+                  Conformément au Règlement Général sur la Protection des Données (RGPD), vous pouvez demander l'accès à vos données personnelles, leur rectification ou leur suppression.
+                  <br /><br />
+                  Nous collectons uniquement les informations nécessaires au bon fonctionnement de la plateforme (nom, email, statut, préférences). Ces données ne sont partagées avec aucun tiers.
+                  <br /><br />
+                  Pour toute question ou demande, contactez-nous à l’adresse suivante :
+                  <a href="mailto:support@supchat.com"> support@supchat.com</a>.
+                </p>
+              </details>
+            </div>
+
+          </div>
+
+          {/* Bloc droite */}
+          <div className="bloc-droite">
+
+            {/* Thème */}
+            <div className="para theme">
+              <h3>Thème</h3>
+              <button>Changer le thème</button>
+            </div>
+
+            {/* Gestion du compte */}
+            <div className="para compte">
+              <h3>Gestion du compte</h3>
+              <form onSubmit={handleUpdate} className="form-compte">
                 <input
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Nom d'utilisateur"
                   required
                 />
-              </label>
-              <label>
-                Email :
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
                   required
                 />
-              </label>
-              <button type="submit">Modifier</button>
-              {success && <p className="success">{success}</p>}
-              {error && <p className="error">{error}</p>}
-            </form>
-          </div>
+                <button type="submit">Modifier</button>
+              </form>
+              {successUpdateInfos && <p className="success">{successUpdateInfos}</p>}
+              {errorUpdateInfos && <p className="error">{errorUpdateInfos}</p>}
+            </div>
 
-          <div className="para rgpd">
-            <h3>Exercice du droit RGPD</h3>
-            <p>Vous pouvez exporter vos données personnelles.</p>
-            <button>Exporter mes données</button>
-            <details className="rgpd-infos">
-              <summary>En savoir plus sur vos droits</summary>
-              <p>
-                Conformément au Règlement Général sur la Protection des Données (RGPD), vous pouvez demander l'accès à vos données personnelles, leur rectification ou leur suppression.
-                <br /><br />
-                Nous collectons uniquement les informations nécessaires au bon fonctionnement de la plateforme (nom, email, statut, préférences). Ces données ne sont partagées avec aucun tiers.
-                <br /><br />
-                Pour toute question ou demande, contactez-nous à l’adresse suivante :
-                <a href="mailto:support@supchat.com"> support@supchat.com</a>.
-              </p>
-            </details>
           </div>
         </div>
-
-        <div className="bloc-droite">
-          <div className="para theme">
-            <h3>Thème</h3>
-            <p>Mode clair / sombre</p>
-            <button>Changer le thème</button>
-          </div>
-
-          <div className="para statut">
-            <h3>Gestion statut</h3>
-            <form onSubmit={handleStatusUpdate}>
-              <label htmlFor="status">Choisir un statut :</label>
-              <select
-                id="status"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-              >
-                <option value="Actif">Actif</option>
-                <option value="En attente">En attente</option>
-                <option value="Inactif">Inactif</option>
-              </select>
-              <button type="submit">Mettre à jour</button>
-            </form>
-          </div>
-        </div>
-      </div>
       </div>
     </>
   );

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from './Header';
 import '../styles/index.css';
 import { Link } from 'react-router-dom';
+import AdminHeader from './Adminheader';
 
 export default function Messaging() {
   const [messages, setMessages] = useState([
@@ -26,7 +27,7 @@ export default function Messaging() {
 
   return (
     <>
-      <Header />
+      <AdminHeader />
       <div className="messaging-container">
         <h2 className="welcome-name">Conversation</h2>
         <button className="start-conv-btn" onClick={() => setNewConversationVisible(!newConversationVisible)}>

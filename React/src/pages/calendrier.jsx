@@ -3,6 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../styles/calendrier.css';
 import Header from './Header';
+import AdminHeader from './Adminheader';
 
 function Calendrier() {
   const [date, setDate] = useState(new Date());
@@ -10,7 +11,7 @@ function Calendrier() {
 
   return (
     <>
-      <Header />
+      <AdminHeader />
       <div className={`calendrier-wrapper ${showForm ? 'form-open' : ''}`}>
         <div className="calendrier-gauche">
           <h1 className="calendrier-title">Votre calendrier</h1>
