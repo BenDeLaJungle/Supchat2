@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Message from './Message';
 import { apiFetch } from '../services/api';
-import { useAuth } from '../context/AuthContext';
-
+import { getMercureToken } from '../services/auth';
 
 const MessageList = ({ channelId }) => {
   const [messages, setMessages] = useState([]);
@@ -11,8 +10,6 @@ const MessageList = ({ channelId }) => {
   const [isFetching, setIsFetching] = useState(false);
   const listRef = useRef();
   const eventSourceRef = useRef(null);
-  const { token: userAuthToken } = useAuth();
-
 
   const fetchMessages = async () => {
     try {
@@ -23,8 +20,6 @@ const MessageList = ({ channelId }) => {
         const ids = new Set(prev.map(m => m.id));
         const uniques = data.filter(m => !ids.has(m.id));
         const all = [...prev, ...uniques];
-
-        //Tri par timestamp croissant
         return all.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
       });
 
@@ -39,78 +34,68 @@ const MessageList = ({ channelId }) => {
 
   const handleScroll = () => {
     const el = listRef.current;
-    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 5 && !isFetching) {
+    if (el && el.scrollTop + el.clientHeight >= el.scrollHeight - 5 && !isFetching) {
       setOffset((prev) => prev + 20);
     }
   };
 
   useEffect(() => {
     fetchMessages();
-  }, [offset]);
+  }, [offset, channelId]);
 
   useEffect(() => {
     const el = listRef.current;
+    if (!el) return;
+
     el.addEventListener('scroll', handleScroll);
     return () => el.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isFetching]);
 
   useEffect(() => {
-    const connectToMercure = async () => {
+    if (!channelId) return;
+  
+    const token = getMercureToken();
+    if (!token) {
+      console.error('💔 Impossible de se connecter à Mercure : pas de token Mercure');
+      return;
+    }
+  
+    const url = new URL('http://localhost:3000/.well-known/mercure');
+    url.searchParams.append('topic', `/channels/${channelId}`);
+    url.searchParams.append('token', token);
+  
+    console.log('🌸 Connexion Mercure avec token :', url.toString());
+  
+    const eventSource = new EventSource(url.toString());
+  
+    eventSource.onopen = () => {
+      console.log('🌟 Connecté à Mercure avec succès !');
+    };
+  
+    eventSource.onmessage = (event) => {
+      console.log('💌 Nouveau message Mercure :', event.data);
+  
       try {
-        const tokenRes = await fetch('http://localhost:8000/api/mercure-token', {
-          headers: {
-            Authorization: `Bearer ${userAuthToken}`,
-          },
-        });
-  
-        const tokenData = await tokenRes.json();
-        const mercureToken = tokenData.token;
-  
-        const url = new URL('http://localhost:3000/.well-known/mercure');
-        url.searchParams.append('topic', `channel/${channelId}`);
-  
-        //On ajoute le token dans les options de EventSource
-        const eventSource = new EventSource(url.toString(), {
-          withCredentials: true,
-        });
-  
-        eventSourceRef.current = eventSource;
-  
-        eventSource.onmessage = (event) => {
-          try {
-            const newMessage = JSON.parse(event.data);
-            console.log("Message Mercure reçu :", newMessage);
-  
-            setMessages((prev) => {
-              const alreadyExists = prev.some(m => m.id === newMessage.id);
-              if (alreadyExists) return prev;
-  
-              const all = [...prev, newMessage];
-              return all.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-            });
-          } catch (err) {
-            console.error("Erreur parsing Mercure :", err);
-          }
-        };
-  
-        eventSource.onerror = (err) => {
-          console.error("Erreur EventSource :", err);
-          eventSource.close();
-        };
-  
+        const newMessage = JSON.parse(event.data);
+        setMessages(prevMessages => [...prevMessages, newMessage]);
       } catch (error) {
-        console.error("Erreur Mercure setup :", error);
+        console.error('💥 Erreur en parsant le message reçu :', error);
       }
     };
   
-    connectToMercure();
+    eventSource.onerror = (error) => {
+      console.error('❌ Erreur de connexion Mercure :', error);
+      eventSource.close();
+    };
+  
+    eventSourceRef.current = eventSource;
   
     return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-      }
+      console.log('👋 Déconnexion de Mercure');
+      eventSource.close();
     };
   }, [channelId]);
+  
 
   return (
     <div ref={listRef} className="h-[400px] overflow-y-scroll border rounded p-2 bg-white">

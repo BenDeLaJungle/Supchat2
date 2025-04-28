@@ -1,8 +1,6 @@
 mercure:
-    hubs:
-        default:
-            url: '%env(MERCURE_URL)%'
-            public_url: '%env(MERCURE_PUBLIC_URL)%'
-            jwt:
-                secret: '%env(MERCURE_JWT_SECRET)%'
-                publish: '*'
+  hubs:
+    default:
+      url: '%env(MERCURE_URL)%'
+      public_url: '%env(MERCURE_PUBLIC_URL)%'
+      jwt_provider: Symfony\Component\Mercure\Jwt\CallableTokenProvider

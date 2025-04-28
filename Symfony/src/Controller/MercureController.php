@@ -8,16 +8,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class MercureController extends AbstractController
 {
     private string $authSecret;
     private string $mercureSecret;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->authSecret = $_ENV['JWT_SECRET'] ?? 'default_auth_secret';
         $this->mercureSecret = $_ENV['MERCURE_JWT_SECRET'] ?? 'default_mercure_secret';
+        
     }
 
     #[Route('/api/mercure-token', name: 'get_mercure_token', methods: ['GET'])]
@@ -32,10 +33,9 @@ class MercureController extends AbstractController
         try {
             $decoded = JWT::decode($matches[1], new Key($this->authSecret, 'HS256'));
 
-           
             $mercurePayload = [
                 'mercure' => [
-                    'subscribe' => ['channel/*'],
+                    'subscribe' => ['/channels/*'],
                 ],
                 'exp' => time() + 3600,
             ];
@@ -44,8 +44,9 @@ class MercureController extends AbstractController
 
             return new JsonResponse(['token' => $mercureToken]);
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => 'Token invalide'], 401);
+            return new JsonResponse(['error' => 'Token invalide', 'details' => $e->getMessage()], 401);
         }
     }
 }
+
 //c

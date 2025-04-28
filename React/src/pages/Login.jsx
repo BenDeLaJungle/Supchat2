@@ -59,7 +59,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+  
     try {
       const data = await apiFetch("api/auth/login", {
         method: "POST",
@@ -68,11 +68,11 @@ const Login = () => {
           password: mdp,
         }),
       });
-
-      const { token } = data;
-      if (!token) throw new Error("Token manquant dans la réponse");
-
-      login(token);
+  
+      const { token, mercureToken } = data;
+      if (!token || !mercureToken) throw new Error("Token(s) manquant(s) dans la réponse");
+  
+      login(token, mercureToken);
       await fetchAndSetUser(token);
     } catch (err) {
       console.error("Erreur lors de la connexion :", err);

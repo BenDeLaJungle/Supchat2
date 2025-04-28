@@ -1,0 +1,42 @@
+:80 {
+  route {
+    @options {
+      method OPTIONS
+      path /.well-known/mercure*
+    }
+    handle @options {
+      header {
+        Access-Control-Allow-Origin http://localhost:5173
+        Access-Control-Allow-Methods GET, POST, OPTIONS
+        Access-Control-Allow-Headers Authorization, Content-Type, Accept
+        Access-Control-Allow-Credentials true
+      }
+      respond 204
+    }
+
+    @mercure {
+      path /.well-known/mercure*
+    }
+    handle @mercure {
+      header {
+        Access-Control-Allow-Origin http://localhost:5173
+        Access-Control-Allow-Methods GET, POST, OPTIONS
+        Access-Control-Allow-Headers Authorization, Content-Type, Accept
+        Access-Control-Expose-Headers Content-Type
+        Access-Control-Allow-Credentials true
+      }
+      mercure {
+        publish_allowed_origins http://localhost:5173
+        cors_origins http://localhost:5173
+        transport_url_query_enabled true
+        allow_anonymous
+        publisher_jwt "qerggrgqrgqregsgfhjyudqgyjdtht"
+        subscriber_jwt "qerggrgqrgqregsgfhjyudqgyjdtht"
+      }
+    }
+
+    handle {
+      respond "Not Found" 404
+    }
+  }
+}

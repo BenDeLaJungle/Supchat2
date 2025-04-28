@@ -1,13 +1,19 @@
-export function login(token) {
-  localStorage.setItem('jwt', token);
+export function login(token, mercureToken) {
+  localStorage.setItem('authToken', token);
+  localStorage.setItem('mercureToken', mercureToken);
 }
 
 export function logout() {
-  localStorage.removeItem('jwt');
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('mercureToken');
 }
 
 export function getToken() {
-  return localStorage.getItem('jwt');
+  return localStorage.getItem('authToken');
+}
+
+export function getMercureToken() {
+  return localStorage.getItem('mercureToken');
 }
 
 export function isLoggedIn() {

@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  mercure:
+    image: dunglas/mercure
+    container_name: mercure
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    environment:
+      - SERVER_NAME=localhost
+      - MERCURE_PUBLISHER_JWT_KEY=qerggrgqrgqregsgfhjyudqgyjdtht
+      - MERCURE_SUBSCRIBER_JWT_KEY=qerggrgqrgqregsgfhjyudqgyjdtht

@@ -66,28 +66,39 @@ class AuthController extends AbstractController
     public function login(Request $request, UsersRepository $usersRepository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-
+    
         if (!isset($data['emailAddress'], $data['password'])) {
             return new JsonResponse(['error' => 'Données incomplètes'], Response::HTTP_BAD_REQUEST);
         }
-
+    
         $user = $usersRepository->findOneBy(['emailAddress' => $data['emailAddress']]);
-
+    
         if (!$user || !password_verify($data['password'], $user->getPassword())) {
             return new JsonResponse(['error' => 'Identifiants invalides'], Response::HTTP_UNAUTHORIZED);
         }
-
+    
+        // Génération du token d'API
         $payload = [
             'id' => $user->getId(),
             'email' => $user->getEmailAddress(),
             'role' => $user->getRole(),
             'exp' => time() + (60 * 60)
         ];
-
+    
         $token = JWT::encode($payload, $this->jwtSecret, 'HS256');
-
+    
+        //Génération du Mercure Token en même temps
+        $mercurePayload = [
+            'mercure' => [
+                'subscribe' => ['/channels/*'], 
+            ],
+            'exp' => time() + (60 * 60), 
+        ];
+        $mercureToken = JWT::encode($mercurePayload, $_ENV['MERCURE_JWT_SECRET'], 'HS256');
+    
         return new JsonResponse([
             'token' => $token,
+            'mercureToken' => $mercureToken,
             'user' => [
                 'id' => $user->getId(),
                 'userName' => $user->getUserName(),
@@ -96,6 +107,7 @@ class AuthController extends AbstractController
             ]
         ]);
     }
+    
 
     /**
      * Déconnexion utilisateur

@@ -6,22 +6,26 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(getToken());
 
   useEffect(() => {
-    const token = getToken();
     if (token) {
       apiFetch('api/user')
         .then(setUser)
-        .catch(() => logout());
+        .catch(() => {
+          logout();
+          setToken(null);
+        });
     }
-  }, []);
+  }, [token]);
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, token, setToken }}>
       {children}
     </AuthContext.Provider>
   );
 }
+
 
 export function useAuth() {
   return useContext(AuthContext);

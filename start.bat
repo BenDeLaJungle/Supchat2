@@ -5,7 +5,7 @@ echo 🌟 Lancement des serveurs...
 cd /d %~dp0
 
 echo 🐳 Lancement de Mercure via Docker...
-docker compose -f Symfony/docker-compose.yml up -d mercure
+docker compose -f MercureHub/docker-compose.yml up -d mercure
 
 :: Symfony (lance le serveur uniquement)
 start "Symfony" cmd /k "cd /d %~dp0Symfony && start-symfony-commands.bat"
