@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import Header from './Header';
+import React, { useState, useEffect } from 'react';
 import '../styles/parametres.css';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
@@ -10,12 +9,18 @@ export default function Parametres() {
   const [username, setUsername] = useState(user?.username || '');
   const [email, setEmail] = useState(user?.email || '');
   const [status, setStatus] = useState(user?.status || '');
+  const [theme, setTheme] = useState(user?.theme ? 'dark' : 'light');  
 
   const [successUpdateInfos, setSuccessUpdateInfos] = useState('');
   const [errorUpdateInfos, setErrorUpdateInfos] = useState('');
   const [successUpdateStatut, setSuccessUpdateStatut] = useState('');
   const [errorUpdateStatut, setErrorUpdateStatut] = useState('');
   const [errorExport, setErrorExport] = useState('');
+  
+  useEffect(() => {
+    document.body.className = `theme-${theme}`;
+  }, [theme]);
+
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -75,9 +80,28 @@ export default function Parametres() {
     }
   };
 
+  const toggleTheme = async () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    document.body.className = `theme-${newTheme}`; 
+  
+    try {
+      await apiFetch('api/user', {
+        method: 'PUT',
+        body: JSON.stringify({ theme: newTheme === 'dark' }),
+      });
+  
+      setUser({ ...user, theme: newTheme === 'dark' });
+    } catch (err) {
+      console.error("Erreur lors du changement de thème :", err);
+    }
+  };
+  
+
   return (
     <>
       <AdminHeader />
+      
       <div className="parametres-wrapper">
         <div className="parametres-container">
           {/* Bloc gauche */}
@@ -127,11 +151,11 @@ export default function Parametres() {
           {/* Bloc droite */}
           <div className="bloc-droite">
 
-            {/* Thème */}
-            <div className="para theme">
-              <h3>Thème</h3>
-              <button>Changer le thème</button>
-            </div>
+          <div className="para theme">
+            <h3>Thème</h3>
+            <p>Mode {theme === 'dark' ? 'sombre' : 'clair'}</p>
+            <button onClick={toggleTheme}>Changer le thème</button>
+          </div>
 
             {/* Gestion du compte */}
             <div className="para compte">

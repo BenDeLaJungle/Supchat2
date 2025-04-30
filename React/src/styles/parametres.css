@@ -1,3 +1,15 @@
+/* Thème clair par défaut */
+.theme-light {
+  background-color: #f7f7f7;
+  color: #8F908D;
+}
+
+/* Thème sombre */
+.theme-dark {
+  background-color: #659abd;
+  color: #8F908D;
+}
+
 
 /* ---- CONTENEUR GENERAL ---- */
 .parametres-wrapper {
@@ -8,6 +20,7 @@
   flex-direction: column;
   align-items: center;
 }
+
 
 /* ---- ORGANISATION BLOCS GAUCHE / DROITE ---- */
 .parametres-container {

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Header from './Header';
 import '../styles/index.css';
 import { Link } from 'react-router-dom';
 import AdminHeader from './Adminheader';
@@ -67,7 +66,7 @@ export default function Messaging() {
           ))}
         </div>
       </div>
-      <Link to="/test-messages" className="inline-block mt-4 text-blue-500 underline hover:text-blue-700">
+      <Link to="/test-messages" className="acces-test">
           🔗 Accéder à la messagerie test
       </Link>
     </>

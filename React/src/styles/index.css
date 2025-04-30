@@ -84,6 +84,10 @@ button:focus-visible {
   flex-wrap: wrap;
 }
 
+.theme-dark .header-home {
+  background-color: #284E7B;
+}
+
 .header-barre, .header-logo, .header-logout {
   display: flex;
   align-items: center;
@@ -222,19 +226,28 @@ button:focus-visible {
 
 .message-list {
   background-color: #ffffff;
-  padding: 1rem;
-  border-radius: 10px;
+  padding: 10rem;
+  border-radius: 150rem;
   max-height: 400px;
   overflow-y: auto;
   margin-bottom: 1rem;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
+.theme-dark .message-list {
+  background-color: #284E7B;
+}
+
 .message-item {
   margin-bottom: 1rem;
   background: #f0f7ff;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+
+.theme-dark .message-item {
+  background-color: #add4f3;
 }
 
 .message-input-container {
@@ -267,6 +280,10 @@ button:focus-visible {
   z-index: 10;
 }
 
+.theme-dark .new-conversation-bar {
+  background-color: #add4f3;
+}
+
 .recipient-select, .message-input {
   padding: 0.6rem;
   font-size: 1rem;
@@ -287,6 +304,14 @@ button:focus-visible {
 
 .send-btn:hover {
   background-color: #a32b51;
+}
+
+.acces-test {
+  color: black;
+}
+
+.acces-test:hover {
+  color: #CA3C66;
 }
 
 /* responsive */
