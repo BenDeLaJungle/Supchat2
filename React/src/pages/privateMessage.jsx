@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import MessageList from '../components/MessageList';
 import MessageForm from '../components/MessageForm';
 import WebSocketHandler from '../components/WebSocketHandler';
@@ -10,18 +10,17 @@ const PrivateMessage = () => {
   const channelId = 1;
   const [messages, setMessages] = useState([]);
 
-  const handleIncomingMessage = (msg) => {
+  const handleNewMessage = useCallback((msg) => {
     setMessages((prev) => {
       if (prev.some((m) => m.id === msg.id)) return prev;
       return [...prev, msg];
     });
-  };
+  }, []);
 
   const handleMessagesFetched = (newMessages) => {
-    setMessages((prev) => {
-      const ids = new Set(prev.map((m) => m.id));
-      return [...newMessages.filter((m) => !ids.has(m.id)), ...prev];
-    });
+    const ids = new Set(messages.map((m) => m.id));
+    const unique = newMessages.filter((m) => !ids.has(m.id));
+    setMessages((prev) => [...unique, ...prev]);
   };
 
   return (
@@ -30,22 +29,19 @@ const PrivateMessage = () => {
         💬 Test de messagerie sur le canal #{channelId}
       </h3>
 
-      {/* WebSocket temps réel */}
-      <WebSocketHandler channelId={channelId} onMessage={handleIncomingMessage} />
+      <WebSocketHandler channelId={channelId} onMessage={handleNewMessage} />
 
-      {/* Affichage des messages */}
       <MessageList
         channelId={channelId}
         messages={messages}
         onMessagesFetched={handleMessagesFetched}
       />
 
-      {/* Formulaire d'envoi */}
       <MessageForm
         channelId={channelId}
         userId={user?.id}
         username={user?.username}
-        onMessageSent={handleIncomingMessage}
+        onMessageSent={handleNewMessage}
       />
     </div>
   );

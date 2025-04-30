@@ -10,11 +10,10 @@ import PrivateMessage from "../pages/privateMessage";
 
 export default function AppRouter() {
   return (
-    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
-		<Route path="/register" element={<Register />} />
+		    <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Home />} />
         <Route path="/messaging" element={<Messaging />} />
         <Route path="/calendrier" element={<Calendrier />} />
@@ -22,6 +21,5 @@ export default function AppRouter() {
         <Route path="/parametres" element={<Parametres />} />
         <Route path="/test-messages" element={<PrivateMessage />} />
       </Routes>
-    </BrowserRouter>
   );
 }

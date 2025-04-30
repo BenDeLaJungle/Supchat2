@@ -1,75 +1,57 @@
 import express from 'express';
-import { WebSocketServer } from 'ws';
 import http from 'http';
 import cors from 'cors';
+import { Server } from 'socket.io';
 
-// Création du serveur HTTP classique
 const app = express();
 const server = http.createServer(app);
 
+// Middleware CORS pour l'API REST
 app.use(cors({
   origin: 'http://localhost:5173',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type']
 }));
 
-// Création du WebSocket Server
-const wss = new WebSocketServer({ server });
+// Initialisation de socket.io
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST']
+  }
+});
 
-// Map des connexions WebSocket vers leur channel
+// Map des sockets et leur channel
 const clientsChannels = new Map();
 
-// Gestion des connexions WebSocket
-wss.on('connection', (ws) => {
-  console.log('🌟 Nouvelle connexion WebSocket !');
+io.on('connection', (socket) => {
+  console.log('🔌 Nouvelle connexion Socket.IO !', socket.id);
 
-  ws.on('message', (event) => {
-    try {
-      const data = JSON.parse(event.toString());
+  socket.on('subscribe', (channel) => {
+    clientsChannels.set(socket.id, channel);
+    socket.join(channel);
+    console.log(`📡 ${socket.id} s’abonne au canal #${channel}`);
+    console.log('🧾 Map actuelle :', Array.from(clientsChannels.entries()));
+  });
 
-      // Gestion abonnement à un canal
-      if (data.type === 'subscribe' && data.channel) {
-        clientsChannels.set(ws, data.channel);
-        console.log(`📡 Client abonné au canal #${data.channel}`);
-        return;
-      }
-
-      const clientChannel = clientsChannels.get(ws);
-      if (!clientChannel) {
-        console.warn('🚫 Client non abonné à un canal, message ignoré');
-        return;
-      }
-
-      // Broadcast aux clients du même channel SAUF l'émetteur
-      wss.clients.forEach((client) => {
-        const clientChan = clientsChannels.get(client);
-        if (
-          client !== ws &&
-          client.readyState === 1 &&
-          clientChan === clientChannel
-        ) {
-          client.send(JSON.stringify(data));
-        }
-      });
-
-      console.log(`📣 Message broadcasté dans le canal #${clientChannel} :`, data);
-
-    } catch (err) {
-      console.error('💥 Erreur parsing message JSON :', err.message);
+  socket.on('message', (data) => {
+    const channel = clientsChannels.get(socket.id);
+    console.log(`📨 Message reçu de ${socket.id} :`, data);
+    console.log(`🕵️ Canal trouvé : ${channel}`);
+    if (!channel) {
+      console.warn(`🚫 Socket ${socket.id} non abonné, message ignoré`);
+      return;
     }
+    io.to(channel).emit('message', data);
   });
 
-  ws.on('close', () => {
-    clientsChannels.delete(ws);
-    console.log('👋 Un client s\'est déconnecté');
-  });
-
-  ws.on('error', (error) => {
-    console.error('💥 Erreur WebSocket :', error);
+  socket.on('disconnect', () => {
+    console.log(`👋 Déconnexion socket ${socket.id}`);
+    clientsChannels.delete(socket.id);
   });
 });
 
-// Route POST pour broadcast via HTTP API
+// API REST pour broadcast
 app.post('/broadcast', express.json(), (req, res) => {
   const { id, content, timestamp, author, channel } = req.body;
 
@@ -79,25 +61,23 @@ app.post('/broadcast', express.json(), (req, res) => {
 
   const message = { id, content, timestamp, author };
 
-  wss.clients.forEach((client) => {
-    const clientChan = clientsChannels.get(client);
-    if (client.readyState === 1 && clientChan === channel) {
-      client.send(JSON.stringify(message));
-    }
-  });
+  const socketsInRoom = io.sockets.adapter.rooms.get(channel);
+  console.log(`👀 Clients dans le canal #${channel} :`, [...(socketsInRoom || [])]);
 
-  console.log(`📡 Message broadcasté via API sur le canal #${channel} :`, message);
+  io.to(channel).emit('message', message);
+  console.log(`Message broadcasté via API sur le canal #${channel} :`, message);
+
   res.status(200).json({ success: true });
 });
 
-// Petit endpoint de test
+// Endpoint de test
 app.get('/', (req, res) => {
-  res.send('Hello WebSocket World! 🌸');
+  res.send('Hello Socket.IO World!');
 });
 
 // Lancement du serveur
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-  console.log(`🚀 Serveur HTTP+WS lancé sur http://localhost:${PORT}`);
+  console.log(`Serveur HTTP + Socket.IO lancé sur http://localhost:${PORT}`);
 });
 
