@@ -2,24 +2,20 @@ import React, { useEffect, useState, useRef } from 'react';
 import Message from './Message';
 import { apiFetch } from '../services/api';
 
-const MessageList = ({ channelId }) => {
-  const [messages, setMessages] = useState([]);
+const MessageList = ({ channelId, messages, onMessagesFetched }) => {
   const [offset, setOffset] = useState(0);
-  const [error, setError] = useState(null);       
-  const [isFetching, setIsFetching] = useState(false); 
+  const [error, setError] = useState(null);
+  const [isFetching, setIsFetching] = useState(false);
   const listRef = useRef();
 
   const fetchMessages = async () => {
     try {
       setIsFetching(true);
       const data = await apiFetch(`channels/${channelId}/messages?limit=20&offset=${offset}`);
-
-      setMessages((prev) => {
-        const ids = new Set(prev.map(m => m.id));
-        const uniques = data.filter(m => !ids.has(m.id));
-        return [...prev, ...uniques];
-      });
-
+      const uniques = data.filter((msg) => !messages.some((m) => m.id === msg.id));
+      if (uniques.length > 0) {
+        onMessagesFetched([...uniques, ...messages]);
+      }
       setError(null);
     } catch (err) {
       console.error("Erreur récupération messages :", err.message);
@@ -54,10 +50,14 @@ const MessageList = ({ channelId }) => {
         </div>
       )}
       {messages.map((msg) => (
-        <Message key={msg.id} {...msg} />
+        <Message
+          key={msg.id}
+          {...msg}
+        />
       ))}
     </div>
   );
 };
 
 export default MessageList;
+ 
