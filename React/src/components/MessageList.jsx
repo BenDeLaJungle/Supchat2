@@ -7,6 +7,11 @@ const MessageList = ({ channelId, messages, onMessagesFetched }) => {
   const [error, setError] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const listRef = useRef();
+  const uniqueMessages = [
+    ...new Map(messages.map((msg) => [msg.id, msg])).values()
+  ];
+
+
 
   const fetchMessages = async () => {
     try {
@@ -49,7 +54,7 @@ const MessageList = ({ channelId, messages, onMessagesFetched }) => {
           {error}
         </div>
       )}
-      {messages.map((msg) => (
+      {uniqueMessages.map((msg) => (
         <Message
           key={msg.id}
           {...msg}

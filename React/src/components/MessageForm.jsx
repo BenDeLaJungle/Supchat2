@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import { apiFetch } from '../services/api';
+import { useSocket } from '../context/SocketContext';
 
 const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
   const [content, setContent] = useState('');
+  const { socket, isReady } = useSocket();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmed = content.trim();
     if (!trimmed) return;
 
+    if (!isReady || !socket) {
+      alert("⛔ La connexion au chat n'est pas prête !");
+      return;
+    }
+
     try {
-      // Envoi au backend
+      // On enregistre d’abord dans la BDD (REST)
       const backendResponse = await apiFetch('messages', {
         method: 'POST',
         body: JSON.stringify({
@@ -20,34 +27,20 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
         })
       });
 
-      fetch("http://localhost:3001/broadcast", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: backendResponse.id,
-          content: trimmed,
-          timestamp: backendResponse.timestamp,
-          author: backendResponse.user?.username || username || 'Inconnu',
-          channel: channelId
-        })
-      }).then(() => {
-        console.log("📡 Broadcast envoyé au WebSocket server !");
-      });
-
-      setContent('');
-
-      const newMessage = {
+      const message = {
         id: backendResponse.id,
         content: trimmed,
         timestamp: backendResponse.timestamp,
-        author: backendResponse.user?.username || username || 'Inconnu'
+        author: backendResponse.user?.username || username || 'Inconnu',
+        channel: channelId
       };
 
-      console.log("📝 Message envoyé (API):", newMessage);
+      // Ensuite on notifie en WebSocket
+      console.log("🎯 Envoi via socket :", socket.id);
+      socket.emit('message', message);
+      console.log("📡 Message envoyé via socket :", message);
 
-      // Propagation au parent
-      onMessageSent?.(newMessage);
-
+      setContent('');
     } catch (err) {
       console.error("💥 Erreur à l'envoi :", err.message);
     }

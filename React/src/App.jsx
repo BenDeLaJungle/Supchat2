@@ -1,11 +1,13 @@
 import AppRouter from "./router/router";
 import { AuthProvider } from "./context/AuthContext";
-import Register from "./pages/Register";
+import { SocketProvider } from './context/SocketContext';
 
 function App() {
   return (
-    <AuthProvider> {/* Permet à useAuth() de fonctionner partout */}
-      <AppRouter />
+    <AuthProvider>
+      <SocketProvider>
+        <AppRouter />
+      </SocketProvider>
     </AuthProvider>
   );
 }
