@@ -1,27 +1,55 @@
 import React, { useState } from 'react';
 import { apiFetch } from '../services/api';
 
-const MessageForm = ({ channelId, userId, onMessageSent }) => {
+const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
   const [content, setContent] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!content.trim()) return;
+    const trimmed = content.trim();
+    if (!trimmed) return;
 
     try {
-      await apiFetch('messages', {
+      // Envoi au backend
+      const backendResponse = await apiFetch('messages', {
         method: 'POST',
         body: JSON.stringify({
           channel_id: channelId,
           user_id: userId,
-          content: content.trim()
+          content: trimmed
         })
       });
 
+      fetch("http://localhost:3001/broadcast", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: backendResponse.id,
+          content: trimmed,
+          timestamp: backendResponse.timestamp,
+          author: backendResponse.user?.username || username || 'Inconnu',
+          channel: channelId
+        })
+      }).then(() => {
+        console.log("📡 Broadcast envoyé au WebSocket server !");
+      });
+
       setContent('');
-      onMessageSent();
+
+      const newMessage = {
+        id: backendResponse.id,
+        content: trimmed,
+        timestamp: backendResponse.timestamp,
+        author: backendResponse.user?.username || username || 'Inconnu'
+      };
+
+      console.log("📝 Message envoyé (API):", newMessage);
+
+      // Propagation au parent
+      onMessageSent?.(newMessage);
+
     } catch (err) {
-      console.error("Erreur lors de l'envoi du message :", err.message);
+      console.error("💥 Erreur à l'envoi :", err.message);
     }
   };
 
@@ -46,3 +74,4 @@ const MessageForm = ({ channelId, userId, onMessageSent }) => {
 
 export default MessageForm;
 
+ 

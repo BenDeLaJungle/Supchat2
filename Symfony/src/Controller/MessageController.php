@@ -39,21 +39,31 @@ class MessageController extends AbstractController
         $em->persist($message);
         $em->flush();
 
-        return new JsonResponse([
-            'status' => 'Message créé',
+        // 💖 Ici on renvoie l'objet complet directement (comme un vrai message)
+        return $this->json([
             'id' => $message->getId(),
-            'timestamp' => $message->getCreatedAt()->format('c')
+            'content' => $message->getContent(),
+            'timestamp' => $message->getCreatedAt()->format('c'),
+            'user' => [
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+            ],
+            'channel_id' => $channel->getId(),
         ], 201);
     }
 
     #[Route('/messages/{id}', name: 'get_message', methods: ['GET'])]
     public function getMessage(Messages $message): JsonResponse
     {
-        return new JsonResponse([
+        return $this->json([
             'id' => $message->getId(),
-            'author' => $message->getUser()->getUsername(),
             'content' => $message->getContent(),
-            'timestamp' => $message->getCreatedAt()->format('c')
+            'timestamp' => $message->getCreatedAt()->format('c'),
+            'user' => [
+                'id' => $message->getUser()->getId(),
+                'username' => $message->getUser()->getUsername(),
+            ],
+            'channel_id' => $message->getChannel()->getId(),
         ]);
     }
 
@@ -72,11 +82,16 @@ class MessageController extends AbstractController
 
         $data = array_map(fn(Messages $m) => [
             'id' => $m->getId(),
-            'author' => $m->getUser()->getUsername(),
             'content' => $m->getContent(),
             'timestamp' => $m->getCreatedAt()->format('c'),
+            'user' => [
+                'id' => $m->getUser()->getId(),
+                'username' => $m->getUser()->getUsername(),
+            ],
+            'channel_id' => $m->getChannel()->getId(),
         ], $messages);
 
-        return new JsonResponse($data);
+        return $this->json($data);
     }
 }
+

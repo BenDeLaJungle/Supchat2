@@ -11,3 +11,4 @@ const Message = ({ author, content, timestamp }) => {
 };
 
 export default Message;
+ 
