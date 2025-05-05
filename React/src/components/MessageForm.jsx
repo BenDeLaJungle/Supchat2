@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { apiFetch } from '../services/api';
+import '../styles/color.css';
+import '../styles/chat.css';
 import { useSocket } from '../context/SocketContext';
 
 const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
@@ -17,7 +19,6 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
     }
 
     try {
-      // On enregistre d’abord dans la BDD (REST)
       const backendResponse = await apiFetch('messages', {
         method: 'POST',
         body: JSON.stringify({
@@ -35,7 +36,6 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
         channel: channelId
       };
 
-      // Ensuite on notifie en WebSocket
       console.log("🎯 Envoi via socket :", socket.id);
       socket.emit('message', message);
       console.log("📡 Message envoyé via socket :", message);
@@ -47,18 +47,15 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
+    <form onSubmit={handleSubmit} className="message-form">
       <input
         type="text"
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="flex-1 border rounded px-3 py-2 text-black bg-white"
+        className="message-input"
         placeholder="Écris ton message..."
       />
-      <button
-        type="submit"
-        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
-      >
+      <button type="submit" className="message-button">
         Envoyer
       </button>
     </form>
@@ -66,5 +63,6 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
 };
 
 export default MessageForm;
+
 
  

@@ -224,20 +224,6 @@ button:focus-visible {
   margin: auto;
 }
 
-.message-list {
-  background-color: #ffffff;
-  padding: 10rem;
-  border-radius: 150rem;
-  max-height: 400px;
-  overflow-y: auto;
-  margin-bottom: 1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-.theme-dark .message-list {
-  background-color: #284E7B;
-}
-
 .message-item {
   margin-bottom: 1rem;
   background: #f0f7ff;

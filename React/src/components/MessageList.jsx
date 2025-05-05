@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import Message from './Message';
+import '../styles/color.css';
+import '../styles/chat.css';
 import { apiFetch } from '../services/api';
+import Message from './Message';
 
 const MessageList = ({ channelId, messages, onMessagesFetched }) => {
   const [offset, setOffset] = useState(0);
@@ -10,8 +12,6 @@ const MessageList = ({ channelId, messages, onMessagesFetched }) => {
   const uniqueMessages = [
     ...new Map(messages.map((msg) => [msg.id, msg])).values()
   ];
-
-
 
   const fetchMessages = async () => {
     try {
@@ -48,21 +48,19 @@ const MessageList = ({ channelId, messages, onMessagesFetched }) => {
   }, []);
 
   return (
-    <div ref={listRef} className="h-[400px] overflow-y-scroll border rounded p-2 bg-white">
+    <div ref={listRef} className="message-list">
       {error && (
-        <div className="text-red-600 bg-red-100 p-2 rounded mb-2 shadow-sm">
+        <div className="message-error">
           {error}
         </div>
       )}
       {uniqueMessages.map((msg) => (
-        <Message
-          key={msg.id}
-          {...msg}
-        />
+        <Message key={msg.id} {...msg} />
       ))}
     </div>
   );
 };
 
 export default MessageList;
+
  

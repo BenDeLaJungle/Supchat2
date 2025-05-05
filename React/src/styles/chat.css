@@ -1,0 +1,94 @@
+html, body, #root, .app, .main-content {  
+    height: 100%;
+}
+/*message.jsx*/
+.message {
+background-color: var(--primary_color);
+border: 1px solid var(--secondary_impact_color);
+border-radius: 8px;
+padding: 12px;
+margin-bottom: 12px;
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+  
+.message-author {
+color: var(--secondary_color);
+font-weight: bold;
+margin-bottom: 4px;
+}
+
+.message-content {
+color: var(--secondary_color);
+margin-bottom: 6px;
+}
+
+.message-timestamp {
+font-size: 0.8rem;
+color: var(--secondary_impact_color);
+}
+/*MessageList.jsx*/
+.message-list {
+border: 1px solid var(--secondary_impact_color);
+border-radius: 8px;
+padding: 8px;
+background-color: var(--primary_color);
+flex: 1;
+overflow-y: auto;
+min-height: 0;
+}
+  
+.message-error {
+color: var(--tersary_color);
+background-color: var(--tersary_impact_color);
+padding: 8px;
+border-radius: 4px;
+margin-bottom: 8px;
+box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+/*messageForm.jsx*/
+.message-form {
+margin-top: 16px;
+display: flex;
+gap: 8px;
+}
+
+.message-input {
+flex: 1;
+border: 1px solid var(--secondary_impact_color);
+border-radius: 8px;
+padding: 8px 12px;
+background-color: var(--primary_color);
+color: black;
+}
+
+.message-input::placeholder {
+color: var(--secondary_impact_color);
+}
+
+.message-button {
+background-color: var(--secondary_color);
+color: var(--primary_color);
+border: none;
+border-radius: 8px;
+padding: 8px 16px;
+cursor: pointer;
+transition: background-color 0.2s ease;
+}
+
+.message-button:hover {
+background-color: var(--secondary_impact_color);
+color: var(--secondary_color);
+}
+/*Chatwindow*/
+.chat-window {
+background-color: var(--primary_impact_color);
+border: 1px solid var(--secondary_impact_color);
+border-radius: 8px;
+padding: 16px;
+gap: 16px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+display: flex;
+flex-direction: column;
+height: calc(100vh - 124px);
+}
+  
