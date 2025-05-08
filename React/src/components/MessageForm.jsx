@@ -14,7 +14,7 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
     if (!trimmed) return;
 
     if (!isReady || !socket) {
-      alert("⛔ La connexion au chat n'est pas prête !");
+      alert("La connexion au chat n'est pas prête !");
       return;
     }
 
@@ -32,17 +32,17 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
         id: backendResponse.id,
         content: trimmed,
         timestamp: backendResponse.timestamp,
-        author: backendResponse.user?.username || username || 'Inconnu',
+        author: backendResponse.author || { id: userId, username: username || 'Inconnu' },
         channel: channelId
       };
 
-      console.log("🎯 Envoi via socket :", socket.id);
+      console.log("Envoi via socket :", socket.id);
       socket.emit('message', message);
-      console.log("📡 Message envoyé via socket :", message);
+      console.log("Message envoyé via socket :", message);
 
       setContent('');
     } catch (err) {
-      console.error("💥 Erreur à l'envoi :", err.message);
+      console.error("Erreur à l'envoi :", err.message);
     }
   };
 
