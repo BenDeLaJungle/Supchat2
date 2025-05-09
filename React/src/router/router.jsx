@@ -7,6 +7,7 @@ import AdminSpace from '../pages/AdminSpace';
 import Messaging from "../pages/Messaging";
 import Parametres from '../pages/Parametres';
 import PrivateMessage from "../pages/privateMessage";
+import UserPage from "../pages/UserPage";
 
 export default function AppRouter() {
   return (
@@ -18,6 +19,7 @@ export default function AppRouter() {
         <Route path="/messaging" element={<Messaging />} />
         <Route path="/calendrier" element={<Calendrier />} />
         <Route path="/AdminSpace" element={<AdminSpace />} />
+		<Route path="/user" element={<UserPage />} />
         <Route path="/parametres" element={<Parametres />} />
         <Route path="/test-messages" element={<PrivateMessage />} />
       </Routes>

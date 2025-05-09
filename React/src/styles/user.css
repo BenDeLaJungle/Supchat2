@@ -1,0 +1,71 @@
+/* ========== Variables globales ========== */
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #213547;
+  background-color: #ffffff;
+}
+
+/* ========== Global Styles ========== */
+body {
+  margin: 0;
+  background-color: #f4f4f4;
+}
+
+/* ========== Boutons ========== */
+button {
+  border-radius: 8px;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: background-color 0.25s;
+  color: white;
+}
+
+button:hover {
+  background-color: #646cff;
+}
+
+/* ========== UserPage Styles ========== */
+.user {
+  max-width: 800px;
+  margin: auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user-info-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user-info-item {
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: #333;
+}
+
+/* ========== Bouton envoyer un message ========== */
+.start-conv-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+.start-conv-btn:hover {
+  background-color: #45a049;
+}
