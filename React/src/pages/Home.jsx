@@ -69,6 +69,7 @@ export default function Home() {
               {
                 title: "Tous les workspaces",
                 image: workspace,
+                link : "/workspaces"
               },
               {
                 title: "Calendrier",

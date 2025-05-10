@@ -9,7 +9,6 @@ use App\Entity\Users;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\DBAL\Types\Types;
 
-
 #[ORM\Entity(repositoryClass: MessagesRepository::class)]
 class Messages
 {
@@ -19,18 +18,19 @@ class Messages
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Channels::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: "L'Entiter est obligatoire.")]
+    #[ORM\JoinColumn(nullable: true)] // message privé n'a pas besoin de channel
     private ?Channels $channel = null;
 
     #[ORM\ManyToOne(targetEntity: Users::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: "L'Entiter est obligatoire.")]
+    #[Assert\NotNull(message: "L'utilisateur est obligatoire.")]
     private ?Users $user = null;
 
+    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\JoinColumn(nullable: true)] // message public n'a pas besoin de destinataire
+    private ?Users $recipient = null;
 
     #[ORM\Column(type: 'text')]
-
     #[Assert\NotBlank(message: "Le message ne peut pas être vide.")]
     #[Assert\Length(
         min: 1,
@@ -44,6 +44,11 @@ class Messages
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
 
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -54,7 +59,7 @@ class Messages
         return $this->channel;
     }
 
-    public function setChannel(Channels $channel): self
+    public function setChannel(?Channels $channel): self
     {
         $this->channel = $channel;
         return $this;
@@ -71,6 +76,17 @@ class Messages
         return $this;
     }
 
+    public function getRecipient(): ?Users
+    {
+        return $this->recipient;
+    }
+
+    public function setRecipient(?Users $recipient): self
+    {
+        $this->recipient = $recipient;
+        return $this;
+    }
+
     public function getContent(): ?string
     {
         return $this->content;
@@ -81,6 +97,7 @@ class Messages
         $this->content = $content;
         return $this;
     }
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
@@ -91,11 +108,4 @@ class Messages
         $this->createdAt = $createdAt;
         return $this;
     }
-
-    //constructeur pour le timestamp
-    public function __construct()
-    {
-        $this->createdAt = new \DateTimeImmutable();
-    }
 }
-

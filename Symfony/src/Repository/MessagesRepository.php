@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Messages;
+use App\Entity\Users;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,6 +16,26 @@ class MessagesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Messages::class);
     }
+
+    /**
+     * Récupère tous les messages échangés entre deux utilisateurs (user1 <-> user2)
+     *
+     * @param Users $user1
+     * @param Users $user2
+     * @return Messages[]
+     */
+    
+    public function findMessagesBetweenUsers(Users $user1, Users $user2): array
+    {
+        return $this->createQueryBuilder('m')
+            ->where('(m.user = :user1 AND m.recipient = :user2) OR (m.user = :user2 AND m.recipient = :user1)')
+            ->setParameters(['user1' => $user1, 'user2' => $user2])
+            ->orderBy('m.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+}
+
 
 //    /**
 //     * @return Messages[] Returns an array of Messages objects
@@ -40,4 +61,4 @@ class MessagesRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-}
+

@@ -16,8 +16,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class MessageController extends AbstractController
 {
     #[Route('/messages', name: 'create_message', methods: ['POST'])]
-    public function createMessage(Request $request, EntityManagerInterface $em, ChannelsRepository $channelsRepo, UsersRepository $usersRepo): JsonResponse
-    {
+    public function createMessage(
+        Request $request,
+        EntityManagerInterface $em,
+        ChannelsRepository $channelsRepo,
+        UsersRepository $usersRepo
+    ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
         if (!$data || !isset($data['channel_id'], $data['user_id'], $data['content'])) {
@@ -43,7 +47,7 @@ class MessageController extends AbstractController
             'id' => $message->getId(),
             'content' => $message->getContent(),
             'timestamp' => $message->getCreatedAt()->format('c'),
-            'user' => [
+            'author' => [
                 'id' => $user->getId(),
                 'username' => $user->getUsername(),
             ],
@@ -58,7 +62,7 @@ class MessageController extends AbstractController
             'id' => $message->getId(),
             'content' => $message->getContent(),
             'timestamp' => $message->getCreatedAt()->format('c'),
-            'user' => [
+            'author' => [
                 'id' => $message->getUser()->getId(),
                 'username' => $message->getUser()->getUsername(),
             ],
@@ -67,38 +71,41 @@ class MessageController extends AbstractController
     }
 
     #[Route('/channels/{id}/messages', name: 'get_channel_messages', methods: ['GET'])]
-    public function getMessagesForChannel(Channels $channel, MessagesRepository $repo, Request $request): JsonResponse
-    {
+    public function getMessagesForChannel(
+        Channels $channel,
+        MessagesRepository $repo,
+        Request $request
+    ): JsonResponse {
         $limit = $request->query->getInt('limit', 20);
         $before = $request->query->get('before');
-    
+        $beforeId = $request->query->getInt('before_id', 0);
+
         $qb = $repo->createQueryBuilder('m')
             ->where('m.channel = :channel')
             ->setParameter('channel', $channel)
             ->orderBy('m.createdAt', 'DESC')
             ->addOrderBy('m.id', 'DESC')
             ->setMaxResults($limit);
-    
-            if ($before) {
-                try {
-                    $beforeDate = new \DateTime($before);
-                    $beforeId = $request->query->getInt('before_id', 0);
-            
-                    if ($beforeId > 0) {
-                        $qb->andWhere('(m.createdAt < :before) OR (m.createdAt = :before AND m.id < :beforeId)')
-                           ->setParameter('before', $beforeDate)
-                           ->setParameter('beforeId', $beforeId);
-                    } else {
-                        $qb->andWhere('m.createdAt < :before')
-                           ->setParameter('before', $beforeDate);
-                    }
-                } catch (\Exception $e) {
-                    return $this->json(['error' => 'Invalid date format for "before"'], 400);
+
+        if ($before) {
+            try {
+                $beforeDate = new \DateTime($before);
+
+                if ($beforeId > 0) {
+                    $qb->andWhere('(m.createdAt < :before) OR (m.createdAt = :before AND m.id < :beforeId)')
+                        ->setParameter('before', $beforeDate)
+                        ->setParameter('beforeId', $beforeId);
+                } else {
+                    $qb->andWhere('m.createdAt < :before')
+                        ->setParameter('before', $beforeDate);
                 }
+            } catch (\Exception $e) {
+                return $this->json(['error' => 'Format de date invalide pour "before"'], 400);
             }
-    
+        }
+
         $messages = $qb->getQuery()->getResult();
-    
+
         $data = array_map(fn(Messages $m) => [
             'id' => $m->getId(),
             'content' => $m->getContent(),
@@ -109,11 +116,9 @@ class MessageController extends AbstractController
             ],
             'channel_id' => $m->getChannel()->getId(),
         ], $messages);
-    
-        $data = array_reverse($data);
-    
-        return $this->json($data);
+
+        // On remet en ordre croissant pour affichage correct
+        return $this->json(array_reverse($data));
     }
-    
 }
 

@@ -1,74 +1,119 @@
-import React, { useState } from 'react';
-import '../styles/index.css';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../services/api';
 import AdminHeader from './Adminheader';
+import MessageList from '../components/MessageList';
+import MessageForm from '../components/MessageForm';
+import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
+import '../styles/index.css';
 
 export default function Messaging() {
-  const [messages, setMessages] = useState([
-    { id: 1, author: "Benjamin", text: "Hello 👋", time: "10:01" },
-    { id: 2, author: "Felix", text: "Salut ! #welcome", time: "10:02" }
-  ]);
-  const [newMessage, setNewMessage] = useState('');
-  const [newConversationVisible, setNewConversationVisible] = useState(false);
-  const [recipient, setRecipient] = useState('');
+  const { user } = useAuth();
+  const [channels, setChannels] = useState([]);
+  const [selectedChannelId, setSelectedChannelId] = useState(null);
+  const [error, setError] = useState(null);
+  const [newChannelName, setNewChannelName] = useState('');
+  const [newChannelVisible, setNewChannelVisible] = useState(false);
 
-  const handleSend = () => {
-    if (!newMessage.trim() || !recipient) return;
-    const message = {
-      id: messages.length + 1,
-      author: "Moi",
-      text: newMessage,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-    setMessages([...messages, message]);
-    setNewMessage('');
+  const fetchChannels = async () => {
+    try {
+      const workspaceId = 1; // à adapter si tu gères plusieurs workspaces
+      const data = await apiFetch(`workspaces/${workspaceId}/channels`);
+      const privateChannels = data.filter(ch => ch.status === false);
+      setChannels(privateChannels);
+      setError(null);
+    } catch (err) {
+      console.error("Erreur de chargement des canaux :", err.message);
+      setError("Impossible de charger les canaux.");
+    }
   };
+
+  const handleCreateChannel = async () => {
+    if (!newChannelName.trim()) return;
+    try {
+      await apiFetch('channels', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: newChannelName,
+          workspace_id: 1, // à adapter dynamiquement
+          status: false
+        })
+      });
+      setNewChannelName('');
+      setNewChannelVisible(false);
+      fetchChannels();
+    } catch (err) {
+      console.error("Erreur lors de la création du canal :", err.message);
+      setError("Erreur lors de la création du canal.");
+    }
+  };
+
+  useEffect(() => {
+    fetchChannels();
+  }, []);
 
   return (
     <>
       <AdminHeader />
       <div className="messaging-container">
-        <h2 className="welcome-name">Conversation</h2>
-        <button className="start-conv-btn" onClick={() => setNewConversationVisible(!newConversationVisible)}>
-          ➕ Nouvelle conversation
-        </button>
+        <div className="messaging-sidebar">
+          <h2 className="welcome-title">Conversations privées</h2>
+          <button className="start-conv-btn" onClick={() => setNewChannelVisible(!newChannelVisible)}>
+            ➕ Nouvelle conversation privée
+          </button>
 
-        {newConversationVisible && (
-          <div className="new-conversation-bar">
-            <select
-              className="recipient-select"
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-            >
-              <option value="">-- Choisir un destinataire --</option>
-              <option value="Nathan">Nathan</option>
-              <option value="Felix">Felix</option>
-              <option value="Geoffroy">Geoffroy</option>
-            </select>
-            <input
-              type="text"
-              className="message-input"
-              placeholder="Votre message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            />
-            <button className="send-btn" onClick={handleSend}>Envoyer</button>
-          </div>
-        )}
-
-        <div className="message-list">
-          {messages.map((msg) => (
-            <div key={msg.id} className="message-item">
-              <strong>{msg.author}</strong> <span>({msg.time})</span>
-              <p>{msg.text}</p>
+          {newChannelVisible && (
+            <div className="new-conversation-bar">
+              <input
+                type="text"
+                className="recipient-input"
+                placeholder="Nom du canal"
+                value={newChannelName}
+                onChange={(e) => setNewChannelName(e.target.value)}
+              />
+              <button className="send-btn" onClick={handleCreateChannel}>Créer</button>
             </div>
-          ))}
+          )}
+
+          {error && <div className="message-error">{error}</div>}
+
+          <div className="conversation-list">
+            {channels.map(channel => (
+              <div key={channel.id}>
+                <button
+                  type="button"
+                  className="conversation-button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setSelectedChannelId(channel.id);
+                  }}
+                >
+                  {channel.name}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <Link to="/test-messages" className="acces-test">
+            🔗 Accéder à la messagerie test
+          </Link>
+        </div>
+
+        <div className="messaging-main">
+          {selectedChannelId ? (
+            <>
+              <MessageList channelId={selectedChannelId} />
+              <MessageForm
+                channelId={selectedChannelId}
+                userId={user?.id}
+                onMessageSent={() => fetchChannels()}
+              />
+            </>
+          ) : (
+            <p className="no-conv-msg">Sélectionnez un canal pour voir les messages.</p>
+          )}
         </div>
       </div>
-      <Link to="/test-messages" className="acces-test">
-          🔗 Accéder à la messagerie test
-      </Link>
     </>
   );
 }
