@@ -25,44 +25,50 @@ const io = new Server(server, {
 const clientsChannels = new Map();
 
 io.on('connection', (socket) => {
-  console.log('🔌 Nouvelle connexion Socket.IO !', socket.id);
+  console.log('Nouvelle connexion Socket.IO !', socket.id);
 
   socket.on('subscribe', (channel) => {
     clientsChannels.set(socket.id, channel);
     socket.join(channel);
-    console.log(`📡 ${socket.id} s’abonne au canal #${channel}`);
-    console.log('🧾 Map actuelle :', Array.from(clientsChannels.entries()));
+    console.log(`${socket.id} s’abonne au canal #${channel}`);
+    console.log('Map actuelle :', Array.from(clientsChannels.entries()));
   });
 
   socket.on('message', (data) => {
     const channel = clientsChannels.get(socket.id);
-    console.log(`📨 Message reçu de ${socket.id} :`, data);
-    console.log(`🕵️ Canal trouvé : ${channel}`);
+    console.log(`Message reçu de ${socket.id} :`, data);
+    console.log(`Canal trouvé : ${channel}`);
     if (!channel) {
-      console.warn(`🚫 Socket ${socket.id} non abonné, message ignoré`);
+      console.warn(`Socket ${socket.id} non abonné, message ignoré`);
       return;
     }
     io.to(channel).emit('message', data);
   });
 
   socket.on('disconnect', () => {
-    console.log(`👋 Déconnexion socket ${socket.id}`);
+    console.log(`Déconnexion socket ${socket.id}`);
     clientsChannels.delete(socket.id);
   });
 });
 
 // API REST pour broadcast
 app.post('/broadcast', express.json(), (req, res) => {
-  const { id, content, timestamp, author, channel } = req.body;
+  const { id, content, timestamp, author, channel, deleted } = req.body;
 
-  if (!id || !content || !timestamp || !author || !channel) {
+  if (!id || !channel || (!content && !deleted)) {
     return res.status(400).json({ error: 'Paramètres invalides.' });
   }
 
-  const message = { id, content, timestamp, author };
+  let message;
+
+  if (deleted) {
+    message = { id, deleted: true, channel };
+  } else {
+    message = { id, content, timestamp, author };
+  }
 
   const socketsInRoom = io.sockets.adapter.rooms.get(channel);
-  console.log(`👀 Clients dans le canal #${channel} :`, [...(socketsInRoom || [])]);
+  console.log(`Clients dans le canal #${channel} :`, [...(socketsInRoom || [])]);
 
   io.to(channel).emit('message', message);
   console.log(`Message broadcasté via API sur le canal #${channel} :`, message);

@@ -4,7 +4,7 @@ import '../styles/chat.css';
 import { apiFetch } from '../services/api';
 import Message from './Message';
 
-const MessageList = ({ channelId, messages, onMessagesFetched }) => {
+const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId }) => {
   const [error, setError] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -14,6 +14,7 @@ const MessageList = ({ channelId, messages, onMessagesFetched }) => {
     ...new Map(messages.map((msg) => [msg.id, msg])).values()
   ];
 
+  // Récupère les messages par pagination
   const fetchMessages = async (before = null) => {
     try {
       setIsFetching(true);
@@ -40,6 +41,37 @@ const MessageList = ({ channelId, messages, onMessagesFetched }) => {
     }
   };
 
+  // Supprime localement un message
+  const handleDeleteMessage = (id) => {
+    const updated = messages.filter((m) => m.id !== id);
+    onMessagesFetched(updated);
+  };
+
+  // Reçoit un message via WebSocket et met à jour la liste
+  const handleLiveMessage = (newMsg) => {
+    const exists = messages.some((m) => m.id === newMsg.id);
+
+    if (newMsg.deleted) {
+      const updated = messages.map((m) =>
+        m.id === newMsg.id
+          ? { ...m, content: '[Ce message a été supprimé]', deleted: true }
+          : m
+      );
+      onMessagesFetched(updated);
+      return;
+    }
+
+    if (!exists) {
+      onMessagesFetched([...messages, newMsg]);
+    } else {
+      const updated = messages.map((m) =>
+        m.id === newMsg.id ? newMsg : m
+      );
+      onMessagesFetched(updated);
+    }
+  };
+
+  // Scroll vers le haut pour charger les messages précédents
   const handleScroll = () => {
     const el = listRef.current;
     if (el.scrollTop <= 5 && !isFetching && hasMore) {
@@ -61,15 +93,12 @@ const MessageList = ({ channelId, messages, onMessagesFetched }) => {
     return () => el.removeEventListener('scroll', handleScroll);
   }, [uniqueMessages, isFetching, hasMore]);
 
+  // Garde le scroll à la même position si messages ajoutés en haut
   useEffect(() => {
     const el = listRef.current;
     if (!el) return;
 
     if (isFetching && el.scrollTop === 0) {
-      /*console.log(
-        'Scroll top détecté !',
-        uniqueMessages.map(u => `${u.timestamp} (id: ${u.id})`)
-      );*/
       const prevHeight = el.scrollHeight;
       const observer = new MutationObserver(() => {
         const newHeight = el.scrollHeight;
@@ -82,21 +111,22 @@ const MessageList = ({ channelId, messages, onMessagesFetched }) => {
 
   return (
     <div ref={listRef} className="message-list">
-        {error && (
-            <div className="message-error">
-                {error}
-            </div>
-        )}
+        {error && <div className="message-error">{error}</div>}
         {!hasMore && <div className="no-more">Tu es tout en haut</div>}
         {isFetching && <div className="loading">Chargement...</div>}
+
         {uniqueMessages.map((msg) => (
-            <Message key={msg.id} {...msg} />
+          <Message 
+            key={msg.id} 
+            {...msg} 
+            canEditGlobal={canEdit} 
+            currentUserId={userId} 
+            onDelete={handleDeleteMessage}
+            channelId={channelId}
+          />
         ))}
     </div>
   );
 };
 
 export default MessageList;
-
-
- 

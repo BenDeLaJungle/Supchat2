@@ -120,5 +120,33 @@ class MessageController extends AbstractController
         // On remet en ordre croissant pour affichage correct
         return $this->json(array_reverse($data));
     }
+    
+    #[Route('/messages/{id}', name: 'update_message', methods: ['PUT'])]
+    public function updateMessage(Messages $message, Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['content']) || empty(trim($data['content']))) {
+            return new JsonResponse(['error' => 'Contenu manquant'], 400);
+        }
+
+        $message->setContent($data['content']);
+        $em->flush();
+
+        return $this->json([
+            'status' => 'Message modifié',
+            'id' => $message->getId(),
+            'new_content' => $message->getContent(),
+        ]);
+    }
+
+    #[Route('/messages/{id}', name: 'delete_message', methods: ['DELETE'])]
+    public function deleteMessage(Messages $message, EntityManagerInterface $em): JsonResponse
+    {
+        $em->remove($message);
+        $em->flush();
+
+        return new JsonResponse(['status' => 'Message supprimé']);
+    }
 }
 

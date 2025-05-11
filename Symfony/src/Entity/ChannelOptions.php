@@ -40,7 +40,7 @@ class ChannelOptions
     #[Assert\NotBlank(message: "Le nom ne peut pas être vide.")]
     #[Assert\Type(type: "string", message: "Le nom doit être une chaîne de caractères.")]
     #[Assert\Choice(choices: ["all","mention","none"], message: " doit être all mention none.")]
-    private ?string $notification = null; // Values: all, mention, none
+    private ?string $notification = null;
 
     public function getId(): ?int
     {
