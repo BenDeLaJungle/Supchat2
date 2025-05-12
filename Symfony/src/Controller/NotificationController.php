@@ -2,9 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Notifications;
+use App\Entity\Messages;
 use App\Repository\NotificationsRepository;
+use App\Repository\UsersRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -33,5 +40,41 @@ class NotificationController extends AbstractController
         }
 
         return $this->json($data);
+    }
+
+    #[Route('/create', name: 'create', methods: ['POST'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function createNotification(
+        Request $request,
+        EntityManagerInterface $em,
+        UsersRepository $usersRepository,
+        HttpClientInterface $httpClient
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        $user = $usersRepository->find($data['userId']);
+        $message = $em->getRepository(Messages::class)->find($data['messageId']);
+
+        if (!$user || !$message) {
+            return $this->json(['error' => 'Utilisateur ou message introuvable'], 400);
+        }
+
+        $notif = new Notifications();
+        $notif->setUser($user);
+        $notif->setMessage($message);
+        $notif->setAtRead(false);
+
+        $em->persist($notif);
+        $em->flush();
+
+        // Envoi vers serveur Node.js
+        $httpClient->request('POST', 'http://localhost:3001/notify', [
+            'json' => [
+                'userId' => $user->getId(),
+                'message' => $message->getContent(),
+            ]
+        ]);
+
+        return $this->json(['success' => true, 'id' => $notif->getId()]);
     }
 }
