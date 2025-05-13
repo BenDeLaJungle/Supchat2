@@ -3,6 +3,8 @@ import { AuthProvider } from "./context/AuthContext";
 import { SocketProvider } from './context/SocketContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NotificationListener from './components/NotificationListener';
+
 
 function App() {
   return (

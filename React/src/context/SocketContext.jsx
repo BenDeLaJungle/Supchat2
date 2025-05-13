@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 
-const SocketContext = createContext(null);
+export const SocketContext = createContext(null);
 
 export const SocketProvider = ({ children }) => {
   const socketRef = useRef(null);
@@ -33,5 +33,6 @@ export const SocketProvider = ({ children }) => {
   );
 };
 
+// ✅ Ajoute ceci :
 export const useSocket = () => useContext(SocketContext);
 
