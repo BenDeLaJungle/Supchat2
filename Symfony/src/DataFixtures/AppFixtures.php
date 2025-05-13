@@ -28,17 +28,11 @@ class AppFixtures extends Fixture
         $users = [];
 
         // Admin
-        $admin = new Users();
-        $admin->setFirstName('Admin');
-        $admin->setLastName('Test');
-        $admin->setUserName('ADMIN');
-        $admin->setEmailAddress('admin@example.com');
-        $admin->setPassword($this->passwordHasher->hashPassword($admin, 'ADMIN'));
-        $admin->setRole('ROLE_ADMIN');
-        $admin->setTheme(false);
-        $admin->setStatus('Actif');
-        $manager->persist($admin);
-        $users[] = $admin;
+        $admin = $manager->getRepository(Users::class)->findOneBy(['emailAddress' => 'admin@example.com']);
+
+        if (!$admin) {
+            throw new \LogicException('L\'utilisateur admin (admin@example.com) doit être seedé avant de lancer les fixtures.');
+        }
 
         // Utilisateurs fixes
         for ($i = 1; $i <= 5; $i++) {

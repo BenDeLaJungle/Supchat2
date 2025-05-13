@@ -9,11 +9,15 @@ IF %ERRORLEVEL% NEQ 0 goto error
 php bin\console doctrine:migrations:migrate --no-interaction
 IF %ERRORLEVEL% NEQ 0 goto error
 
-:: 🌱 Fixtures
-php bin\console doctrine:fixtures:load --no-interaction
+:: 🌸 Seed permanent (admin, workspace en ID 1)
+php bin\console app:seed
 IF %ERRORLEVEL% NEQ 0 goto error
 
-echo ✅ Fixtures reloadées avec succès ! Fermeture de la fenêtre...
+:: 🌱 Fixtures SANS PURGE
+php bin\console app:fixtures:nopurge
+IF %ERRORLEVEL% NEQ 0 goto error
+
+echo ✅ Seed et fixtures (sans purge) chargés avec succès ! Fermeture de la fenêtre...
 timeout /t 2 >nul
 exit
 
