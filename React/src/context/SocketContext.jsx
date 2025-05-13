@@ -33,6 +33,6 @@ export const SocketProvider = ({ children }) => {
   );
 };
 
-// ✅ Ajoute ceci :
+
 export const useSocket = () => useContext(SocketContext);
 
