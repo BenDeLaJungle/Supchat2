@@ -12,7 +12,7 @@ use App\Entity\WorkspaceMembers;
 use App\Entity\Channels;
 
 
-#[Route('/workspaces')]
+#[Route('/api/workspaces')]
 final class WorkspacesController extends AbstractController
 {
     #[Route('', name: 'workspaces_index', methods: ['GET'])]
@@ -60,9 +60,9 @@ final class WorkspacesController extends AbstractController
         }
         
         $user = $this->getUser();
-        if (!$user instanceof \App\Entity\Users) {
-            throw new \LogicException('L\'utilisateur authentifié n\'est pas une instance de App\Entity\Users.');
-        }
+        //if (!$user instanceof \App\Entity\Users) {
+        //    throw new \LogicException('L\'utilisateur authentifié n\'est pas une instance de App\Entity\Users.');
+        //}
         
         $workspace = new Workspaces();
         $workspace->setName($data['name']);

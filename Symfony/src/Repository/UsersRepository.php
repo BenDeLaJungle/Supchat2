@@ -15,7 +15,16 @@ class UsersRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Users::class);
     }
-
+    public function findBySearchTerm(string $term)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.userName LIKE :search')
+            ->orWhere('u.firstName LIKE :search')
+            ->orWhere('u.lastName LIKE :search')
+            ->setParameter('search', '%' . $term . '%')
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Users[] Returns an array of Users objects
 //     */

@@ -8,31 +8,45 @@ const SearchBar = ({ onSearchChange }) => {
   const [results, setResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const searchRef = useRef(null);
+  const navigate = useNavigate();
+  const debounceTimeout = useRef(null);
 
-  useEffect(() => {
-    if (searchTerm.trim() !== "") {
-      apiFetch('api/admin/users')
-        .then(data => {
-          const filtered = data.filter(user =>
-            user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchTerm.toLowerCase())
-          );
-          setResults(filtered);
-          setShowDropdown(true);
-        })
-        .catch(err => {
-          console.error("Erreur lors de la récupération de l'utilisateur", err);
-          setError("Impossible de récupérer les utilisateurs.");
-          setResults([]);
-        });
-    } else {
-      setResults([]);
-      setShowDropdown(false);
+  
+  const handleSearch = (term) => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
     }
+    debounceTimeout.current = setTimeout(() => {
+      if (term.trim() !== "") {
+        setLoading(true);
+        apiFetch(`api/users/search?query=${term}`)
+          .then((data) => {
+            setResults(data);
+            setShowDropdown(true);
+            setLoading(false);
+            setError(null);
+          })
+          .catch((err) => {
+            console.error("Erreur lors de la récupération de l'utilisateur", err);
+            setError("Impossible de récupérer les utilisateurs.");
+            setResults([]);
+            setLoading(false);
+          });
+      } else {
+        setResults([]);
+        setShowDropdown(false);
+      }
+    }, 300); 
+  };
+
+  // Mise à jour à chaque changement de texte
+  useEffect(() => {
+    handleSearch(searchTerm);
   }, [searchTerm]);
 
+  // Gestion du clic à l'extérieur du dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -45,37 +59,42 @@ const SearchBar = ({ onSearchChange }) => {
     };
   }, []);
 
-	const handleSelectUser = (user) => {
-	  setShowDropdown(false);
-
-	  // On passe l'objet utilisateur directement dans le state de navigation
-	  navigate(`/user`, { state: { user } });
-	};
+  // Sélection d'un utilisateur
+  const handleSelectUser = (user) => {
+    setShowDropdown(false);
+    navigate(`/user`, { state: { user } });
+  };
 
   return (
     <div className="search-bar-wrapper" ref={searchRef}>
       <input
         type="text"
         className="search-input"
-        placeholder="🔍 Rechercher un utilisateur..."
+        placeholder=" Rechercher un utilisateur..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onFocus={() => setShowDropdown(results.length > 0)}
       />
 
-      {error && <p className='text-red-500'>{error}</p>}
+      {loading && <div className="loader">Chargement...</div>}
 
-      {showDropdown && results.length > 0 && (
+      {error && <p className="text-red-500">{error}</p>}
+
+      {showDropdown && (
         <div className="search-dropdown">
-          {results.map((user) => (
-            <div
-              key={user.id}
-              className="search-dropdown-item"
-              onClick={() => handleSelectUser(user)}
-            >
-              {user.username} ({user.email})
-            </div>
-          ))}
+          {results.length > 0 ? (
+            results.map((user) => (
+              <div
+                key={user.id}
+                className="search-dropdown-item"
+                onClick={() => handleSelectUser(user)}
+              >
+                {user.username} {user.firstName} {user.lastName}
+              </div>
+            ))
+          ) : (
+            !loading && <div className="no-results">Aucun utilisateur trouvé.</div>
+          )}
         </div>
       )}
     </div>
