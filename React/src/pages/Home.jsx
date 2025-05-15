@@ -48,7 +48,7 @@ export default function Home() {
               {
                 title: "Messagerie",
                 image: messenger,
-                link: "/workspaces/2"
+                link: "/workspaces/1"
               },
               {
                 title: "Fichiers partagés",
