@@ -34,7 +34,6 @@ export default function WorkspaceList() {
         })
       });
 
-      // On refait un fetch complet pour synchroniser les données
       fetchWorkspaces();
 
       setNewWorkspaceName('');
@@ -61,23 +60,23 @@ export default function WorkspaceList() {
           ))}
         </div>
 
-        <div className="workspace-create-form">
+        <div className="work-channel-create-form">
           <input
             type="text"
             value={newWorkspaceName}
             onChange={(e) => setNewWorkspaceName(e.target.value)}
             placeholder="Nom du nouveau workspace"
-            className="workspace-input"
+            className="work-channel-input"
           />
           <select
             value={newWorkspaceStatus}
             onChange={(e) => setNewWorkspaceStatus(e.target.value)}
-            className="workspace-select"
+            className="work-channel-select"
           >
             <option value="1">Public</option>
             <option value="2">Privé</option>
           </select>
-          <button onClick={handleCreateWorkspace} className="workspace-create-button">
+          <button onClick={handleCreateWorkspace} className="work-channel-create-button">
             Créer un workspace
           </button>
         </div>

@@ -59,8 +59,8 @@ button:focus-visible {
    Dropdown de la SearchBar
 =========================== */
 .search-dropdown {
-  max-height: 300px; /* Limite la hauteur à 300px */
-  overflow-y: auto;  /* Scroll interne */
+  max-height: 300px; 
+  overflow-y: auto;  
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: white;
@@ -438,16 +438,18 @@ button:focus-visible {
 }
 
 .workspace-title {
-  font-size: 2rem;
+  font-size: 1.9rem;
+  margin-top: 0.5px;
   margin-bottom: 1rem;
   color: #284E7B;
 }
 
 .workspace-card-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .workspace-link {
@@ -455,11 +457,32 @@ button:focus-visible {
 }
 
 .workspace-card {
+  width: 180px;
+  height: 90px;
   background-color: #add4f3;
-  border-radius: 1rem;
-  padding: 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.workspace-card h2 {
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  margin: 0;
+}
+
+.workspace-card p {
+  margin: 5px 0 0;
+  font-size: 14px;
 }
 
 .workspace-card:hover {
@@ -467,15 +490,19 @@ button:focus-visible {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-.workspace-create-form {
+.work-channel-create-form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4px;
 }
 
-.workspace-input,
-.workspace-select {
+.work-channel-input {
+  margin-bottom: 2px;
+}
+
+.work-channel-input,
+.work-channel-select {
   padding: 0.5rem 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -484,10 +511,10 @@ button:focus-visible {
   max-width: 400px;
 }
 
-.workspace-create-button {
+.work-channel-create-button {
   background-color: #add4f3;
   color: #1f1f1f;
-  padding: 0.6rem 1.2rem;
+  padding: 0.6rem 5rem;
   border: none;
   border-radius: 8px;
   font-weight: bold;
@@ -495,7 +522,7 @@ button:focus-visible {
   transition: background 0.3s;
 }
 
-.workspace-create-button:hover {
+.work-channel-create-button:hover {
   background-color: #284E7B;
   color: #ffffff;
 }

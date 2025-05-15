@@ -70,23 +70,23 @@ export default function WorkspaceDetail() {
           ))}
         </ul>
 
-        <div className="channel-create-form">
+        <div className="work-channel-create-form">
           <input
             type="text"
             value={newChannelName}
             onChange={(e) => setNewChannelName(e.target.value)}
             placeholder="Nom du nouveau canal"
-            className="channel-input"
+            className="work-channel-input"
           />
           <select
             value={newChannelStatus}
             onChange={(e) => setNewChannelStatus(e.target.value)}
-            className="channel-select"
+            className="work-channel-select"
           >
             <option value="1">Public</option>
             <option value="2">Privé</option>
           </select>
-          <button onClick={handleCreateChannel} className="channel-create-button">
+          <button onClick={handleCreateChannel} className="work-channel-create-button">
             Créer un canal
           </button>
         </div>
