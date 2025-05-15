@@ -41,7 +41,7 @@ class ChannelController extends AbstractController
         return new JsonResponse($data);
     }
 
-    #[Route('/channels', name: 'create_channel', methods: ['POST'])]
+    #[Route('/api/channels', name: 'channels_create', methods: ['POST'])]
     public function createChannel(Request $request, EntityManagerInterface $em, WorkspacesRepository $workspaceRepo): JsonResponse
     {
         $data = json_decode($request->getContent(), true);

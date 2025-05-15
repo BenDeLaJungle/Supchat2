@@ -8,6 +8,9 @@ export default function WorkspaceDetail() {
   const [channels, setChannels] = useState([]);
   const [workspaceName, setWorkspaceName] = useState('');
 
+  const [newChannelName, setNewChannelName] = useState('');
+  const [newChannelStatus, setNewChannelStatus] = useState('1');
+
   useEffect(() => {
     const fetchChannels = async () => {
       const data = await apiFetch(`workspaces/${workspaceId}/channels`);
@@ -24,6 +27,33 @@ export default function WorkspaceDetail() {
     fetchWorkspaceDetails();
   }, [workspaceId]);
 
+  const handleCreateChannel = async () => {
+    if (!newChannelName.trim()) return;
+
+    try {
+      const isPublic = newChannelStatus === "1";
+
+      await apiFetch('api/channels', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newChannelName,
+          status: isPublic,
+          workspace_id: workspaceId
+        })
+      });
+
+      // Refresh the channels list
+      const data = await apiFetch(`workspaces/${workspaceId}/channels`);
+      setChannels(data);
+
+      setNewChannelName('');
+      setNewChannelStatus('1');
+    } catch (error) {
+      console.error("Erreur lors de la création du canal :", error.message);
+    }
+  };
+
   return (
     <>
       <AdminHeader />
@@ -39,9 +69,28 @@ export default function WorkspaceDetail() {
             </li>
           ))}
         </ul>
+
+        <div className="channel-create-form">
+          <input
+            type="text"
+            value={newChannelName}
+            onChange={(e) => setNewChannelName(e.target.value)}
+            placeholder="Nom du nouveau canal"
+            className="channel-input"
+          />
+          <select
+            value={newChannelStatus}
+            onChange={(e) => setNewChannelStatus(e.target.value)}
+            className="channel-select"
+          >
+            <option value="1">Public</option>
+            <option value="2">Privé</option>
+          </select>
+          <button onClick={handleCreateChannel} className="channel-create-button">
+            Créer un canal
+          </button>
+        </div>
       </div>
     </>
   );
 }
-
-
