@@ -21,7 +21,7 @@ export default function WorkspaceDetail() {
 
   useEffect(() => {
     const fetchWorkspaceDetails = async () => {
-      const data = await apiFetch(`workspaces/${workspaceId}`);
+      const data = await apiFetch(`api/workspaces/${workspaceId}`);
       setWorkspaceName(data.name);
     };
     fetchWorkspaceDetails();
@@ -43,7 +43,7 @@ export default function WorkspaceDetail() {
         })
       });
 
-      // Refresh the channels list
+      // Affiche la liste des channels
       const data = await apiFetch(`workspaces/${workspaceId}/channels`);
       setChannels(data);
 

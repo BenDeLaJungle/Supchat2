@@ -535,9 +535,11 @@ button:focus-visible {
 }
 
 .workspace-detail-title {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
   color: #284E7B;
+  font-size: 2rem;
 }
 
 .channel-list {
