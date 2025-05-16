@@ -77,4 +77,14 @@ class NotificationController extends AbstractController
 
         return $this->json(['success' => true, 'id' => $notif->getId()]);
     }
+
+
+    public function notifyNewMessage($sender_id, $receiver_id) {
+        $notification = new Notification();
+        $notification->user_id = $receiver_id;
+        $notification->message = "Nouveau message reçu de l'utilisateur $sender_id";
+        $notification->is_read = false;
+        $notification->save();
+    }
+
 }
