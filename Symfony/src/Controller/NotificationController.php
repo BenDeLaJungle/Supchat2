@@ -34,7 +34,7 @@ class NotificationController extends AbstractController
         foreach ($notifications as $notif) {
             $data[] = [
                 'id' => $notif->getId(),
-                'message' => $notif->getMessage()->getContent(), // adapte si getContent() n'existe pas
+                'message' => $notif->getMessage()->getContent(), 
                 'read' => $notif->getAtRead(),
             ];
         }
@@ -67,7 +67,7 @@ class NotificationController extends AbstractController
         $em->persist($notif);
         $em->flush();
 
-        // Envoi vers serveur Node.js
+      
         $httpClient->request('POST', 'http://localhost:3001/notify', [
             'json' => [
                 'userId' => $user->getId(),

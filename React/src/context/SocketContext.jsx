@@ -1,38 +1,37 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 export const SocketContext = createContext(null);
 
 export const SocketProvider = ({ children }) => {
-  const socketRef = useRef(null);
+  const [socket, setSocket] = useState(null);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const socket = io('http://localhost:3001');
-    socketRef.current = socket;
+    const newSocket = io('http://localhost:3001');
+    setSocket(newSocket);
 
-    socket.on('connect', () => {
-      console.log('✨ Socket.IO connecté !');
+    newSocket.on('connect', () => {
+      console.log('✨ Socket.IO connecté ! ID :', newSocket.id);
       setIsReady(true);
     });
 
-    socket.on('disconnect', () => {
-      console.warn('💔 Socket.IO déconnecté proprement');
+    newSocket.on('disconnect', () => {
+      console.warn('💔 Socket.IO déconnecté');
       setIsReady(false);
     });
 
     return () => {
-      socket.disconnect();
+      newSocket.disconnect();
     };
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket: socketRef.current, isReady }}>
+    <SocketContext.Provider value={{ socket, isReady }}>
       {children}
     </SocketContext.Provider>
   );
 };
-
 
 export const useSocket = () => useContext(SocketContext);
 

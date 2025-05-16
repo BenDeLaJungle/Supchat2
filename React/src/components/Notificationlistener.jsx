@@ -9,7 +9,8 @@ function NotificationListener() {
     if (!socket) return;
 
     socket.on('notification', (data) => {
-      toast.info(data.message); // "Vous avez un nouveau message !"
+      console.log('📥 Notification reçue :', data); // ← Ajout ici
+      toast.info(data.message); // Affiche le toast
     });
 
     return () => {
