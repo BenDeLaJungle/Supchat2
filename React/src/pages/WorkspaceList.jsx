@@ -8,7 +8,6 @@ export default function WorkspaceList() {
   const [newWorkspaceName, setNewWorkspaceName] = useState('');
   const [newWorkspaceStatus, setNewWorkspaceStatus] = useState('1');
 
-  // Fonction pour récupérer les workspaces
   const fetchWorkspaces = async () => {
     const data = await apiFetch('api/workspaces');
     setWorkspaces(data);
@@ -18,7 +17,6 @@ export default function WorkspaceList() {
     fetchWorkspaces();
   }, []);
 
-  // Fonction pour créer un workspace
   const handleCreateWorkspace = async () => {
     if (!newWorkspaceName.trim()) return;
 
@@ -35,7 +33,6 @@ export default function WorkspaceList() {
       });
 
       fetchWorkspaces();
-
       setNewWorkspaceName('');
       setNewWorkspaceStatus('1');
     } catch (error) {
@@ -51,10 +48,15 @@ export default function WorkspaceList() {
 
         <div className="workspace-card-container">
           {workspaces.map(ws => (
-            <Link to={`/workspaces/${ws.id}`} key={ws.id} className="workspace-link">
+            <Link
+              to={`/workspaces/${ws.id}`}
+              key={ws.id}
+              className="workspace-link"
+              onClick={() => localStorage.setItem('lastWorkspaceId', ws.id)}
+            >
               <div className="workspace-card">
                 <h2>{ws.name}</h2>
-                 <p>{ws.status === true ? 'Public' : 'Privé'}</p>
+                <p>{ws.status === true ? 'Public' : 'Privé'}</p>
               </div>
             </Link>
           ))}
