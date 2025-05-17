@@ -11,6 +11,7 @@ import UserPage from "../pages/UserPage";
 import WorkspaceList from "../pages/WorkspaceList";
 import WorkspaceDetail from "../pages/WorkspaceDetail";
 import ChatWindow from "../components/ChatWindow";
+import InviteValidation from '../components/InviteValidation';
 
 import { useParams } from "react-router-dom";
 function ChatWindowWrapper() {
@@ -35,6 +36,7 @@ export default function AppRouter() {
         <Route path="/workspaces/:workspaceId" element={<WorkspaceDetail />} />
         <Route path="/channels/:channelId" element={<ChatWindowWrapper />} />
         <Route path="/private-message/:recipientId" element={<PrivateMessage />} />
+        <Route path="/invite/:token" element={<InviteValidation />} />
         
       </Routes>
   );

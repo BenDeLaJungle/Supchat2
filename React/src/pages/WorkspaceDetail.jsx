@@ -9,35 +9,21 @@ export default function WorkspaceDetail() {
   const [channels, setChannels] = useState([]);
   const [members, setMembers] = useState([]);
   const [users, setUsers] = useState([]);
+  const [inviteLink, setInviteLink] = useState(null);
   const [newChannelName, setNewChannelName] = useState('');
   const [newChannelStatus, setNewChannelStatus] = useState('1');
   const [newMemberId, setNewMemberId] = useState('');
   const [newRoleId, setNewRoleId] = useState('1');
 
-  // Charger les canaux
   useEffect(() => {
     apiFetch(`workspaces/${workspaceId}/channels`).then(setChannels);
-  }, [workspaceId]);
-
-  // Charger les détails du workspace
-  useEffect(() => {
     apiFetch(`api/workspaces/${workspaceId}`).then(data => setWorkspaceName(data.name));
-  }, [workspaceId]);
-
-  // Charger les membres
-  useEffect(() => {
     apiFetch(`workspaces/${workspaceId}/members`).then(setMembers);
+    apiFetch('api/users').then(setUsers);
   }, [workspaceId]);
 
-  // Charger les utilisateurs disponibles
-  useEffect(() => {
-    apiFetch('api/users').then(setUsers);
-  }, []);
-
-  // Création d'un canal
   const handleCreateChannel = async () => {
     if (!newChannelName.trim()) return;
-
     await apiFetch('api/channels', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -53,10 +39,8 @@ export default function WorkspaceDetail() {
     setNewChannelStatus('1');
   };
 
-  // Ajout d'un membre
   const handleAddMember = async () => {
     if (!newMemberId) return;
-
     await apiFetch(`workspaces/${workspaceId}/members`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -71,22 +55,30 @@ export default function WorkspaceDetail() {
     setNewRoleId('1');
   };
 
-  // Suppression d'un membre
   const handleDeleteMember = async (memberId) => {
-    await apiFetch(`workspaces/${workspaceId}/members/${memberId}`, {
-      method: 'DELETE'
-    });
+    await apiFetch(`workspaces/${workspaceId}/members/${memberId}`, { method: 'DELETE' });
     const updatedMembers = await apiFetch(`workspaces/${workspaceId}/members`);
     setMembers(updatedMembers);
   };
 
-  // Récupération du label de rôle
   const getRoleLabel = (roleId) => {
     switch (roleId) {
       case 1: return 'Membre';
       case 2: return 'Modérateur';
       case 3: return 'Admin';
       default: return 'Inconnu';
+    }
+  };
+
+  const handleGenerateInviteLink = async () => {
+    const response = await apiFetch(`api/workspaces/${workspaceId}/generate-invite`);
+    setInviteLink(response.invite_link);
+  };
+
+  const handleCopyToClipboard = () => {
+    if (inviteLink) {
+      navigator.clipboard.writeText(inviteLink);
+      alert('Lien copié dans le presse-papiers');
     }
   };
 
@@ -133,7 +125,7 @@ export default function WorkspaceDetail() {
           <div className="workspace-member-list">
             {members.map(member => (
               <div key={member.id} className="workspace-member-row">
-                <span className="workspace-member-info">{member.user_name} ({getRoleLabel(member.role_id)})</span>
+                <span>{member.user_name} ({getRoleLabel(member.role_id)})</span>
                 <button
                   onClick={() => handleDeleteMember(member.id)}
                   className="workspace-member-delete-btn"
@@ -170,6 +162,21 @@ export default function WorkspaceDetail() {
               Ajouter le membre
             </button>
           </div>
+        </div>
+
+        <div className="generate-invite-section">
+          <button onClick={handleGenerateInviteLink} className="work-channel-create-button">
+            Générer un lien d'invitation
+          </button>
+
+          {inviteLink && (
+            <div style={{ marginTop: '10px' }}>
+              <p>{inviteLink}</p>
+              <button onClick={handleCopyToClipboard} className="work-channel-create-button">
+                Copier le lien
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>
