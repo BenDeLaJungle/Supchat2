@@ -116,4 +116,19 @@ class UserController extends AbstractController
 
         return new JsonResponse($userList);
     }
+
+    #[Route('/api/users', name: 'api_users_list', methods: ['GET'])]
+    public function list(UsersRepository $usersRepository): JsonResponse
+    {
+        $users = $usersRepository->findAll();
+
+        $data = array_map(function ($user) {
+            return [
+                'id' => $user->getId(),
+                'username' => $user->getUserName()
+            ];
+        }, $users);
+
+        return $this->json($data);
+    }
 }

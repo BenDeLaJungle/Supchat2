@@ -8,95 +8,85 @@ export default function WorkspaceDetail() {
   const [workspaceName, setWorkspaceName] = useState('');
   const [channels, setChannels] = useState([]);
   const [members, setMembers] = useState([]);
+  const [users, setUsers] = useState([]);
   const [newChannelName, setNewChannelName] = useState('');
   const [newChannelStatus, setNewChannelStatus] = useState('1');
   const [newMemberId, setNewMemberId] = useState('');
   const [newRoleId, setNewRoleId] = useState('1');
 
+  // Charger les canaux
   useEffect(() => {
-    const fetchChannels = async () => {
-      const data = await apiFetch(`workspaces/${workspaceId}/channels`);
-      setChannels(data);
-    };
-    fetchChannels();
+    apiFetch(`workspaces/${workspaceId}/channels`).then(setChannels);
   }, [workspaceId]);
 
+  // Charger les détails du workspace
   useEffect(() => {
-    const fetchWorkspaceDetails = async () => {
-      const data = await apiFetch(`api/workspaces/${workspaceId}`);
-      setWorkspaceName(data.name);
-    };
-    fetchWorkspaceDetails();
+    apiFetch(`api/workspaces/${workspaceId}`).then(data => setWorkspaceName(data.name));
   }, [workspaceId]);
 
+  // Charger les membres
   useEffect(() => {
-    const fetchMembers = async () => {
-      const data = await apiFetch(`workspaces/${workspaceId}/members`);
-      setMembers(data);
-    };
-    fetchMembers();
+    apiFetch(`workspaces/${workspaceId}/members`).then(setMembers);
   }, [workspaceId]);
 
+  // Charger les utilisateurs disponibles
+  useEffect(() => {
+    apiFetch('api/users').then(setUsers);
+  }, []);
+
+  // Création d'un canal
   const handleCreateChannel = async () => {
     if (!newChannelName.trim()) return;
 
-    try {
-      const isPublic = newChannelStatus === "1";
-      await apiFetch('api/channels', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newChannelName,
-          status: isPublic,
-          workspace_id: workspaceId
-        })
-      });
-
-      const data = await apiFetch(`workspaces/${workspaceId}/channels`);
-      setChannels(data);
-      setNewChannelName('');
-      setNewChannelStatus('1');
-    } catch (error) {
-      console.error("Erreur lors de la création du canal :", error.message);
-    }
+    await apiFetch('api/channels', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: newChannelName,
+        status: newChannelStatus === "1",
+        workspace_id: workspaceId
+      })
+    });
+    const updatedChannels = await apiFetch(`workspaces/${workspaceId}/channels`);
+    setChannels(updatedChannels);
+    setNewChannelName('');
+    setNewChannelStatus('1');
   };
 
+  // Ajout d'un membre
   const handleAddMember = async () => {
-    if (!newMemberId.trim()) return;
+    if (!newMemberId) return;
 
-    try {
-      await apiFetch(`workspaces/${workspaceId}/members`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: parseInt(newMemberId),
-          role_id: parseInt(newRoleId)
-        })
-      });
-
-      const updatedMembers = await apiFetch(`workspaces/${workspaceId}/members`);
-      setMembers(updatedMembers);
-      setNewMemberId('');
-      setNewRoleId('1');
-      alert('Membre ajouté avec succès');
-    } catch (error) {
-      console.error("Erreur lors de l'ajout du membre :", error.message);
-    }
+    await apiFetch(`workspaces/${workspaceId}/members`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: parseInt(newMemberId),
+        role_id: parseInt(newRoleId)
+      })
+    });
+    const updatedMembers = await apiFetch(`workspaces/${workspaceId}/members`);
+    setMembers(updatedMembers);
+    setNewMemberId('');
+    setNewRoleId('1');
   };
 
+  // Suppression d'un membre
   const handleDeleteMember = async (memberId) => {
-    if (!window.confirm("Confirmer la suppression de ce membre ?")) return;
+    await apiFetch(`workspaces/${workspaceId}/members/${memberId}`, {
+      method: 'DELETE'
+    });
+    const updatedMembers = await apiFetch(`workspaces/${workspaceId}/members`);
+    setMembers(updatedMembers);
+  };
 
-    try {
-      await apiFetch(`workspaces/${workspaceId}/members/${memberId}`, {
-        method: 'DELETE',
-      });
-
-      const updatedMembers = await apiFetch(`workspaces/${workspaceId}/members`);
-      setMembers(updatedMembers);
-      alert('Membre supprimé avec succès');
-    } catch (error) {
-      console.error("Erreur lors de la suppression du membre :", error.message);
+  // Récupération du label de rôle
+  const getRoleLabel = (roleId) => {
+    switch (roleId) {
+      case 1: return 'Membre';
+      case 2: return 'Modérateur';
+      case 3: return 'Admin';
+      default: return 'Inconnu';
     }
   };
 
@@ -140,28 +130,32 @@ export default function WorkspaceDetail() {
 
         <div className="workspace-members-section">
           <h3>Membres du workspace</h3>
-          <ul className="workspace-member-list">
+          <div className="workspace-member-list">
             {members.map(member => (
-              <li key={member.id} className="workspace-member-item">
-                {member.user_name} (Role ID: {member.role_id})
+              <div key={member.id} className="workspace-member-row">
+                <span className="workspace-member-info">{member.user_name} ({getRoleLabel(member.role_id)})</span>
                 <button
                   onClick={() => handleDeleteMember(member.id)}
-                  className="delete-member-button"
+                  className="workspace-member-delete-btn"
                 >
                   Supprimer
                 </button>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
 
           <div>
-            <input
-              type="number"
+            <select
               value={newMemberId}
               onChange={(e) => setNewMemberId(e.target.value)}
-              placeholder="ID utilisateur"
-              className="work-channel-input"
-            />
+              className="work-channel-select"
+            >
+              <option value="">Sélectionner un utilisateur</option>
+              {users.map(user => (
+                <option key={user.id} value={user.id}>{user.username}</option>
+              ))}
+            </select>
+
             <select
               value={newRoleId}
               onChange={(e) => setNewRoleId(e.target.value)}
@@ -171,6 +165,7 @@ export default function WorkspaceDetail() {
               <option value="2">Modérateur</option>
               <option value="3">Admin</option>
             </select>
+
             <button onClick={handleAddMember} className="work-channel-create-button">
               Ajouter le membre
             </button>
@@ -180,4 +175,3 @@ export default function WorkspaceDetail() {
     </>
   );
 }
-

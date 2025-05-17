@@ -502,20 +502,67 @@ button:focus-visible {
   list-style: none;
   padding: 0;
   margin: 1rem 0;
-}
-
-.workspace-member-list {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0;
   text-align: center;
 }
 
-.workspace-member-item {
-  margin-bottom: 0.2rem;
-  font-size: 1rem;
+.workspace-member-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.1rem;
+  width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0rem 0.5rem;
+  background-color: transparent;
+  border-bottom: 1px solid #ddd;
 }
 
+.workspace-member-info {
+  font-size: 1rem;
+  color: #333;
+}
+
+.workspace-member-delete-btn {
+  display: inline-block;
+  width: 40px;
+  height: 35px;
+  padding: 0 !important; 
+  font-size: 1rem !important; 
+  background-color: #284E7B;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 20px;
+}
+
+.workspace-member-delete-btn:hover {
+  background-color: #add4f3;
+  color: #1f1f1f;
+}
+
+.workspace-member-item-flex {
+  display: flex;
+  justify-content: flex-start; /* Evite le stretch complet */
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.workspace-member-item-flex button {
+  background-color: #284E7B;
+  color: #ffffff;
+  padding: 0.3rem 0.8rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.workspace-member-item-flex button:hover {
+  background-color: #add4f3;
+  color: #1f1f1f;
+}
 
 .workspace-members-section button {
   background-color: #284E7B;
@@ -557,21 +604,6 @@ button:focus-visible {
   max-width: 400px;
   margin-bottom: 0.5rem;
   text-align: center;
-}
-
-.delete-member-button {
-  margin-left: 10px;
-  padding: 4px 8px;
-  background-color: #CA3C66;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.8rem;
-}
-
-.delete-member-button:hover {
-  background-color: #a32b51;
 }
 
 .work-channel-create-form {
