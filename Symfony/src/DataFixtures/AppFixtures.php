@@ -74,7 +74,7 @@ class AppFixtures extends Fixture
 
         // 2. Workspace
         $workspace = new Workspaces();
-        $workspace->setName('Espace de test');
+        $workspace->setName('Stratégie de communication');
         $workspace->setStatus(true);
         $workspace->setCreator($admin);
         $manager->persist($workspace);

@@ -5,52 +5,80 @@ import AdminHeader from './Adminheader';
 
 export default function WorkspaceDetail() {
   const { workspaceId } = useParams();
-  const [channels, setChannels] = useState([]);
   const [workspaceName, setWorkspaceName] = useState('');
-
+  const [channels, setChannels] = useState([]);
+  const [members, setMembers] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [inviteLink, setInviteLink] = useState(null);
   const [newChannelName, setNewChannelName] = useState('');
   const [newChannelStatus, setNewChannelStatus] = useState('1');
+  const [newMemberId, setNewMemberId] = useState('');
+  const [newRoleId, setNewRoleId] = useState('1');
 
   useEffect(() => {
-    const fetchChannels = async () => {
-      const data = await apiFetch(`workspaces/${workspaceId}/channels`);
-      setChannels(data);
-    };
-    fetchChannels();
-  }, [workspaceId]);
-
-  useEffect(() => {
-    const fetchWorkspaceDetails = async () => {
-      const data = await apiFetch(`api/workspaces/${workspaceId}`);
-      setWorkspaceName(data.name);
-    };
-    fetchWorkspaceDetails();
+    apiFetch(`workspaces/${workspaceId}/channels`).then(setChannels);
+    apiFetch(`api/workspaces/${workspaceId}`).then(data => setWorkspaceName(data.name));
+    apiFetch(`workspaces/${workspaceId}/members`).then(setMembers);
+    apiFetch('api/users').then(setUsers);
   }, [workspaceId]);
 
   const handleCreateChannel = async () => {
     if (!newChannelName.trim()) return;
+    await apiFetch('api/channels', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: newChannelName,
+        status: newChannelStatus === "1",
+        workspace_id: workspaceId
+      })
+    });
+    const updatedChannels = await apiFetch(`workspaces/${workspaceId}/channels`);
+    setChannels(updatedChannels);
+    setNewChannelName('');
+    setNewChannelStatus('1');
+  };
 
-    try {
-      const isPublic = newChannelStatus === "1";
+  const handleAddMember = async () => {
+    if (!newMemberId) return;
+    await apiFetch(`workspaces/${workspaceId}/members`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: parseInt(newMemberId),
+        role_id: parseInt(newRoleId)
+      })
+    });
+    const updatedMembers = await apiFetch(`workspaces/${workspaceId}/members`);
+    setMembers(updatedMembers);
+    setNewMemberId('');
+    setNewRoleId('1');
+  };
 
-      await apiFetch('api/channels', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newChannelName,
-          status: isPublic,
-          workspace_id: workspaceId
-        })
-      });
+  const handleDeleteMember = async (memberId) => {
+    await apiFetch(`workspaces/${workspaceId}/members/${memberId}`, { method: 'DELETE' });
+    const updatedMembers = await apiFetch(`workspaces/${workspaceId}/members`);
+    setMembers(updatedMembers);
+  };
 
-      // Affiche la liste des channels
-      const data = await apiFetch(`workspaces/${workspaceId}/channels`);
-      setChannels(data);
+  const getRoleLabel = (roleId) => {
+    switch (roleId) {
+      case 1: return 'Membre';
+      case 2: return 'Modérateur';
+      case 3: return 'Admin';
+      default: return 'Inconnu';
+    }
+  };
 
-      setNewChannelName('');
-      setNewChannelStatus('1');
-    } catch (error) {
-      console.error("Erreur lors de la création du canal :", error.message);
+  const handleGenerateInviteLink = async () => {
+    const response = await apiFetch(`api/workspaces/${workspaceId}/generate-invite`);
+    setInviteLink(response.invite_link);
+  };
+
+  const handleCopyToClipboard = () => {
+    if (inviteLink) {
+      navigator.clipboard.writeText(inviteLink);
+      alert('Lien copié dans le presse-papiers');
     }
   };
 
@@ -60,6 +88,7 @@ export default function WorkspaceDetail() {
       <div className="workspace-detail-page">
         <h2 className="workspace-detail-title">{workspaceName}</h2>
 
+        <h3>Canaux</h3>
         <ul className="channel-list">
           {channels.map(channel => (
             <li key={channel.id} className="channel-list-item">
@@ -89,6 +118,65 @@ export default function WorkspaceDetail() {
           <button onClick={handleCreateChannel} className="work-channel-create-button">
             Créer un canal
           </button>
+        </div>
+
+        <div className="workspace-members-section">
+          <h3>Membres du workspace</h3>
+          <div className="workspace-member-list">
+            {members.map(member => (
+              <div key={member.id} className="workspace-member-row">
+                <span>{member.user_name} ({getRoleLabel(member.role_id)})</span>
+                <button
+                  onClick={() => handleDeleteMember(member.id)}
+                  className="workspace-member-delete-btn"
+                >
+                  Supprimer
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div>
+            <select
+              value={newMemberId}
+              onChange={(e) => setNewMemberId(e.target.value)}
+              className="work-channel-select"
+            >
+              <option value="">Sélectionner un utilisateur</option>
+              {users.map(user => (
+                <option key={user.id} value={user.id}>{user.username}</option>
+              ))}
+            </select>
+
+            <select
+              value={newRoleId}
+              onChange={(e) => setNewRoleId(e.target.value)}
+              className="work-channel-select"
+            >
+              <option value="1">Membre</option>
+              <option value="2">Modérateur</option>
+              <option value="3">Admin</option>
+            </select>
+
+            <button onClick={handleAddMember} className="work-channel-create-button">
+              Ajouter le membre
+            </button>
+          </div>
+        </div>
+
+        <div className="generate-invite-section">
+          <button onClick={handleGenerateInviteLink} className="work-channel-create-button">
+            Générer un lien d'invitation
+          </button>
+
+          {inviteLink && (
+            <div style={{ marginTop: '10px' }}>
+              <p>{inviteLink}</p>
+              <button onClick={handleCopyToClipboard} className="work-channel-create-button">
+                Copier le lien
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>

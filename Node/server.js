@@ -76,6 +76,22 @@ app.post('/broadcast', express.json(), (req, res) => {
   res.status(200).json({ success: true });
 });
 
+// API REST pour envoi de notification vers un utilisateur
+app.post('/notify', express.json(), (req, res) => {
+  const { userId, message } = req.body;
+
+  if (!userId || !message) {
+    return res.status(400).json({ error: 'userId et message sont requis.' });
+  }
+
+  console.log(`🔔 Envoi notification à #${userId} :`, message);
+
+  io.to(userId).emit('notification', { message });
+
+  res.status(200).json({ success: true });
+});
+
+
 // Endpoint de test
 app.get('/', (req, res) => {
   res.send('Hello Socket.IO World!');

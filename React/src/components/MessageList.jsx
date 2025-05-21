@@ -12,7 +12,7 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId }
 
   const uniqueMessages = [
     ...new Map(messages.map((msg) => [msg.id, msg])).values()
-  ];
+  ].filter(msg => !msg.deleted);
 
   // Récupère les messages par pagination
   const fetchMessages = async (before = null) => {
@@ -41,34 +41,24 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId }
     }
   };
 
-  // Supprime localement un message
-  const handleDeleteMessage = (id) => {
-    const updated = messages.filter((m) => m.id !== id);
-    onMessagesFetched(updated);
-  };
-
-  // Reçoit un message via WebSocket et met à jour la liste
   const handleLiveMessage = (newMsg) => {
-    const exists = messages.some((m) => m.id === newMsg.id);
-
     if (newMsg.deleted) {
-      const updated = messages.map((m) =>
-        m.id === newMsg.id
-          ? { ...m, content: '[Ce message a été supprimé]', deleted: true }
-          : m
+      onMessagesFetched((prevMessages) =>
+        prevMessages.filter((m) => m.id !== newMsg.id)
       );
-      onMessagesFetched(updated);
       return;
     }
 
-    if (!exists) {
-      onMessagesFetched([...messages, newMsg]);
-    } else {
-      const updated = messages.map((m) =>
-        m.id === newMsg.id ? newMsg : m
-      );
-      onMessagesFetched(updated);
-    }
+    onMessagesFetched((prevMessages) => {
+      const exists = prevMessages.some((m) => m.id === newMsg.id);
+      if (!exists) {
+        return [...prevMessages, newMsg];
+      } else {
+        return prevMessages.map((m) =>
+          m.id === newMsg.id ? newMsg : m
+        );
+      }
+    });
   };
 
   // Scroll vers le haut pour charger les messages précédents
@@ -121,7 +111,6 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId }
             {...msg} 
             canEditGlobal={canEdit} 
             currentUserId={userId} 
-            onDelete={handleDeleteMessage}
             channelId={channelId}
           />
         ))}

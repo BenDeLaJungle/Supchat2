@@ -1,6 +1,10 @@
 <?php
+
 namespace App\Controller;
+
 use App\Entity\Workspaces;
+use App\Entity\WorkspaceMembers;
+use App\Entity\Channels;
 use App\Repository\WorkspacesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -8,9 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\WorkspaceMembers;
-use App\Entity\Channels;
-
 
 #[Route('/api/workspaces')]
 final class WorkspacesController extends AbstractController
@@ -50,20 +51,17 @@ final class WorkspacesController extends AbstractController
     public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-        if (json_last_error() !== JSON_ERROR_NONE || !$data || !isset($data['name'], $data['status'])) {
-            return $this->json(['error' => 'Format JSON invalide ou données manquantes.'], Response::HTTP_BAD_REQUEST);
+        if (!$data || !isset($data['name'], $data['status'])) {
+            return $this->json(['error' => 'Données manquantes.'], Response::HTTP_BAD_REQUEST);
         }
-        
+
         $existingWorkspace = $entityManager->getRepository(Workspaces::class)->findOneBy(['name' => $data['name']]);
         if ($existingWorkspace) {
-            return $this->json(['error' => 'Un workspace avec ce nom existe déjà.'], Response::HTTP_CONFLICT);
+            return $this->json(['error' => 'Workspace déjà existant.'], Response::HTTP_CONFLICT);
         }
-        
+
         $user = $this->getUser();
-        //if (!$user instanceof \App\Entity\Users) {
-        //    throw new \LogicException('L\'utilisateur authentifié n\'est pas une instance de App\Entity\Users.');
-        //}
-        
+
         $workspace = new Workspaces();
         $workspace->setName($data['name']);
         $workspace->setStatus($data['status']);
@@ -79,26 +77,51 @@ final class WorkspacesController extends AbstractController
     public function delete(Workspaces $workspace, EntityManagerInterface $entityManager): JsonResponse
     {
         $user = $this->getUser();
-        if (!$user || $workspace->getCreator() !== $user) {
+        if ($workspace->getCreator() !== $user) {
             return $this->json(['error' => 'Seul le créateur peut supprimer ce workspace.'], Response::HTTP_FORBIDDEN);
         }
-        
-        // Vérifier si le workspace contient des membres ou des canaux
-        $memberCount = $entityManager->getRepository(WorkspaceMembers::class)
-            ->count(['workspace' => $workspace]);
-        $channelCount = $entityManager->getRepository(Channels::class)
-            ->count(['workspace' => $workspace]);
 
-        if ($memberCount > 0 || $channelCount > 0) {
-            return $this->json(['error' => 'Impossible de supprimer un workspace contenant encore des membres ou des canaux.'], Response::HTTP_BAD_REQUEST);
+        $members = $entityManager->getRepository(WorkspaceMembers::class)->count(['workspace' => $workspace]);
+        $channels = $entityManager->getRepository(Channels::class)->count(['workspace' => $workspace]);
+
+        if ($members > 0 || $channels > 0) {
+            return $this->json(['error' => 'Workspace non vide.'], Response::HTTP_BAD_REQUEST);
         }
-        
+
         $entityManager->remove($workspace);
         $entityManager->flush();
-        
+
         return $this->json(['message' => 'Workspace supprimé avec succès.']);
     }
-}
 
+    #[Route('/{id}/generate-invite', name: 'generate_invite_link', methods: ['GET'])]
+    public function generateInviteLink(Workspaces $workspace): JsonResponse
+    {
+        $secret = 'mon_secret_partage';
+        $expiry = (new \DateTime('+1 day'))->getTimestamp();
+        $payload = $workspace->getId() . '|' . $expiry;
+        $signature = hash_hmac('sha256', $payload, $secret);
+        $token = base64_encode($payload . '|' . $signature);
+        $inviteLink = sprintf('http://localhost:5173/invite/%s', urlencode($token));
+
+        return $this->json(['invite_link' => $inviteLink]);
+    }
+
+    #[Route('/invite/{token}', name: 'accept_invite_link', methods: ['POST'])]
+    public function acceptInvite(string $token): JsonResponse
+    {
+        $secret = 'mon_secret_partage';
+        $decoded = base64_decode($token);
+        list($workspaceId, $expiry, $signature) = explode('|', $decoded);
+
+        $expectedSignature = hash_hmac('sha256', $workspaceId . '|' . $expiry, $secret);
+
+        if (!hash_equals($expectedSignature, $signature) || $expiry < time()) {
+            return $this->json(['error' => 'Lien invalide ou expiré'], 400);
+        }
+
+        return $this->json(['message' => 'Lien valide pour workspace ' . $workspaceId]);
+    }
+}
 
 

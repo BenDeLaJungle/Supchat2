@@ -12,11 +12,7 @@ const ChatWindow = ({ channelId = 1 }) => {
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [channelName, setChannelName] = useState('');
-  const [privileges, setPrivileges] = useState({
-    isAdmin: false,
-    canModerate: false,
-    canManage: false
-  });
+  const [privileges, setPrivileges] = useState(null);
 
   // Récupération des privilèges
   useEffect(() => {
@@ -36,6 +32,11 @@ const ChatWindow = ({ channelId = 1 }) => {
         });
       } catch (error) {
         console.error("Erreur en récupérant les privilèges :", error.message);
+        setPrivileges({
+          isAdmin: false,
+          canModerate: false,
+          canManage: false
+        });
       }
     };
 
@@ -62,7 +63,7 @@ const ChatWindow = ({ channelId = 1 }) => {
     setMessages((prev) => [...unique, ...prev]);
   };
 
-  const canEdit = privileges.isAdmin || privileges.canModerate;
+  const canEdit = !!(privileges?.isAdmin || privileges?.canModerate);
 
   const handleIncomingMessage = useCallback((incoming) => {
     setMessages((prev) => {
@@ -86,6 +87,16 @@ const ChatWindow = ({ channelId = 1 }) => {
     });
   }, []);
 
+  //Pendant que ça charge
+  if (!privileges) {
+    return (
+      <>
+        <AdminHeader />
+        <h2 style={{ textAlign: 'center', margin: '1rem 0' }}>Chargement des privilèges...</h2>
+      </>
+    );
+  }
+
   return (
     <>
       <AdminHeader />
@@ -94,7 +105,6 @@ const ChatWindow = ({ channelId = 1 }) => {
       </h2>
       <div className="chat-window">
         <WebSocketHandler channelId={channelId} onMessage={handleIncomingMessage} />
-
         <MessageList
           channelId={channelId}
           messages={messages}
@@ -115,3 +125,4 @@ const ChatWindow = ({ channelId = 1 }) => {
 };
 
 export default ChatWindow;
+

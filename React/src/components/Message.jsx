@@ -79,8 +79,6 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
         deleted: true,
         channel: channelId
       });
-
-      if (onDelete) onDelete(id);
     } catch (err) {
       console.error("Erreur suppression :", err.message);
       alert("Erreur lors de la suppression : " + err.message);

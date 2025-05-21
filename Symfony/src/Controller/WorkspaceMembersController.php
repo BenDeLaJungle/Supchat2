@@ -53,12 +53,13 @@ final class WorkspaceMembersController extends AbstractController
         foreach ($members as $member) {
             $permissions = $this->getPermissionsFromMember($member);
             $data[] = [
-                'id'       => $member->getId(),
-                'user_id'  => $member->getUser()->getId(),
-                'role_id'  => $member->getRole() ? $member->getRole()->getId() : null,
-                'publish'  => $permissions['publish'],
-                'moderate' => $permissions['moderate'],
-                'manage'   => $permissions['manage'],
+                'id'        => $member->getId(),
+                'user_id'   => $member->getUser()->getId(),
+                'user_name' => $member->getUser()->getUserName(),
+                'role_id'   => $member->getRole() ? $member->getRole()->getId() : null,
+                'publish'   => $permissions['publish'],
+                'moderate'  => $permissions['moderate'],
+                'manage'    => $permissions['manage'],
             ];
         }
 
