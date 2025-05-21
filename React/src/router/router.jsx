@@ -5,7 +5,7 @@ import Register from "../pages/Register";
 import Calendrier from '../pages/calendrier';
 import AdminSpace from '../pages/AdminSpace';
 import Messaging from "../pages/Messaging";
-import Parametres from '../pages/Parametres';
+import Parametres from '../pages/parametres';
 import PrivateMessage from "../pages/privateMessage";
 import UserPage from "../pages/UserPage";
 import WorkspaceList from "../pages/WorkspaceList";
