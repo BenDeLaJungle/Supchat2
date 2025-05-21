@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Notifications;
 use App\Entity\Messages;
+use App\Entity\Users;
 use App\Repository\NotificationsRepository;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,6 +15,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 #[Route('/api/notifications', name: 'api_notifications_')]
 class NotificationController extends AbstractController
@@ -79,12 +81,15 @@ class NotificationController extends AbstractController
     }
 
 
-    public function notifyNewMessage($sender_id, $receiver_id) {
-        $notification = new Notification();
-        $notification->user_id = $receiver_id;
-        $notification->message = "Nouveau message reçu de l'utilisateur $sender_id";
-        $notification->is_read = false;
-        $notification->save();
-    }
+public function notifyNewMessage(Messages $message, Users $receiver, EntityManagerInterface $em): void
+{
+    $notification = new Notifications();
+    $notification->setUser($receiver);
+    $notification->setMessage($message);
+    $notification->setAtRead(false);
+
+    $em->persist($notification);
+    $em->flush();
+}
 
 }

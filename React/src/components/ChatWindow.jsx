@@ -25,6 +25,8 @@ const ChatWindow = ({ channelId = 1 }) => {
           body: JSON.stringify({ user_id: user.id })
         });
 
+        console.log("🔐 Privilèges récupérés :", data); // ←✨ ICI
+
         setPrivileges({
           isAdmin: data.is_admin,
           canModerate: data.can_moderate,
@@ -100,9 +102,6 @@ const ChatWindow = ({ channelId = 1 }) => {
   return (
     <>
       <AdminHeader />
-      <h2 style={{ textAlign: 'center', margin: '1rem 0' }}>
-        Canal : {channelName}
-      </h2>
       <div className="chat-window">
         <WebSocketHandler channelId={channelId} onMessage={handleIncomingMessage} />
         <MessageList
