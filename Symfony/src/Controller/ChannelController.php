@@ -94,54 +94,54 @@ class ChannelController extends AbstractController
     }
 
     #[Route('/channels/{id}/privilege', name: 'get_channel_privilege', methods: ['POST'])]
-public function getChannelPrivilege(
-    Channels $channel,
-    Request $request,
-    WorkspaceMembersRepository $workspaceMembersRepo
-): JsonResponse {
-    $data = json_decode($request->getContent(), true);
+    public function getChannelPrivilege(
+        Channels $channel,
+        Request $request,
+        WorkspaceMembersRepository $workspaceMembersRepo
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
 
-    if (!isset($data['user_id'])) {
-        return new JsonResponse(['error' => 'L\'ID utilisateur est requis.'], 400);
-    }
+        if (!isset($data['user_id'])) {
+            return new JsonResponse(['error' => 'L\'ID utilisateur est requis.'], 400);
+        }
 
-    $userId = (int) $data['user_id'];
-    $workspace = $channel->getWorkspace();
+        $userId = (int) $data['user_id'];
+        $workspace = $channel->getWorkspace();
 
-    //Chercher le membre du workspace
-    $workspaceMember = $workspaceMembersRepo->findOneBy([
-        'workspace' => $workspace,
-        'user' => $userId
-    ]);
+        //Chercher le membre du workspace
+        $workspaceMember = $workspaceMembersRepo->findOneBy([
+            'workspace' => $workspace,
+            'user' => $userId
+        ]);
 
-    if (!$workspaceMember) {
-        //Si le user n'est même pas membre ➔ aucun droit
+        if (!$workspaceMember) {
+            //Si le user n'est même pas membre ➔ aucun droit
+            return $this->json([
+                'is_admin' => false,
+                'can_moderate' => false,
+                'can_manage' => false
+            ]);
+        }
+
+        //Vérifier admin
+        $isAdmin = $workspaceMember->getUser()->getRole() === 'ROLE_ADMIN';
+
+        //Vérifier les droits (moderate + manage)
+        $role = $workspaceMember->getRole();
+
+        if ($role) {
+            $canModerate = $role->canModerate();
+            $canManage = $role->canManage();    
+        } else {
+            $canModerate = $workspaceMember->canModerate(); 
+            $canManage = $workspaceMember->canManage();     
+        }
+
         return $this->json([
-            'is_admin' => false,
-            'can_moderate' => false,
-            'can_manage' => false
+            'is_admin' => $isAdmin,
+            'can_moderate' => $canModerate,
+            'can_manage' => $canManage
         ]);
     }
-
-    //Vérifier admin
-    $isAdmin = $workspaceMember->getUser()->getRole() === 'ROLE_ADMIN';
-
-    //Vérifier les droits (moderate + manage)
-    $role = $workspaceMember->getRole();
-
-    if ($role) {
-        $canModerate = $role->canModerate();
-        $canManage = $role->canManage();    
-    } else {
-        $canModerate = $workspaceMember->canModerate(); 
-        $canManage = $workspaceMember->canManage();     
-    }
-
-    return $this->json([
-        'is_admin' => $isAdmin,
-        'can_moderate' => $canModerate,
-        'can_manage' => $canManage
-    ]);
-}
 }
 

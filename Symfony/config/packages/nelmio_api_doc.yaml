@@ -1,0 +1,20 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: "SupchatAPI"
+            description: "une api de chat crée par des étudient"
+            version: "0.9"
+    areas:
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+    models:
+        names:
+            - { alias: AuthDoc, type: App\Swagger\AuthDoc }
+            #- { alias: ChannelDoc, type: App\Swagger\ChannelDoc }
+            #- { alias: MessageDoc, type: App\Swagger\MessageDoc }
+            #- { alias: OauthDoc, type: App\Swagger\OAuthDoc }
+            #- { alias: RolesDoc, type: App\Swagger\RolesDoc }
+            - { alias: UserDoc, type: App\Swagger\UserDoc }
+            #- { alias: WorkspaceMembersDoc, type: App\Swagger\WorkspaceMembersDoc }
+            #- { alias: WorkspacesDoc, type: App\Swagger\WorkspacesDoc }
+            #- { alias: NotificationDoc, type: App\Swagger\NotificationDoc }
