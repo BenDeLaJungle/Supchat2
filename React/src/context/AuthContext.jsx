@@ -1,3 +1,4 @@
+// src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from 'react';
 import { getToken, logout } from '../services/auth';
 import { apiFetch } from '../services/api';
@@ -11,10 +12,23 @@ export function AuthProvider({ children }) {
     const token = getToken();
     if (token) {
       apiFetch('api/user')
-        .then(setUser)
+        .then(fetchedUser => setUser(fetchedUser))
         .catch(() => logout());
     }
   }, []);
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark' || storedTheme === 'light') {
+      document.body.className = `theme-${storedTheme}`;
+      return;
+    }
+
+    if (user?.theme !== undefined) {
+      const apiTheme = user.theme ? 'dark' : 'light';
+      document.body.className = `theme-${apiTheme}`;
+    }
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>

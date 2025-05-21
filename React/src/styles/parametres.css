@@ -11,6 +11,7 @@
 }
 
 
+
 /* ---- CONTENEUR GENERAL ---- */
 .parametres-wrapper {
   max-width: 1100px;
@@ -194,4 +195,13 @@
   border-radius: 8px;
   line-height: 1; 
   margin-bottom: 0.5rem; 
+}
+
+/* responsive partie */
+
+@media (min-width: 768px) {
+  .parametres-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;                 /* on peut augmenter le gap pour desktop */
+  }
 }

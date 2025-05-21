@@ -30,7 +30,7 @@ const AdminHeader = () => {
     { title: "Notifications", image: notif },
     { title: "Workspace 1", image: workspace },
     { title: "Workspace 2", image: workspace },
-    { title: "Tous les workspaces", image: workspace },
+    { title: "Tous les workspaces", image: workspace, link: "/workspaces" },
     { title: "Calendrier", image: calendrier, link: "/calendrier" },
     { title: "Admin", image: adminspace, link: "/AdminSpace" },
     { title: "Paramètres", image: parametres, link: "/parametres" },
