@@ -117,9 +117,9 @@ export default function Parametres() {
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
                 >
-                  <option value="Actif">Actif</option>
-                  <option value="En attente">En attente</option>
-                  <option value="Inactif">Inactif</option>
+                  <option value="Actif">En ligne</option>
+                  <option value="En attente">Occupé</option>
+                  <option value="Inactif">Hors ligne</option>
                 </select>
                 <button type="submit">Mettre à jour</button>
               </form>
