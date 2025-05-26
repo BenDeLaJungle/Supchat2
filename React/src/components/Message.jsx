@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { apiFetch } from '../services/api';
 import { useSocket } from '../context/SocketContext';
+import EmojiPicker from 'emoji-picker-react';
 import '../styles/color.css';
 import '../styles/chat.css';
 
@@ -12,6 +13,7 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
   const [editedContent, setEditedContent] = useState(content);
   const [localContent, setLocalContent] = useState(content);
   const [error, setError] = useState(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const menuRef = useRef(null);
 
   const canEditThisMessage = (author.id === currentUserId) || canEditGlobal;
@@ -20,6 +22,7 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setMenuOpen(false);
+        setShowEmojiPicker(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -90,6 +93,10 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
     setIsEditing(true);
   };
 
+  const onEmojiClick = (emojiData) => {
+    setEditedContent(prev => prev + emojiData.emoji);
+  };
+
   return (
     <div className="message">
       <div className="message-inner">
@@ -97,11 +104,23 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
 
         {isEditing ? (
           <div className="message-edit-form">
-            <textarea
-              className="message-edit-input"
-              value={editedContent}
-              onChange={(e) => setEditedContent(e.target.value)}
-            />
+            <div>
+              <textarea
+                className="message-edit-input"
+                value={editedContent}
+                onChange={(e) => setEditedContent(e.target.value)}
+              />
+              <div className="emoji-picker-container">
+                <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+                  😊
+                </button>
+                {showEmojiPicker && (
+                  <div style={{ position: 'absolute', zIndex: 10 }}>
+                    <EmojiPicker onEmojiClick={onEmojiClick} />
+                  </div>
+                )}
+              </div>
+            </div>
             <div className="edit-buttons">
               <button onClick={handleEditSubmit}>Enregistrer</button>
               <button onClick={handleEditCancel}>Annuler</button>
