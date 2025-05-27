@@ -14,7 +14,7 @@ const AdminPanel = () => {
 
   const fetchUsers = async () => {
     try {
-      const data = await apiFetch("api/admin/users");
+      const data = await apiFetch("admin/users");
       setUsers(data);
     } catch (err) {
       setError("Erreur lors de la récupération des utilisateurs");
@@ -23,7 +23,7 @@ const AdminPanel = () => {
 
   const fetchWorkspaces = async () => {
     try {
-      const data = await apiFetch("api/workspaces");
+      const data = await apiFetch("workspaces");
       setWorkspaces(data);
     } catch (err) {
       setError("Erreur lors de la récupération des workspaces");
@@ -33,7 +33,7 @@ const AdminPanel = () => {
   const handleDeleteUser = async (id) => {
     if (!window.confirm("Supprimer cet utilisateur ?")) return;
     try {
-      await apiFetch(`api/admin/user/${id}`, { method: "DELETE" });
+      await apiFetch(`admin/user/${id}`, { method: "DELETE" });
       setUsers(users.filter((u) => u.id !== id));
       setSelectedUserId(null);
     } catch (err) {
@@ -43,7 +43,7 @@ const AdminPanel = () => {
 
   const handleUpdateUser = async (id, field, value) => {
     try {
-      await apiFetch(`api/admin/user/${id}`, {
+      await apiFetch(`admin/user/${id}`, {
         method: "PUT",
         body: JSON.stringify({ [field]: value }),
       });
@@ -55,7 +55,7 @@ const AdminPanel = () => {
 
   const handleUpdateWorkspace = async (id, field, value) => {
     try {
-      await apiFetch(`api/workspaces/${id}`, {
+      await apiFetch(`workspaces/${id}`, {
         method: "PUT",
         body: JSON.stringify({ [field]: value }),
       });
@@ -68,7 +68,7 @@ const AdminPanel = () => {
   const handleDeleteWorkspace = async (id) => {
     if (!window.confirm("Supprimer ce workspace ?")) return;
     try {
-      await apiFetch(`api/workspaces/${id}`, { method: "DELETE" });
+      await apiFetch(`workspaces/${id}`, { method: "DELETE" });
       setWorkspaces(workspaces.filter((w) => w.id !== id));
       setSelectedWorkspaceId(null);
     } catch (err) {

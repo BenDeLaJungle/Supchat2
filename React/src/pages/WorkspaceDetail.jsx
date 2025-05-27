@@ -17,14 +17,14 @@ export default function WorkspaceDetail() {
 
   useEffect(() => {
     apiFetch(`workspaces/${workspaceId}/channels`).then(setChannels);
-    apiFetch(`api/workspaces/${workspaceId}`).then(data => setWorkspaceName(data.name));
+    apiFetch(`workspaces/${workspaceId}`).then(data => setWorkspaceName(data.name));
     apiFetch(`workspaces/${workspaceId}/members`).then(setMembers);
-    apiFetch('api/users').then(setUsers);
+    apiFetch('users').then(setUsers);
   }, [workspaceId]);
 
   const handleCreateChannel = async () => {
     if (!newChannelName.trim()) return;
-    await apiFetch('api/channels', {
+    await apiFetch('channels', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -71,7 +71,7 @@ export default function WorkspaceDetail() {
   };
 
   const handleGenerateInviteLink = async () => {
-    const response = await apiFetch(`api/workspaces/${workspaceId}/generate-invite`);
+    const response = await apiFetch(`workspaces/${workspaceId}/generate-invite`);
     setInviteLink(response.invite_link);
   };
 

@@ -12,12 +12,12 @@ export const SocketProvider = ({ children }) => {
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
-      console.log('✨ Socket.IO connecté ! ID :', newSocket.id);
+      console.log('Socket.IO connecté ! ID :', newSocket.id);
       setIsReady(true);
     });
 
     newSocket.on('disconnect', () => {
-      console.warn('💔 Socket.IO déconnecté');
+      console.warn('Socket.IO déconnecté');
       setIsReady(false);
     });
 

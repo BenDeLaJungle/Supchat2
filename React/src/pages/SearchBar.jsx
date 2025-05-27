@@ -21,7 +21,7 @@ const SearchBar = ({ onSearchChange }) => {
     debounceTimeout.current = setTimeout(() => {
       if (term.trim() !== "") {
         setLoading(true);
-        apiFetch(`api/users/search?query=${term}`)
+        apiFetch(`users/search?query=${term}`)
           .then((data) => {
             setResults(data);
             setShowDropdown(true);

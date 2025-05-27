@@ -6,7 +6,7 @@ function Notifications() {
 
     const fetchNotifications = async () => {
         try {
-            const response = await fetch('/api/notifications/unread', {
+            const response = await fetch('notifications/unread', {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('token'), // si JWT
                     'Accept': 'application/json',

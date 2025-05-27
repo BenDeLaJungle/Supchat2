@@ -15,7 +15,20 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MessageController extends AbstractController
 {
-    #[Route('/messages', name: 'create_message', methods: ['POST'])]
+
+    private function formatHashtag($hashtag): array
+    {
+        return [
+            'tag' => $hashtag->getChannel()->getName(),
+            'channel' => [
+                'id' => $hashtag->getChannel()->getId(),
+                'name' => $hashtag->getChannel()->getName(),
+            ]
+        ];
+    }
+
+
+    #[Route('/api/messages', name: 'create_message', methods: ['POST'])]
     public function createMessage(
         Request $request,
         EntityManagerInterface $em,
@@ -55,9 +68,10 @@ class MessageController extends AbstractController
         ], 201);
     }
 
-    #[Route('/messages/{id}', name: 'get_message', methods: ['GET'])]
+    #[Route('/api/messages/{id}', name: 'get_message', methods: ['GET'])]
     public function getMessage(Messages $message): JsonResponse
     {
+        $hashtags = $message->getHashtags()->toArray();
         return $this->json([
             'id' => $message->getId(),
             'content' => $message->getContent(),
@@ -67,10 +81,11 @@ class MessageController extends AbstractController
                 'username' => $message->getUser()->getUsername(),
             ],
             'channel_id' => $message->getChannel()->getId(),
+            'hashtags' => array_map(fn($h) => $this->formatHashtag($h), $hashtags)
         ]);
     }
 
-    #[Route('/channels/{id}/messages', name: 'get_channel_messages', methods: ['GET'])]
+    #[Route('/api/channels/{id}/messages', name: 'get_channel_messages', methods: ['GET'])]
     public function getMessagesForChannel(
         Channels $channel,
         MessagesRepository $repo,
@@ -106,22 +121,24 @@ class MessageController extends AbstractController
 
         $messages = $qb->getQuery()->getResult();
 
-        $data = array_map(fn(Messages $m) => [
-            'id' => $m->getId(),
-            'content' => $m->getContent(),
-            'timestamp' => $m->getCreatedAt()->format('c'),
-            'author' => [
-                'id' => $m->getUser()->getId(),
-                'username' => $m->getUser()->getUsername(),
-            ],
-            'channel_id' => $m->getChannel()->getId(),
-        ], $messages);
+        $data = array_map(function (Messages $m) {
+            return [
+                'id' => $m->getId(),
+                'content' => $m->getContent(),
+                'timestamp' => $m->getCreatedAt()->format('c'),
+                'author' => [
+                    'id' => $m->getUser()->getId(),
+                    'username' => $m->getUser()->getUsername(),
+                ],
+                'channel_id' => $m->getChannel()->getId(),
+                'hashtags' => array_map(fn($h) => $this->formatHashtag($h), $m->getHashtags()->toArray())
+            ];
+        }, $messages);
 
-        // On remet en ordre croissant pour affichage correct
         return $this->json(array_reverse($data));
     }
     
-    #[Route('/messages/{id}', name: 'update_message', methods: ['PUT'])]
+    #[Route('/api/messages/{id}', name: 'update_message', methods: ['PUT'])]
     public function updateMessage(Messages $message, Request $request, EntityManagerInterface $em): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -140,7 +157,7 @@ class MessageController extends AbstractController
         ]);
     }
 
-    #[Route('/messages/{id}', name: 'delete_message', methods: ['DELETE'])]
+    #[Route('/api/messages/{id}', name: 'delete_message', methods: ['DELETE'])]
     public function deleteMessage(Messages $message, EntityManagerInterface $em): JsonResponse
     {
         $em->remove($message);

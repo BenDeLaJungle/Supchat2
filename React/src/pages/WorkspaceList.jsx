@@ -9,7 +9,7 @@ export default function WorkspaceList() {
   const [newWorkspaceStatus, setNewWorkspaceStatus] = useState('1');
 
   const fetchWorkspaces = async () => {
-    const data = await apiFetch('api/workspaces');
+    const data = await apiFetch('workspaces');
     setWorkspaces(data);
   };
 
@@ -23,7 +23,7 @@ export default function WorkspaceList() {
     try {
       const isPublic = newWorkspaceStatus === "1";
 
-      await apiFetch('api/workspaces', {
+      await apiFetch('workspaces', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

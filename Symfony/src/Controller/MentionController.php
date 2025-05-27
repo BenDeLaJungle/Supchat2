@@ -11,7 +11,7 @@ use App\Entity\Mentions;
 use App\Entity\Users;
 use App\Entity\Messages;
 
-#[Route('/mention')]
+#[Route('api/mention')]
 class MentionController extends AbstractController
 {
     #[Route('/add', name: 'mention_add', methods: ['POST'])]

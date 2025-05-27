@@ -8,6 +8,25 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
   const [content, setContent] = useState('');
   const { socket, isReady } = useSocket();
 
+  const extractMentionsAndChannels = (text) => {
+    const mentionRegex = /@([a-zA-Z0-9_-]+)/g;
+    const channelRegex = /#([a-zA-Z0-9_-]+)/g;
+
+    const mentions = [];
+    const channels = [];
+
+    let match;
+    while ((match = mentionRegex.exec(text)) !== null) {
+      mentions.push(match[1]);
+    }
+
+    while ((match = channelRegex.exec(text)) !== null) {
+      channels.push(match[1]);
+    }
+
+    return { mentions, channels };
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmed = content.trim();
@@ -18,7 +37,10 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
       return;
     }
 
+    const { mentions, channels } = extractMentionsAndChannels(trimmed);
+
     try {
+      // Étape 1 : Créer le message
       const backendResponse = await apiFetch('messages', {
         method: 'POST',
         body: JSON.stringify({
@@ -28,23 +50,62 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
         })
       });
 
+      const messageId = backendResponse.id;
+
+      // Étape 2 : Créer mentions et hashtags
+      const tasks = [];
+
+      // @mentions
+      for (const username of mentions) {
+        tasks.push(
+          apiFetch(`users/by-username/${username}`)
+            .then(user => {
+              if (user && user.id) {
+                return apiFetch('mention/add', {
+                  method: 'POST',
+                  body: JSON.stringify({
+                    userId: user.id,
+                    messageId: messageId
+                  })
+                });
+              }
+            })
+            .catch(err => console.warn(`Mention "${username}" ignorée :`, err.message))
+        );
+      }
+
+      // #hashtags
+      if (channels.length > 0) {
+        tasks.push(
+          apiFetch('hashtags', {
+            method: 'POST',
+            body: JSON.stringify({
+              message_id: messageId,
+              channels: channels
+            })
+          }).catch(err => console.warn("Erreur hashtags :", err.message))
+        );
+      }
+
+      await Promise.all(tasks);
+
+      // Étape 3 : Envoi via WebSocket
       const message = {
-        id: backendResponse.id,
+        id: messageId,
         content: trimmed,
         timestamp: backendResponse.timestamp,
         author: backendResponse.author || { id: userId, username: username || 'Inconnu' },
         channel: channelId
       };
 
-      console.log("Envoi via socket :", socket.id);
       socket.emit('message', message);
-      console.log("Message envoyé via socket :", message);
-
       setContent('');
     } catch (err) {
       console.error("Erreur à l'envoi :", err.message);
     }
   };
+
+  
 
   return (
     <form onSubmit={handleSubmit} className="message-form">

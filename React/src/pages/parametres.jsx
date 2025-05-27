@@ -36,7 +36,7 @@ export default function Parametres() {
     setErrorUpdateInfos('');
 
     try {
-      await apiFetch('api/user', {
+      await apiFetch('user', {
         method: 'PUT',
         body: JSON.stringify({ userName: username, emailAddress: email }),
       });
@@ -54,7 +54,7 @@ export default function Parametres() {
     setErrorUpdateStatut('');
 
     try {
-      await apiFetch('api/user', {
+      await apiFetch('user', {
         method: 'PUT',
         body: JSON.stringify({ status }),
       });
@@ -68,7 +68,7 @@ export default function Parametres() {
 
   const handleExportData = async () => {
     try {
-      const data = await apiFetch('api/user');
+      const data = await apiFetch('user');
       const json = JSON.stringify(data, null, 2);
       const blob = new Blob([json], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -90,7 +90,7 @@ export default function Parametres() {
     setTheme(newTheme);
 
     try {
-      await apiFetch('api/user', {
+      await apiFetch('user', {
         method: 'PUT',
         body: JSON.stringify({ theme: newTheme === 'dark' }),
       });

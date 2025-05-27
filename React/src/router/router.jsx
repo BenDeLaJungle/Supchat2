@@ -12,11 +12,11 @@ import WorkspaceList from "../pages/WorkspaceList";
 import WorkspaceDetail from "../pages/WorkspaceDetail";
 import ChatWindow from "../components/ChatWindow";
 import InviteValidation from '../components/InviteValidation';
-
 import { useParams } from "react-router-dom";
+
 function ChatWindowWrapper() {
   const { channelId } = useParams();
-  return <ChatWindow channelId={channelId} />;
+  return <ChatWindow key={channelId} channelId={parseInt(channelId)} />;
 }
 
 export default function AppRouter() {

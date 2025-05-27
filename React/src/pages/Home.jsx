@@ -21,7 +21,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    apiFetch('api/workspaces')
+    apiFetch('workspaces')
       .then((data) => {
         const sortedDesc = data.sort((a, b) => b.id - a.id);
         setDernierWorkspaces(sortedDesc.slice(0, 2));

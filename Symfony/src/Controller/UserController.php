@@ -39,6 +39,14 @@ class UserController extends AbstractController
         return new JsonResponse($userList);
     }
 
+    #[Route('/api/users/by-username/{username}', name: 'get_user_by_username', methods: ['GET'])]
+    public function getUserByUsername(string $username, UsersRepository $repo): JsonResponse {
+        $user = $repo->findOneBy(['userName' => $username]);
+        if (!$user) return $this->json(['error' => 'Utilisateur introuvable'], 404);
+        return $this->json(['id' => $user->getId(), 'username' => $user->getUsername()]);
+    }
+
+
     #[Route('/api/user', name: 'api_user_info', methods: ['GET'])]
     public function getUserInfo(): JsonResponse
     {

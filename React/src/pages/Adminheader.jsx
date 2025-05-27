@@ -22,7 +22,7 @@ const AdminHeader = () => {
 
   // Récupère tous les workspaces et ne garde que les 2 plus récents
   useEffect(() => {
-    apiFetch("api/workspaces")
+    apiFetch("workspaces")
       .then((data) => {
         const sortedDesc = data.sort((a, b) => b.id - a.id);
         setLastTwoWorkspaces(sortedDesc.slice(0, 2));

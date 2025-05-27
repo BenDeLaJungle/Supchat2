@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ChannelController extends AbstractController
 {
-    #[Route('/channels/{id}', name: 'get_channel', methods: ['GET'])]
+    #[Route('/api/channels/{id}', name: 'get_channel', methods: ['GET'])]
     public function getChannel(Channels $channel): JsonResponse
     {
         return new JsonResponse([
@@ -27,7 +27,24 @@ class ChannelController extends AbstractController
         ]);
     }
 
-    #[Route('/workspaces/{id}/channels', name: 'get_channels_by_workspace', methods: ['GET'])]
+    #[Route('/api/channels/by-name/{name}', name: 'get_channel_by_name', methods: ['GET'])]
+    public function getChannelByName(string $name, ChannelsRepository $repo): JsonResponse
+    {
+        $channel = $repo->findOneBy(['name' => $name]);
+
+        if (!$channel) {
+            return new JsonResponse(['error' => 'Channel non trouvé'], 404);
+        }
+
+        return new JsonResponse([
+            'id' => $channel->getId(),
+            'name' => $channel->getName(),
+            'status' => $channel->getStatus(),
+            'workspace' => $channel->getWorkspace()->getId()
+        ]);
+    }
+
+    #[Route('/api/workspaces/{id}/channels', name: 'get_channels_by_workspace', methods: ['GET'])]
     public function getChannelsByWorkspace(int $id, ChannelsRepository $repo): JsonResponse
     {
         $channels = $repo->findBy(['workspace' => $id]);
@@ -66,7 +83,7 @@ class ChannelController extends AbstractController
         return new JsonResponse(['status' => 'Canal créé', 'id' => $channel->getId()], 201);
     }
 
-    #[Route('/channels/{id}', name: 'update_channel', methods: ['PUT'])]
+    #[Route('/api/channels/{id}', name: 'update_channel', methods: ['PUT'])]
     public function updateChannel(Request $request, Channels $channel, EntityManagerInterface $em): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -84,7 +101,7 @@ class ChannelController extends AbstractController
         return new JsonResponse(['status' => 'Canal mis à jour']);
     }
 
-    #[Route('/channels/{id}', name: 'delete_channel', methods: ['DELETE'])]
+    #[Route('/api/channels/{id}', name: 'delete_channel', methods: ['DELETE'])]
     public function deleteChannel(Channels $channel, EntityManagerInterface $em): JsonResponse
     {
         $em->remove($channel);
@@ -93,7 +110,7 @@ class ChannelController extends AbstractController
         return new JsonResponse(['status' => 'Canal supprimé']);
     }
 
-    #[Route('/channels/{id}/privilege', name: 'get_channel_privilege', methods: ['POST'])]
+    #[Route('/api/channels/{id}/privilege', name: 'get_channel_privilege', methods: ['POST'])]
     public function getChannelPrivilege(
         Channels $channel,
         Request $request,
