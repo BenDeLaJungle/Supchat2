@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\WorkspaceMembersRepository;
-use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Workspaces;
 use App\Entity\Users;
 use App\Entity\Roles;
+use App\Repository\WorkspaceMembersRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: WorkspaceMembersRepository::class)]
@@ -63,7 +64,7 @@ class WorkspaceMembers
         return $this;
     }
 
-    public function getUser(): ?Users
+    public function getUser(): ?\App\Entity\Users
     {
         return $this->user;
     }
@@ -74,7 +75,7 @@ class WorkspaceMembers
         return $this;
     }
 
-    public function getRole(): ?Roles
+    public function getRole(): ?\App\Entity\Roles
     {
         return $this->role;
     }
@@ -126,5 +127,17 @@ class WorkspaceMembers
         $this->manage = $manage;
         return $this;
     }
+
+    public static function getUserRoleInWorkspace(int $workspaceId, int $userId, EntityManagerInterface $em): ?int
+    {
+        $repo = $em->getRepository(self::class);
+        $membership = $repo->findOneBy([
+            'workspace' => $workspaceId,
+            'user' => $userId,
+        ]);
+
+        return $membership?->getRole()?->getId();
+    }
+
 }
 

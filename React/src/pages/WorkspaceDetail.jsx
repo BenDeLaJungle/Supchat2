@@ -16,15 +16,15 @@ export default function WorkspaceDetail() {
   const [newRoleId, setNewRoleId] = useState('1');
 
   useEffect(() => {
-    apiFetch(`workspaces/${workspaceId}/channels`).then(setChannels);
-    apiFetch(`workspaces/${workspaceId}`).then(data => setWorkspaceName(data.name));
-    apiFetch(`workspaces/${workspaceId}/members`).then(setMembers);
-    apiFetch('users').then(setUsers);
+    apiFetch(`api/workspaces/${workspaceId}/channels`).then(setChannels);
+    apiFetch(`api/workspaces/${workspaceId}`).then(data => setWorkspaceName(data.name));
+    apiFetch(`api/workspaces/${workspaceId}/members`).then(setMembers);
+    apiFetch('api/users').then(setUsers);
   }, [workspaceId]);
 
   const handleCreateChannel = async () => {
     if (!newChannelName.trim()) return;
-    await apiFetch('channels', {
+    await apiFetch('api/channels', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -33,7 +33,7 @@ export default function WorkspaceDetail() {
         workspace_id: workspaceId
       })
     });
-    const updatedChannels = await apiFetch(`workspaces/${workspaceId}/channels`);
+    const updatedChannels = await apiFetch(`api/workspaces/${workspaceId}/channels`);
     setChannels(updatedChannels);
     setNewChannelName('');
     setNewChannelStatus('1');
@@ -41,7 +41,7 @@ export default function WorkspaceDetail() {
 
   const handleAddMember = async () => {
     if (!newMemberId) return;
-    await apiFetch(`workspaces/${workspaceId}/members`, {
+    await apiFetch(`api/workspaces/${workspaceId}/members`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -49,15 +49,15 @@ export default function WorkspaceDetail() {
         role_id: parseInt(newRoleId)
       })
     });
-    const updatedMembers = await apiFetch(`workspaces/${workspaceId}/members`);
+    const updatedMembers = await apiFetch(`api/workspaces/${workspaceId}/members`);
     setMembers(updatedMembers);
     setNewMemberId('');
     setNewRoleId('1');
   };
 
   const handleDeleteMember = async (memberId) => {
-    await apiFetch(`workspaces/${workspaceId}/members/${memberId}`, { method: 'DELETE' });
-    const updatedMembers = await apiFetch(`workspaces/${workspaceId}/members`);
+    await apiFetch(`api/workspaces/${workspaceId}/members/${memberId}`, { method: 'DELETE' });
+    const updatedMembers = await apiFetch(`api/workspaces/${workspaceId}/members`);
     setMembers(updatedMembers);
   };
 
@@ -71,7 +71,7 @@ export default function WorkspaceDetail() {
   };
 
   const handleGenerateInviteLink = async () => {
-    const response = await apiFetch(`workspaces/${workspaceId}/generate-invite`);
+    const response = await apiFetch(`api/workspaces/${workspaceId}/generate-invite`);
     setInviteLink(response.invite_link);
   };
 

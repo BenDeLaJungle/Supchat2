@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Workspaces;
 use App\Entity\WorkspaceMembers;
 use App\Entity\Channels;
+use App\Entity\Roles;
 use App\Repository\WorkspacesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -60,8 +61,10 @@ final class WorkspacesController extends AbstractController
             return $this->json(['error' => 'Workspace déjà existant.'], Response::HTTP_CONFLICT);
         }
 
+        /** @var \App\Entity\Users $user */
         $user = $this->getUser();
 
+        // Création du workspace
         $workspace = new Workspaces();
         $workspace->setName($data['name']);
         $workspace->setStatus($data['status']);
@@ -70,33 +73,72 @@ final class WorkspacesController extends AbstractController
         $entityManager->persist($workspace);
         $entityManager->flush();
 
-        return $this->json($workspace, Response::HTTP_CREATED);
-    }
-
-    #[Route('/{id}', name: 'workspaces_delete', methods: ['DELETE'])]
-    public function delete(Workspaces $workspace, EntityManagerInterface $entityManager): JsonResponse
-    {
-        $user = $this->getUser();
-        if ($workspace->getCreator() !== $user) {
-            return $this->json(['error' => 'Seul le créateur peut supprimer ce workspace.'], Response::HTTP_FORBIDDEN);
+        // Récupérer le rôle Admin (id = 3)
+        $role = $entityManager->getRepository(Roles::class)->find(3);
+        if (!$role) {
+            return $this->json(['error' => 'Rôle admin introuvable.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $members = $entityManager->getRepository(WorkspaceMembers::class)->count(['workspace' => $workspace]);
-        $channels = $entityManager->getRepository(Channels::class)->count(['workspace' => $workspace]);
+        // Ajouter le créateur comme membre admin
+        $workspaceMember = (new WorkspaceMembers())
+            ->setWorkspace($workspace)
+            ->setUser($user)
+            ->setRole($role)
+            ->setPublish(true)
+            ->setModerate(true)
+            ->setManage(true);
+
+        $entityManager->persist($workspaceMember);
+        $entityManager->flush();
+
+        return $this->json([
+            'id' => $workspace->getId(),
+            'name' => $workspace->getName(),
+            'status' => $workspace->getStatus(),
+            'creator_id' => $user->getId(),
+            'member_id' => $workspaceMember->getId()
+        ], Response::HTTP_CREATED);
+    }
+
+
+    #[Route('/{id}', name: 'workspaces_delete', methods: ['DELETE'])]
+    public function delete(Workspaces $workspace, EntityManagerInterface $em): JsonResponse
+    {
+        /** @var \App\Entity\Users $currentUser */
+        $currentUser = $this->getUser();
+        $currentUserId = $currentUser->getId();
+
+        $roleId = WorkspaceMembers::getUserRoleInWorkspace($workspace->getId(), $currentUserId, $em);
+        if (!Roles::hasPermission($roleId, 'delete_workspace')) {
+            return $this->json(['error' => 'Accès refusé.'], Response::HTTP_FORBIDDEN);
+        }
+
+        $members = $em->getRepository(WorkspaceMembers::class)->count(['workspace' => $workspace]);
+        $channels = $em->getRepository(Channels::class)->count(['workspace' => $workspace]);
 
         if ($members > 0 || $channels > 0) {
             return $this->json(['error' => 'Workspace non vide.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $entityManager->remove($workspace);
-        $entityManager->flush();
+        $em->remove($workspace);
+        $em->flush();
 
         return $this->json(['message' => 'Workspace supprimé avec succès.']);
     }
 
+
     #[Route('/{id}/generate-invite', name: 'generate_invite_link', methods: ['GET'])]
-    public function generateInviteLink(Workspaces $workspace): JsonResponse
+    public function generateInviteLink(Workspaces $workspace, EntityManagerInterface $em): JsonResponse
     {
+        /** @var \App\Entity\Users $currentUser */
+        $currentUser = $this->getUser();
+        $currentUserId = $currentUser->getId();
+
+        $roleId = WorkspaceMembers::getUserRoleInWorkspace($workspace->getId(), $currentUserId, $em);
+        if (!Roles::hasPermission($roleId, 'manage_roles')) {
+            return $this->json(['error' => 'Accès refusé.'], Response::HTTP_FORBIDDEN);
+        }
+
         $secret = 'mon_secret_partage';
         $expiry = (new \DateTime('+1 day'))->getTimestamp();
         $payload = $workspace->getId() . '|' . $expiry;
@@ -123,5 +165,3 @@ final class WorkspacesController extends AbstractController
         return $this->json(['message' => 'Lien valide pour workspace ' . $workspaceId]);
     }
 }
-
-

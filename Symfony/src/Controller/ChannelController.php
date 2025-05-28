@@ -5,12 +5,14 @@ namespace App\Controller;
 use App\Entity\Channels;
 use App\Entity\Workspaces;
 use App\Entity\WorkspaceMembers;
+use App\Entity\Roles;
 use App\Repository\ChannelsRepository;
 use App\Repository\WorkspaceMembersRepository;
 use App\Repository\WorkspacesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -70,6 +72,15 @@ class ChannelController extends AbstractController
         $workspace = $workspaceRepo->find($data['workspace_id']);
         if (!$workspace) {
             return new JsonResponse(['error' => 'Workspace introuvable'], 404);
+        }
+
+        /** @var \App\Entity\Users $currentUser */
+        $currentUser = $this->getUser();
+        $currentUserId = $currentUser->getId();
+
+        $roleId = WorkspaceMembers::getUserRoleInWorkspace($workspace->getId(), $currentUserId, $em);
+        if (!Roles::hasPermission($roleId, 'create_channel')) {
+            return new JsonResponse(['error' => 'Accès refusé.'], 403);
         }
 
         $channel = new Channels();
@@ -155,10 +166,32 @@ class ChannelController extends AbstractController
         }
 
         return $this->json([
-            'is_admin' => $isAdmin,
+            'is_admin' => $role && $role->getId() === 3,
             'can_moderate' => $canModerate,
             'can_manage' => $canManage
         ]);
     }
-}
 
+    #[Route('/api/workspaces/{workspaceId}/channels', name: 'workspace_channels_index', methods: ['GET'])]
+    public function listChannels(int $workspaceId, EntityManagerInterface $em): JsonResponse
+    {
+        $workspace = $em->getRepository(Workspaces::class)->find($workspaceId);
+
+        if (!$workspace) {
+            return $this->json(['message' => 'Workspace non trouvé'], Response::HTTP_NOT_FOUND);
+        }
+
+        $channels = $em->getRepository(Channels::class)->findBy(['workspace' => $workspace]);
+
+        $data = array_map(function (Channels $channel) {
+            return [
+                'id'     => $channel->getId(),
+                'name'   => $channel->getName(),
+                'status' => $channel->getStatus(),
+            ];
+        }, $channels);
+
+        return $this->json($data);
+    }
+
+}

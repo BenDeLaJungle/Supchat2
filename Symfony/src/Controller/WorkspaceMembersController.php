@@ -25,21 +25,14 @@ final class WorkspaceMembersController extends AbstractController
     private function getPermissionsFromMember(WorkspaceMembers $member): array
     {
         $role = $member->getRole();
-        if ($role !== null) {
-            return [
-                'publish'  => $role->canPublish(),
-                'moderate' => $role->canModerate(),
-                'manage'   => $role->canManage(),
-            ];
-        }
         return [
-            'publish'  => $member->canPublish(),
-            'moderate' => $member->canModerate(),
-            'manage'   => $member->canManage(),
+            'publish'  => $role?->canPublish() ?? $member->canPublish(),
+            'moderate' => $role?->canModerate() ?? $member->canModerate(),
+            'manage'   => $role?->canManage() ?? $member->canManage(),
         ];
     }
 
-    #[Route('/api/workspaces/{workspaceId}/members', name: 'workspace_members_index', methods: ['GET'])]
+    #[Route('api/workspaces/{workspaceId}/members', name: 'workspace_members_index', methods: ['GET'])]
     public function listMembers(int $workspaceId): JsonResponse
     {
         $workspace = $this->em->getRepository(Workspaces::class)->find($workspaceId);
@@ -49,19 +42,18 @@ final class WorkspaceMembersController extends AbstractController
 
         $members = $this->em->getRepository(WorkspaceMembers::class)->findBy(['workspace' => $workspace]);
 
-        $data = [];
-        foreach ($members as $member) {
+        $data = array_map(function (WorkspaceMembers $member) {
             $permissions = $this->getPermissionsFromMember($member);
-            $data[] = [
+            return [
                 'id'        => $member->getId(),
                 'user_id'   => $member->getUser()->getId(),
                 'user_name' => $member->getUser()->getUserName(),
-                'role_id'   => $member->getRole() ? $member->getRole()->getId() : null,
+                'role_id'   => $member->getRole()?->getId(),
                 'publish'   => $permissions['publish'],
                 'moderate'  => $permissions['moderate'],
                 'manage'    => $permissions['manage'],
             ];
-        }
+        }, $members);
 
         return $this->json($data);
     }
@@ -69,6 +61,22 @@ final class WorkspaceMembersController extends AbstractController
     #[Route('/api/workspaces/{workspaceId}/members', name: 'workspace_member_create', methods: ['POST'])]
     public function createMember(Request $request, int $workspaceId): JsonResponse
     {
+        $user = $this->getUser();
+
+        if (!$user instanceof Users) {
+            return $this->json(['message' => 'Utilisateur non authentifié'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $currentUserId = $user->getId();
+
+        $roleId = WorkspaceMembers::getUserRoleInWorkspace($workspaceId, $currentUserId, $this->em);
+
+
+
+        if (!Roles::hasPermission($roleId, 'manage_members')) {
+            return $this->json(['message' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
+        }
+
         $workspace = $this->em->getRepository(Workspaces::class)->find($workspaceId);
         if (!$workspace) {
             return $this->json(['message' => 'Workspace non trouvé'], Response::HTTP_NOT_FOUND);
@@ -80,30 +88,28 @@ final class WorkspaceMembersController extends AbstractController
         }
 
         $user = $this->em->getRepository(Users::class)->find($data['user_id']);
-        if (!$user) {
-            return $this->json(['message' => 'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
-        }
-
         $role = $this->em->getRepository(Roles::class)->find($data['role_id']);
-        if (!$role) {
-            return $this->json(['message' => 'Rôle non trouvé'], Response::HTTP_NOT_FOUND);
+
+        if (!$user || !$role) {
+            return $this->json(['message' => 'Utilisateur ou rôle non trouvé'], Response::HTTP_NOT_FOUND);
         }
 
         $existingMember = $this->em->getRepository(WorkspaceMembers::class)->findOneBy([
             'workspace' => $workspace,
             'user' => $user
         ]);
+
         if ($existingMember) {
             return $this->json(['message' => 'Cet utilisateur est déjà membre du workspace'], Response::HTTP_CONFLICT);
         }
 
-        $workspaceMember = new WorkspaceMembers();
-        $workspaceMember->setWorkspace($workspace)
-                        ->setUser($user)
-                        ->setRole($role)
-                        ->setPublish($data['publish'] ?? 0)
-                        ->setModerate($data['moderate'] ?? 0)
-                        ->setManage($data['manage'] ?? 0);
+        $workspaceMember = (new WorkspaceMembers())
+            ->setWorkspace($workspace)
+            ->setUser($user)
+            ->setRole($role)
+            ->setPublish($data['publish'] ?? false)
+            ->setModerate($data['moderate'] ?? false)
+            ->setManage($data['manage'] ?? false);
 
         $this->em->persist($workspaceMember);
         $this->em->flush();
@@ -118,16 +124,27 @@ final class WorkspaceMembersController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-    #[Route('/api/workspaces/{workspaceId}/members/{memberId}', name: 'workspace_member_delete', methods: ['DELETE'])]
+    #[Route('api/workspaces/{workspaceId}/members/{memberId}', name: 'workspace_member_delete', methods: ['DELETE'])]
     public function deleteMember(int $workspaceId, int $memberId): JsonResponse
     {
-        $workspace = $this->em->getRepository(Workspaces::class)->find($workspaceId);
-        if (!$workspace) {
-            return $this->json(['message' => 'Workspace non trouvé'], Response::HTTP_NOT_FOUND);
+        $user = $this->getUser();
+
+        if (!$user instanceof Users) {
+            return $this->json(['message' => 'Utilisateur non authentifié'], Response::HTTP_UNAUTHORIZED);
         }
 
+        $currentUserId = $user->getId();
+
+        $roleId = WorkspaceMembers::getUserRoleInWorkspace($workspaceId, $currentUserId, $this->em);
+
+        if (!Roles::hasPermission($roleId, 'manage_members')) {
+            return $this->json(['message' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
+        }
+
+        $workspace = $this->em->getRepository(Workspaces::class)->find($workspaceId);
         $member = $this->em->getRepository(WorkspaceMembers::class)->find($memberId);
-        if (!$member || $member->getWorkspace()->getId() !== $workspaceId) {
+
+        if (!$workspace || !$member || $member->getWorkspace()->getId() !== $workspaceId) {
             return $this->json(['message' => 'Membre non trouvé dans ce workspace'], Response::HTTP_NOT_FOUND);
         }
 
@@ -140,54 +157,34 @@ final class WorkspaceMembersController extends AbstractController
 
         return $this->json(['message' => 'Membre supprimé avec succès']);
     }
-    #[Route('/api/workspaces/{workspaceId}/members/{memberId}', name: 'workspace_member_detail', methods: ['GET'])]
-    public function getMember(int $workspaceId, int $memberId): JsonResponse
-    {
-        $workspace = $this->em->getRepository(Workspaces::class)->find($workspaceId);
-        if (!$workspace) {
-            return $this->json(['message' => 'Workspace non trouvé'], Response::HTTP_NOT_FOUND);
-        }
 
-        $member = $this->em->getRepository(WorkspaceMembers::class)->find($memberId);
-        if (!$member || $member->getWorkspace()->getId() !== $workspaceId) {
-            return $this->json(['message' => 'Membre non trouvé dans ce workspace'], Response::HTTP_NOT_FOUND);
-        }
-
-        $permissions = $this->getPermissionsFromMember($member);
-        return $this->json([
-            'id'       => $member->getId(),
-            'user_id'  => $member->getUser()->getId(),
-            'role_id'  => $member->getRole() ? $member->getRole()->getId() : null,
-            'publish'  => $permissions['publish'],
-            'moderate' => $permissions['moderate'],
-            'manage'   => $permissions['manage'],
-        ]);
-    }
-
-    #[Route('/api/workspaces/{workspaceId}/members/{memberId}', name: 'workspace_member_update', methods: ['PUT'])]
+    #[Route('/workspaces/{workspaceId}/members/{memberId}', name: 'workspace_member_update', methods: ['PUT'])]
     public function updateMember(Request $request, int $workspaceId, int $memberId): JsonResponse
     {
-        $workspace = $this->em->getRepository(Workspaces::class)->find($workspaceId);
-        if (!$workspace) {
-            return $this->json(['message' => 'Workspace non trouvé'], Response::HTTP_NOT_FOUND);
+        $user = $this->getUser();
+
+        if (!$user instanceof Users) {
+            return $this->json(['message' => 'Utilisateur non authentifié'], Response::HTTP_UNAUTHORIZED);
         }
 
+        $currentUserId = $user->getId();
+
+        $roleId = WorkspaceMembers::getUserRoleInWorkspace($workspaceId, $currentUserId, $this->em);
+
+        if (!Roles::hasPermission($roleId, 'manage_roles')) {
+            return $this->json(['message' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
+        }
+
+        $workspace = $this->em->getRepository(Workspaces::class)->find($workspaceId);
         $member = $this->em->getRepository(WorkspaceMembers::class)->find($memberId);
-        if (!$member || $member->getWorkspace()->getId() !== $workspaceId) {
-            return $this->json(['message' => 'Membre non trouvé dans ce workspace'], Response::HTTP_NOT_FOUND);
+
+        if (!$workspace || !$member || $member->getWorkspace()->getId() !== $workspaceId) {
+            return $this->json(['message' => 'Membre non trouvé'], Response::HTTP_NOT_FOUND);
         }
 
         $data = json_decode($request->getContent(), true);
-        if (json_last_error() !== JSON_ERROR_NONE || !$data) {
+        if (!$data) {
             return $this->json(['message' => 'Format JSON invalide'], Response::HTTP_BAD_REQUEST);
-        }
-
-        if (isset($data['user_id'])) {
-            $user = $this->em->getRepository(Users::class)->find($data['user_id']);
-            if (!$user) {
-                return $this->json(['message' => 'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
-            }
-            $member->setUser($user);
         }
 
         if (isset($data['role_id'])) {
@@ -214,14 +211,31 @@ final class WorkspaceMembersController extends AbstractController
         return $this->json([
             'id'       => $member->getId(),
             'user_id'  => $member->getUser()->getId(),
-            'role_id'  => $member->getRole() ? $member->getRole()->getId() : null,
+            'role_id'  => $member->getRole()?->getId(),
+            'publish'  => $permissions['publish'],
+            'moderate' => $permissions['moderate'],
+            'manage'   => $permissions['manage'],
+        ]);
+    }
+
+    #[Route('/workspaces/{workspaceId}/members/{memberId}', name: 'workspace_member_detail', methods: ['GET'])]
+    public function getMember(int $workspaceId, int $memberId): JsonResponse
+    {
+        $workspace = $this->em->getRepository(Workspaces::class)->find($workspaceId);
+        $member = $this->em->getRepository(WorkspaceMembers::class)->find($memberId);
+
+        if (!$workspace || !$member || $member->getWorkspace()->getId() !== $workspaceId) {
+            return $this->json(['message' => 'Membre non trouvé'], Response::HTTP_NOT_FOUND);
+        }
+
+        $permissions = $this->getPermissionsFromMember($member);
+        return $this->json([
+            'id'       => $member->getId(),
+            'user_id'  => $member->getUser()->getId(),
+            'role_id'  => $member->getRole()?->getId(),
             'publish'  => $permissions['publish'],
             'moderate' => $permissions['moderate'],
             'manage'   => $permissions['manage'],
         ]);
     }
 }
-
-
-
-

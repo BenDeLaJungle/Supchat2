@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Messages;
 use App\Entity\Channels;
+use App\Entity\WorkspaceMembers;
+use App\Entity\Roles;
 use App\Repository\MessagesRepository;
 use App\Repository\ChannelsRepository;
 use App\Repository\UsersRepository;
@@ -15,7 +17,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MessageController extends AbstractController
 {
-
     private function formatHashtag($hashtag): array
     {
         return [
@@ -26,7 +27,6 @@ class MessageController extends AbstractController
             ]
         ];
     }
-
 
     #[Route('/api/messages', name: 'create_message', methods: ['POST'])]
     public function createMessage(
@@ -137,7 +137,7 @@ class MessageController extends AbstractController
 
         return $this->json(array_reverse($data));
     }
-    
+
     #[Route('/api/messages/{id}', name: 'update_message', methods: ['PUT'])]
     public function updateMessage(Messages $message, Request $request, EntityManagerInterface $em): JsonResponse
     {
@@ -160,10 +160,20 @@ class MessageController extends AbstractController
     #[Route('/api/messages/{id}', name: 'delete_message', methods: ['DELETE'])]
     public function deleteMessage(Messages $message, EntityManagerInterface $em): JsonResponse
     {
+        /** @var \App\Entity\Users $currentUser */
+        $currentUser = $this->getUser();
+        $currentUserId = $currentUser->getId();
+
+        $workspace = $message->getChannel()->getWorkspace();
+        $roleId = WorkspaceMembers::getUserRoleInWorkspace($workspace->getId(), $currentUserId, $em);
+
+        if (!Roles::hasPermission($roleId, 'moderate')) {
+            return new JsonResponse(['error' => 'Suppression refusée.'], 403);
+        }
+
         $em->remove($message);
         $em->flush();
 
         return new JsonResponse(['status' => 'Message supprimé']);
     }
 }
-

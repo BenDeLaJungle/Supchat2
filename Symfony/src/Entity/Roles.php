@@ -98,4 +98,17 @@ class Roles
         $this->manage = $manage;
         return $this;
     }
+
+    public static function hasPermission(int $roleId, string $action): bool
+    {
+        $permissions = [
+            'create_workspace'    => [1, 2, 3],
+            'create_channel'      => [2, 3],
+            'manage_members'      => [2, 3],
+            'manage_roles'        => [3],
+            'delete_workspace'    => [3],
+        ];
+
+        return in_array($roleId, $permissions[$action] ?? []);
+    }
 }
