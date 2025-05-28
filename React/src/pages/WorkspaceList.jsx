@@ -8,14 +8,21 @@ export default function WorkspaceList() {
   const [newWorkspaceName, setNewWorkspaceName] = useState('');
   const [newWorkspaceStatus, setNewWorkspaceStatus] = useState('1');
 
+  // on extrait la logique asynchrone ici
   const fetchWorkspaces = async () => {
-    const data = await apiFetch('workspaces');
-    setWorkspaces(data);
+    try {
+      const data = await apiFetch('workspaces');
+      setWorkspaces(data);
+    } catch (err) {
+      console.error('Erreur lors de la récupération des workspaces :', err);
+    }
   };
 
   useEffect(() => {
+    // on appelle notre fonction async depuis un effet synchrone
     fetchWorkspaces();
-  }, []);
+    // pas de cleanup nécessaire ici
+  }, []); // une seule fois au montage
 
   const handleCreateWorkspace = async () => {
     if (!newWorkspaceName.trim()) return;
@@ -32,6 +39,7 @@ export default function WorkspaceList() {
         })
       });
 
+      // on rafraîchit la liste après création
       fetchWorkspaces();
       setNewWorkspaceName('');
       setNewWorkspaceStatus('1');

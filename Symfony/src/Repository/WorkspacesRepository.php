@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Workspaces;
+use App\Entity\WorkspaceMembers;
+use App\Entity\Users;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +18,48 @@ class WorkspacesRepository extends ServiceEntityRepository
         parent::__construct($registry, Workspaces::class);
     }
 
-//    /**
-//     * @return Workspaces[] Returns an array of Workspaces objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('w')
-//            ->andWhere('w.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('w.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Retourne les workspaces dont l'utilisateur est membre, triés du plus récent au plus ancien.
+     *
+     * @param Users $user
+     * @return Workspaces[]
+     */
+    public function findByUser(Users $user): array
+    {
+        return $this->createQueryBuilder('w')
+            ->innerJoin(
+                WorkspaceMembers::class,
+                'm',
+                'WITH',
+                'm.workspace = w'
+            )
+            ->andWhere('m.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('w.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Workspaces
-//    {
-//        return $this->createQueryBuilder('w')
-//            ->andWhere('w.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    // /**
+    //  * @return Workspaces[] Returns an array of Workspaces objects
+    //  */
+    // public function findByExampleField($value): array
+    // {
+    //     return $this->createQueryBuilder('w')
+    //         ->andWhere('w.exampleField = :val')
+    //         ->setParameter('val', $value)
+    //         ->orderBy('w.id', 'ASC')
+    //         ->setMaxResults(10)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
+    // public function findOneBySomeField($value): ?Workspaces
+    // {
+    //     return $this->createQueryBuilder('w')
+    //         ->andWhere('w.exampleField = :val')
+    //         ->setParameter('val', $value)
+    //         ->getQuery()
+    //         ->getOneOrNullResult();
+    // }
 }

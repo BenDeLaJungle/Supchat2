@@ -197,11 +197,9 @@
   margin-bottom: 0.5rem; 
 }
 
-/* responsive partie */
-
 @media (min-width: 768px) {
   .parametres-container {
     grid-template-columns: 1fr 1fr;
-    gap: 6px;                 /* on peut augmenter le gap pour desktop */
+    gap: 6px;               
   }
 }
