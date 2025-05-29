@@ -8,7 +8,10 @@ export default function WorkspaceList() {
   const [newWorkspaceName, setNewWorkspaceName] = useState('');
   const [newWorkspaceStatus, setNewWorkspaceStatus] = useState('1');
 
-  // on extrait la logique asynchrone ici
+  // pour gérer l'invitation
+  const [inviteLink, setInviteLink] = useState('');
+
+  // charge la liste des workspaces dont je suis membre
   const fetchWorkspaces = async () => {
     try {
       const data = await apiFetch('workspaces');
@@ -19,17 +22,14 @@ export default function WorkspaceList() {
   };
 
   useEffect(() => {
-    // on appelle notre fonction async depuis un effet synchrone
     fetchWorkspaces();
-    // pas de cleanup nécessaire ici
-  }, []); // une seule fois au montage
+  }, []);
 
+  // création de workspace
   const handleCreateWorkspace = async () => {
     if (!newWorkspaceName.trim()) return;
-
     try {
       const isPublic = newWorkspaceStatus === "1";
-
       await apiFetch('workspaces', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -38,13 +38,34 @@ export default function WorkspaceList() {
           status: isPublic
         })
       });
-
-      // on rafraîchit la liste après création
-      fetchWorkspaces();
       setNewWorkspaceName('');
       setNewWorkspaceStatus('1');
+      fetchWorkspaces();
     } catch (error) {
       console.error("Erreur lors de la création du workspace :", error.message);
+    }
+  };
+
+  // rejoindre via un lien d'invitation
+  const handleJoinWithLink = async () => {
+    if (!inviteLink.trim()) {
+      alert('Veuillez coller un lien ou un token d\'invitation.');
+      return;
+    }
+
+    // on extrait juste le token à la fin de l'URL ou on suppose que l'utilisateur a collé directement le token
+    const token = inviteLink.includes('/')
+      ? inviteLink.trim().split('/').pop()
+      : inviteLink.trim();
+
+    try {
+      await apiFetch(`workspaces/invite/${token}`, { method: 'POST' });
+      setInviteLink('');
+      fetchWorkspaces();
+      alert('Vous avez rejoint le workspace avec succès !');
+    } catch (err) {
+      console.error('Erreur lors de la jonction au workspace :', err);
+      alert(`Impossible de rejoindre : ${err.message}`);
     }
   };
 
@@ -70,6 +91,7 @@ export default function WorkspaceList() {
           ))}
         </div>
 
+        {/* création de workspace */}
         <div className="work-channel-create-form">
           <input
             type="text"
@@ -88,6 +110,20 @@ export default function WorkspaceList() {
           </select>
           <button onClick={handleCreateWorkspace} className="work-channel-create-button">
             Créer un workspace
+          </button>
+        </div>
+
+        {/* rejoindre via un lien d'invitation */}
+        <div className="work-channel-create-form" style={{ marginTop: '2rem' }}>
+          <input
+            type="text"
+            value={inviteLink}
+            onChange={e => setInviteLink(e.target.value)}
+            placeholder="Coller le lien d'invitation ou le token"
+            className="work-channel-input"
+          />
+          <button onClick={handleJoinWithLink} className="work-channel-create-button">
+            Rejoindre un workspace
           </button>
         </div>
       </div>
