@@ -32,7 +32,7 @@ final class WorkspaceMembersController extends AbstractController
         ];
     }
 
-    #[Route('api/workspaces/{workspaceId}/members', name: 'workspace_members_index', methods: ['GET'])]
+    #[Route('/api/workspaces/{workspaceId}/members', name: 'workspace_members_index', methods: ['GET'])]
     public function listMembers(int $workspaceId): JsonResponse
     {
         $workspace = $this->em->getRepository(Workspaces::class)->find($workspaceId);
@@ -124,7 +124,7 @@ final class WorkspaceMembersController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-    #[Route('api/workspaces/{workspaceId}/members/{memberId}', name: 'workspace_member_delete', methods: ['DELETE'])]
+    #[Route('/api/workspaces/{workspaceId}/members/{memberId}', name: 'workspace_member_delete', methods: ['DELETE'])]
     public function deleteMember(int $workspaceId, int $memberId): JsonResponse
     {
         $user = $this->getUser();
@@ -158,7 +158,7 @@ final class WorkspaceMembersController extends AbstractController
         return $this->json(['message' => 'Membre supprimé avec succès']);
     }
 
-    #[Route('/workspaces/{workspaceId}/members/{memberId}', name: 'workspace_member_update', methods: ['PUT'])]
+    #[Route('/api/workspaces/{workspaceId}/members/{memberId}', name: 'workspace_member_update', methods: ['PUT'])]
     public function updateMember(Request $request, int $workspaceId, int $memberId): JsonResponse
     {
         $user = $this->getUser();
@@ -218,7 +218,7 @@ final class WorkspaceMembersController extends AbstractController
         ]);
     }
 
-    #[Route('/workspaces/{workspaceId}/members/{memberId}', name: 'workspace_member_detail', methods: ['GET'])]
+    #[Route('/api/workspaces/{workspaceId}/members/{memberId}', name: 'workspace_member_detail', methods: ['GET'])]
     public function getMember(int $workspaceId, int $memberId): JsonResponse
     {
         $workspace = $this->em->getRepository(Workspaces::class)->find($workspaceId);
