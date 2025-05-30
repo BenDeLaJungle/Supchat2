@@ -37,6 +37,8 @@ export default function AppRouter() {
         <Route path="/channels/:channelId" element={<ChatWindowWrapper />} />
         <Route path="/private-message/:recipientId" element={<PrivateMessage />} />
         <Route path="/invite/:token" element={<InviteValidation />} />
+        <Route path="/workspaces/:workspaceId/channels/:channelId" element={<ChatWindowWrapper />} />
+
         
       </Routes>
   );
