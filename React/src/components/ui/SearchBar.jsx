@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiFetch } from "../services/api";
-import '../styles/index.css';
+import { apiFetch } from "../../services/api";
+import '../../styles/index.css';
 
 const SearchBar = ({ onSearchChange }) => {
   const [searchTerm, setSearchTerm] = useState("");

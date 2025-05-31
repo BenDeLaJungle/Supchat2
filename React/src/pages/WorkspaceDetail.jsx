@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { apiFetch } from '../services/api';
-import AdminHeader from './Adminheader';
+import AdminHeader from '../components/ui/Adminheader';
 
 export default function WorkspaceDetail() {
   const { workspaceId } = useParams();

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/index.css';
+import '../../styles/index.css';
+import '../../styles/index.css';
 
 const Card = ({ title, description, image, link }) => {
     const navigate = useNavigate();

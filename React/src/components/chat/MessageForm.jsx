@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { apiFetch } from '../services/api';
-import '../styles/color.css';
-import '../styles/chat.css';
-import { useSocket } from '../context/SocketContext';
+import { apiFetch } from '../../services/api';
+import '../../styles/color.css';
+import '../../styles/chat.css';
+import { useSocket } from '../../context/SocketContext';
 
 const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
   const [content, setContent] = useState('');
@@ -40,7 +40,7 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
     const { mentions, channels } = extractMentionsAndChannels(trimmed);
 
     try {
-      // Étape 1 : Créer le message
+      //Créer le message
       const backendResponse = await apiFetch('messages', {
         method: 'POST',
         body: JSON.stringify({
@@ -52,7 +52,7 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
 
       const messageId = backendResponse.id;
 
-      // Étape 2 : Créer mentions et hashtags
+      //Créer mentions et hashtags
       const tasks = [];
 
       // @mentions
@@ -61,12 +61,22 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
           apiFetch(`users/by-username/${username}`)
             .then(user => {
               if (user && user.id) {
+                //Créer la mention
                 return apiFetch('mention/add', {
                   method: 'POST',
                   body: JSON.stringify({
                     userId: user.id,
                     messageId: messageId
                   })
+                }).then(() => {
+                  //Créer une notification
+                  return apiFetch('notifications/create', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                      userId: user.id,
+                      messageId: messageId
+                    })
+                  });
                 });
               }
             })
@@ -89,7 +99,7 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
 
       await Promise.all(tasks);
 
-      // Étape 3 : Envoi via WebSocket
+      //Envoi via WebSocket
       const message = {
         id: messageId,
         content: trimmed,

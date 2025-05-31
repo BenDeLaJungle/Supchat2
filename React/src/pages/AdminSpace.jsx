@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { apiFetch } from "../services/api";
 import "../styles/Admin.css";
-import AdminHeader from "./Adminheader";
+import AdminHeader from "../components/ui/Adminheader";
 
 const AdminPanel = () => {
   const [users, setUsers] = useState([]);

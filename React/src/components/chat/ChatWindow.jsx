@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import MessageList from '../components/MessageList';
-import MessageForm from '../components/MessageForm';
-import WebSocketHandler from '../components/WebSocketHandler';
-import { useAuth } from '../context/AuthContext';
-import '../styles/color.css';
-import '../styles/chat.css';
-import { apiFetch } from '../services/api';
-import AdminHeader from '../pages/Adminheader';
+import MessageList from './MessageList';
+import MessageForm from './MessageForm';
+import WebSocketHandler from '../socket/WebSocketHandler';
+import { useAuth } from '../../context/AuthContext';
+import '../../styles/color.css';
+import '../../styles/chat.css';
+import { apiFetch } from '../../services/api';
+import AdminHeader from '../ui/Adminheader';
 
 const ChatWindow = ({ channelId = 1 }) => {
   const { user } = useAuth();
@@ -25,7 +25,7 @@ const ChatWindow = ({ channelId = 1 }) => {
           body: JSON.stringify({ user_id: user.id })
         });
 
-        console.log("🔐 Privilèges récupérés :", data); // ←✨ ICI
+        console.log("Privilèges récupérés :", data); 
 
         setPrivileges({
           isAdmin: data.is_admin,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { apiFetch } from '../services/api';
+import { apiFetch } from '../../services/api';
 
 const ChannelList = ({ workspaceId, onSelectChannel }) => {
   const [channels, setChannels] = useState([]);

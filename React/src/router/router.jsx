@@ -6,7 +6,7 @@ import Calendrier from '../pages/calendrier';
 import AdminSpace from '../pages/AdminSpace';
 import Messaging from "../pages/Messaging";
 import Parametres from '../pages/parametres';
-import PrivateMessage from "../pages/privateMessage";
+import chatPage from "../pages/chatPage";
 import UserPage from "../pages/UserPage";
 import WorkspaceList from "../pages/WorkspaceList";
 import WorkspaceDetail from "../pages/WorkspaceDetail";
@@ -31,11 +31,11 @@ export default function AppRouter() {
         <Route path="/AdminSpace" element={<AdminSpace />} />
 		    <Route path="/user" element={<UserPage />} />
         <Route path="/parametres" element={<Parametres />} />
-        <Route path="/test-messages" element={<PrivateMessage />} />
+        <Route path="/test-messages" element={<chatPage />} />
         <Route path="/workspaces" element={<WorkspaceList />} />
         <Route path="/workspaces/:workspaceId" element={<WorkspaceDetail />} />
         <Route path="/channels/:channelId" element={<ChatWindowWrapper />} />
-        <Route path="/private-message/:recipientId" element={<PrivateMessage />} />
+        <Route path="/private-message/:recipientId" element={<chatPage />} />
         <Route path="/invite/:token" element={<InviteValidation />} />
         <Route path="/workspaces/:workspaceId/channels/:channelId" element={<ChatWindowWrapper />} />
 

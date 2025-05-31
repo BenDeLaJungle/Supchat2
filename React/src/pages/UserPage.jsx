@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import AdminHeader from "./Adminheader";
+import AdminHeader from "../components/ui/Adminheader";
 import '../styles/user.css';
 
 const UserPage = () => {

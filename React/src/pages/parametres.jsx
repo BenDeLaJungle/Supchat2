@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import '../styles/parametres.css';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
-import AdminHeader from './Adminheader';
+import AdminHeader from '../components/ui/Adminheader';
 
 export default function Parametres() {
   const { user, setUser } = useAuth();

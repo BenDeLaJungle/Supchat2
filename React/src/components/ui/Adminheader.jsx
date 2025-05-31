@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { logout } from "../services/auth";
-import { useAuth } from "../context/AuthContext";
+import { logout } from "../../services/auth";
+import { useAuth } from "../../context/AuthContext";
 import { apiFetch } from "../services/api";
 
-import messenger from "../assets/messsage.png";
-import files from "../assets/share.png";
-import notif from "../assets/notif.png";
-import workspaceIcon from "../assets/workspace.png";
-import calendrier from "../assets/calendrier.png";
-import adminspace from "../assets/adminspace.png";
-import parametres from "../assets/settings.png";
-import logo from "../assets/logo-supchat.png";
+import messenger from "../../assets/messsage.png";
+import files from "../../assets/share.png";
+import notif from "../../assets/notif.png";
+import workspaceIcon from "../../assets/workspace.png";
+import calendrier from "../../assets/calendrier.png";
+import adminspace from "../../assets/adminspace.png";
+import parametres from "../../assets/settings.png";
+import logo from "../../assets/logo-supchat.png";
 
-import "../styles/index.css";
+import "../../styles/index.css";
 
 const AdminHeader = () => {
   const navigate = useNavigate();

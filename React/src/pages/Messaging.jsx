@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../services/api';
-import AdminHeader from './Adminheader';
-import MessageList from '../components/MessageList';
-import MessageForm from '../components/MessageForm';
+import AdminHeader from '../components/ui/Adminheader';
+import MessageList from '../components/chat/MessageList';
+import MessageForm from '../components/chat/MessageForm';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import '../styles/index.css';
@@ -17,7 +17,7 @@ export default function Messaging() {
 
   const fetchChannels = async () => {
     try {
-      const workspaceId = 1; // à adapter si tu gères plusieurs workspaces
+      const workspaceId = 1; 
       const data = await apiFetch(`workspaces/${workspaceId}/channels`);
       const privateChannels = data.filter(ch => ch.status === false);
       setChannels(privateChannels);
@@ -35,7 +35,7 @@ export default function Messaging() {
         method: 'POST',
         body: JSON.stringify({
           name: newChannelName,
-          workspace_id: 1, // à adapter dynamiquement
+          workspace_id: 1,
           status: false
         })
       });
