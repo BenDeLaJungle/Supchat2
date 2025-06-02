@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
   title: Supchat
   description: une API de chat pour une entreprise
@@ -175,13 +175,11 @@ components:
           type: string
           maxLength: 255
         oauthProvider:
-          type: 
-          - string
-          - "null"
+          type: string
+          nullable: true
         oauthID:
-          type: 
-          - string
-          - "null"
+          type: string
+          nullable: true
       required: [firstName, lastName, userName, emailAddress, role, theme, status]
 
     WorkspaceMembers:
