@@ -1,71 +1,59 @@
-/* ========== Variables globales ========== */
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #213547;
-  background-color: #ffffff;
-}
 
-/* ========== Global Styles ========== */
-body {
-  margin: 0;
-  background-color: #f4f4f4;
-}
-
-/* ========== Boutons ========== */
-button {
-  border-radius: 8px;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: background-color 0.25s;
-  color: white;
-}
-
-button:hover {
-  background-color: #646cff;
-}
-
-/* ========== UserPage Styles ========== */
-.user {
+.user-page-container {
+  padding-top: 50px;
   max-width: 800px;
-  margin: auto;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+  box-sizing: border-box;
 }
 
-.user-info-card {
+.user-card {
   background-color: #ffffff;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  box-sizing: border-box;
 }
 
-.user-info-item {
-  margin-bottom: 8px;
+.user-card-title {
+  margin: 0;
+  margin-bottom: 24px;
+  font-size: 1.8rem; 
+  text-align: center;
+  color: #2c3e50;
+}
+
+.user-card-content p {
+  margin: 8px 0;
   font-size: 1rem;
-  color: #333;
+  color: #34495e;
 }
 
-/* ========== Bouton envoyer un message ========== */
-.start-conv-btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 20px;
+.user-card-content p strong {
+  color: #2c3e50;
+}
+
+.user-card-button {
+  display: block;
+  margin: 24px auto 0; /* centré horizontalement */
+  padding: 8px 8px;
+  background-color: #27ae60;
+  color: #ffffff;
   border: none;
   border-radius: 8px;
-  font-weight: bold;
+  font-size: 0.8rem;
   cursor: pointer;
-  margin-top: 10px;
-  transition: background 0.3s;
+  transition: background-color 0.2s ease;
 }
 
-.start-conv-btn:hover {
-  background-color: #45a049;
+.user-card-button:hover {
+  background-color: #219150;
+}
+
+.user-page-loading {
+  padding-top: 120px; 
+  text-align: center;
+  font-size: 1.25rem;
+  color: #7f8c8d;
 }

@@ -16,35 +16,42 @@ class UserController extends AbstractController
 {
 
     #[Route('/api/users/search', name: 'api_users_search', methods: ['GET'])]
-    public function searchUsers(
-        UsersRepository $userRepository,
-        Request $request
-    ): JsonResponse {
-        $searchTerm = $request->query->get('query');
-        if (empty($searchTerm)) {
-            return new JsonResponse(['error' => 'Paramètre de recherche manquant'], 400);
-        }
-
-        $users = $userRepository->findBySearchTerm($searchTerm);
-
-        $userList = array_map(function ($user) {
-            return [
-                'userName' => $user->getUserName(),
-                'firstName' => $user->getFirstName(),
-                'lastName' => $user->getLastName()
-                
-            ];
-        }, $users);
-
-        return new JsonResponse($userList);
+public function searchUsers(UsersRepository $userRepository, Request $request): JsonResponse {
+    $searchTerm = $request->query->get('query');
+    if (empty($searchTerm)) {
+        return new JsonResponse(['error' => 'Paramètre de recherche manquant'], 400);
     }
+
+    $users = $userRepository->findBySearchTerm($searchTerm);
+
+    $userList = array_map(function ($user) {
+        return [
+            'id'       => $user->getId(),
+            'userName' => $user->getUserName(),
+            'firstName'=> $user->getFirstName(),
+            'lastName' => $user->getLastName()
+        ];
+    }, $users);
+
+    return new JsonResponse($userList);
+}
 
     #[Route('/api/users/by-username/{username}', name: 'get_user_by_username', methods: ['GET'])]
     public function getUserByUsername(string $username, UsersRepository $repo): JsonResponse {
-        $user = $repo->findOneBy(['userName' => $username]);
-        if (!$user) return $this->json(['error' => 'Utilisateur introuvable'], 404);
-        return $this->json(['id' => $user->getId(), 'username' => $user->getUsername()]);
-    }
+    $user = $repo->findOneBy(['userName' => $username]);
+    if (!$user) return $this->json(['error' => 'Utilisateur introuvable'], 404);
+
+    return $this->json([
+        'id'        => $user->getId(),
+        'username'  => $user->getUserName(),
+        'email'     => $user->getEmailAddress(),
+        'role'      => $user->getRole(),
+        'theme'     => $user->getTheme(),
+        'status'    => $user->getStatus(),
+        'firstName' => $user->getFirstName(),
+        'lastName'  => $user->getLastName(),
+    ]);
+}
 
 
     #[Route('/api/user', name: 'api_user_info', methods: ['GET'])]

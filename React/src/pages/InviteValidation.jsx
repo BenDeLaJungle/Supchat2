@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { apiFetch } from '../../services/api';
+import { apiFetch } from '../services/api';
 
 export default function InviteValidation() {
   const { token } = useParams();

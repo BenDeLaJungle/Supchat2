@@ -10,8 +10,8 @@ import chatPage from "../pages/chatPage";
 import UserPage from "../pages/UserPage";
 import WorkspaceList from "../pages/WorkspaceList";
 import WorkspaceDetail from "../pages/WorkspaceDetail";
-import ChatWindow from "../components/ChatWindow";
-import InviteValidation from '../components/InviteValidation';
+import ChatWindow from "../components/chat/ChatWindow";
+import InviteValidation from '../pages/InviteValidation';
 import { useParams } from "react-router-dom";
 
 function ChatWindowWrapper() {
@@ -29,7 +29,7 @@ export default function AppRouter() {
         <Route path="/messaging" element={<Messaging />} />
         <Route path="/calendrier" element={<Calendrier />} />
         <Route path="/AdminSpace" element={<AdminSpace />} />
-		    <Route path="/user" element={<UserPage />} />
+		    <Route path="/users/:username" element={<UserPage />} />
         <Route path="/parametres" element={<Parametres />} />
         <Route path="/test-messages" element={<chatPage />} />
         <Route path="/workspaces" element={<WorkspaceList />} />

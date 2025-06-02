@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { logout } from "../../services/auth";
 import { useAuth } from "../../context/AuthContext";
-import { apiFetch } from "../services/api";
+import { apiFetch } from "../../services/api";
 
 import messenger from "../../assets/messsage.png";
 import files from "../../assets/share.png";

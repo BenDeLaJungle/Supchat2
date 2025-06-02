@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import SearchBar from './SearchBar';
-import Logout from './logout';
-import logo from '../assets/logo-supchat.png';
+import Logout from "../auth/logout";
+import logo from "../../assets/logo-supchat.png";
 import '../../styles/index.css';
 
 export default function Header() {

@@ -1,0 +1,182 @@
+.workspace-detail-page {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 0 16px;
+  font-family: Arial, sans-serif;
+  color: #2c3e50;
+}
+
+/* Titre */
+.workspace-detail-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: #34495e;
+}
+
+/*titres de section  */
+.section-title {
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 32px 0 16px;
+  color: #34495e;
+}
+
+.section-container {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+
+.workspace-detail-page .list-container {
+  flex: 1; 
+  max-height: 220px;            
+  overflow-y: auto;             
+  border: none;
+  border-radius: 6px;
+  background-color: #eff3f5;
+}
+
+.workspace-detail-page .channels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+.workspace-detail-page .workspace-card {
+  flex: 0 0 280px; 
+  background-color: #f4f4f4;
+  border: #f4f4f4;
+  border-radius: 8px;
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+
+.workspace-detail-page .input-regular,
+.workspace-detail-page .select-regular {
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.workspace-detail-page .button-primary {
+  padding: 10px 16px;
+  background-color: #659abd;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.workspace-detail-page .button-primary:hover {
+  background-color: #284e7b;
+  color: #8F908D;
+}
+
+.workspace-detail-page .button-danger-sm {
+  padding: 6px 12px;
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.workspace-detail-page .button-danger-sm:hover {
+  background-color: #c0392b;
+}
+
+.workspace-detail-page .button-invite {
+  padding: 8px 12px;
+  background-color: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.workspace-detail-page .button-invite:hover {
+  background-color: #1e8449;
+}
+
+.workspace-detail-page .button-secondary-sm {
+  padding: 8px 12px;
+  background-color: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.6rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 8px;
+}
+.workspace-detail-page .button-secondary-sm:hover {
+  background-color: #1e8449;
+}
+
+.workspace-detail-page .channel-link-button {
+  display: block;
+  width: 95%;
+  padding: 10px 16px;
+  background-color: #284e7b;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+.workspace-detail-page .channel-link-button:hover {
+  background-color: #add4f3;
+}
+
+.workspace-detail-page .member-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  background-color: #f4f4f4;
+}
+.workspace-detail-page .member-row:last-child {
+  border-bottom: none;
+}
+.workspace-detail-page .member-label {
+  font-size: 1rem;
+  color: #2c3e50;
+}
+
+.workspace-detail-page .invite-section {
+  text-align: center;
+  margin-bottom: 4px;
+}
+.workspace-detail-page .invite-link-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 12px;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+.workspace-detail-page .invite-link-text {
+  white-space: nowrap;
+  color: #34495e;
+  font-size: 0.6rem;
+  margin-bottom: 8px;
+}

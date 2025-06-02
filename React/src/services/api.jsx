@@ -14,7 +14,6 @@ export async function apiFetch(endpoint, options = {}) {
     headers: { ...defaultHeaders, ...(options.headers || {}) },
   });
 
-  // Gère les erreurs 401 (non autorisé)
   if (response.status === 401) {
     logout();
     throw new Error("Non autorisé");
