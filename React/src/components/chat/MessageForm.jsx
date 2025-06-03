@@ -38,6 +38,7 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
     }
 
     const { mentions, channels } = extractMentionsAndChannels(trimmed);
+    const uniqueMentions = [...new Set(mentions)];
 
     try {
       //Créer le message
@@ -56,12 +57,11 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
       const tasks = [];
 
       // @mentions
-      for (const username of mentions) {
+      for (const username of uniqueMentions) {
         tasks.push(
           apiFetch(`users/by-username/${username}`)
             .then(user => {
               if (user && user.id) {
-                //Créer la mention
                 return apiFetch('mention/add', {
                   method: 'POST',
                   body: JSON.stringify({
@@ -69,7 +69,6 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
                     messageId: messageId
                   })
                 }).then(() => {
-                  //Créer une notification
                   return apiFetch('notifications/create', {
                     method: 'POST',
                     body: JSON.stringify({
