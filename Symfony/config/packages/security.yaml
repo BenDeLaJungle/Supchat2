@@ -29,9 +29,9 @@ security:
 
     access_control:
         - { path: ^/api/doc(?:\.json)?$, roles: PUBLIC_ACCESS }
-        - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }  # Permet l'inscription sans token
-        - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }  # Permet la connexion sans token
+        - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/google, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/facebook, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/refresh, roles: PUBLIC_ACCESS }
-        - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }  # Toutes les autres routes nécessitent un JWT valide
+        - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }  

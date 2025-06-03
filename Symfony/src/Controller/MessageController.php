@@ -119,6 +119,7 @@ class MessageController extends AbstractController
                     'username' => $message->getUser()->getUsername(),
                 ],
                 'channel_id' => $message->getChannel()->getId(),
+                'hashtags' => array_map(fn($h) => $this->formatHashtag($h), $message->getHashtags()->toArray())
             ];
         }, $messages);
 
