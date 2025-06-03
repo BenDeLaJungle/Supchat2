@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Files;
 
-#[Route('/file')]
+#[Route('/api/file')]
 class FileController extends AbstractController
 {
     #[Route('/upload', name: 'file_upload', methods: ['POST'])]

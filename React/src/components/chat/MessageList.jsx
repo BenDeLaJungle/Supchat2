@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import '../styles/color.css';
-import '../styles/chat.css';
-import { apiFetch } from '../services/api';
+import '../../styles/color.css';
+import '../../styles/chat.css';
+import { apiFetch } from '../../services/api';
 import Message from './Message';
 
 const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId }) => {
@@ -83,7 +83,7 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId }
     return () => el.removeEventListener('scroll', handleScroll);
   }, [uniqueMessages, isFetching, hasMore]);
 
-  // Garde le scroll à la même position si messages ajoutés en haut
+  //Garde le scroll à la même position
   useEffect(() => {
     const el = listRef.current;
     if (!el) return;

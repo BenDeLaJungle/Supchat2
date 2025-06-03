@@ -5,18 +5,20 @@ namespace App\Controller;
 use App\Entity\Channels;
 use App\Entity\Workspaces;
 use App\Entity\WorkspaceMembers;
+use App\Entity\Roles;
 use App\Repository\ChannelsRepository;
 use App\Repository\WorkspaceMembersRepository;
 use App\Repository\WorkspacesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ChannelController extends AbstractController
 {
-    #[Route('/channels/{id}', name: 'get_channel', methods: ['GET'])]
+    #[Route('/api/channels/{id}', name: 'get_channel', methods: ['GET'])]
     public function getChannel(Channels $channel): JsonResponse
     {
         return new JsonResponse([
@@ -27,7 +29,24 @@ class ChannelController extends AbstractController
         ]);
     }
 
-    #[Route('/workspaces/{id}/channels', name: 'get_channels_by_workspace', methods: ['GET'])]
+    #[Route('/api/channels/by-name/{name}', name: 'get_channel_by_name', methods: ['GET'])]
+    public function getChannelByName(string $name, ChannelsRepository $repo): JsonResponse
+    {
+        $channel = $repo->findOneBy(['name' => $name]);
+
+        if (!$channel) {
+            return new JsonResponse(['error' => 'Channel non trouvé'], 404);
+        }
+
+        return new JsonResponse([
+            'id' => $channel->getId(),
+            'name' => $channel->getName(),
+            'status' => $channel->getStatus(),
+            'workspace' => $channel->getWorkspace()->getId()
+        ]);
+    }
+
+    #[Route('/api/workspaces/{id}/channels', name: 'get_channels_by_workspace', methods: ['GET'])]
     public function getChannelsByWorkspace(int $id, ChannelsRepository $repo): JsonResponse
     {
         $channels = $repo->findBy(['workspace' => $id]);
@@ -55,6 +74,15 @@ class ChannelController extends AbstractController
             return new JsonResponse(['error' => 'Workspace introuvable'], 404);
         }
 
+        /** @var \App\Entity\Users $currentUser */
+        $currentUser = $this->getUser();
+        $currentUserId = $currentUser->getId();
+
+        $roleId = WorkspaceMembers::getUserRoleInWorkspace($workspace->getId(), $currentUserId, $em);
+        if (!Roles::hasPermission($roleId, 'create_channel')) {
+            return new JsonResponse(['error' => 'Accès refusé.'], 403);
+        }
+
         $channel = new Channels();
         $channel->setName($data['name']);
         $channel->setStatus($data['status']);
@@ -66,7 +94,7 @@ class ChannelController extends AbstractController
         return new JsonResponse(['status' => 'Canal créé', 'id' => $channel->getId()], 201);
     }
 
-    #[Route('/channels/{id}', name: 'update_channel', methods: ['PUT'])]
+    #[Route('/api/channels/{id}', name: 'update_channel', methods: ['PUT'])]
     public function updateChannel(Request $request, Channels $channel, EntityManagerInterface $em): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -84,7 +112,7 @@ class ChannelController extends AbstractController
         return new JsonResponse(['status' => 'Canal mis à jour']);
     }
 
-    #[Route('/channels/{id}', name: 'delete_channel', methods: ['DELETE'])]
+    #[Route('/api/channels/{id}', name: 'delete_channel', methods: ['DELETE'])]
     public function deleteChannel(Channels $channel, EntityManagerInterface $em): JsonResponse
     {
         $em->remove($channel);
@@ -93,7 +121,7 @@ class ChannelController extends AbstractController
         return new JsonResponse(['status' => 'Canal supprimé']);
     }
 
-    #[Route('/channels/{id}/privilege', name: 'get_channel_privilege', methods: ['POST'])]
+    #[Route('/api/channels/{id}/privilege', name: 'get_channel_privilege', methods: ['POST'])]
     public function getChannelPrivilege(
         Channels $channel,
         Request $request,
@@ -138,10 +166,32 @@ class ChannelController extends AbstractController
         }
 
         return $this->json([
-            'is_admin' => $isAdmin,
+            'is_admin' => $role && $role->getId() === 3,
             'can_moderate' => $canModerate,
             'can_manage' => $canManage
         ]);
     }
-}
 
+    #[Route('/api/workspaces/{workspaceId}/channels', name: 'workspace_channels_index', methods: ['GET'])]
+    public function listChannels(int $workspaceId, EntityManagerInterface $em): JsonResponse
+    {
+        $workspace = $em->getRepository(Workspaces::class)->find($workspaceId);
+
+        if (!$workspace) {
+            return $this->json(['message' => 'Workspace non trouvé'], Response::HTTP_NOT_FOUND);
+        }
+
+        $channels = $em->getRepository(Channels::class)->findBy(['workspace' => $workspace]);
+
+        $data = array_map(function (Channels $channel) {
+            return [
+                'id'     => $channel->getId(),
+                'name'   => $channel->getName(),
+                'status' => $channel->getStatus(),
+            ];
+        }, $channels);
+
+        return $this->json($data);
+    }
+
+}

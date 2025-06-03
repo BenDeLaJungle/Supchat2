@@ -1,6 +1,6 @@
 import { useEffect, useContext } from 'react';
 import { toast } from 'react-toastify';
-import { SocketContext } from '../context/SocketContext';
+import { SocketContext } from '../../context/SocketContext';
 
 function NotificationListener() {
   const { socket } = useContext(SocketContext);

@@ -5,4 +5,14 @@
 --secondary_impact_color:#8bbcf3;
 --tersary_color:#f44336;
 --tersary_impact_color:#ea9999;
+
+--primary_color_dark:rgba(255, 255, 255, 0.26);
+--primary_impact_color_dark:#eeeeeec7;
+--secondary_color_dark:#1d8fec8f;
+--secondary_impact_color_dark:#8bbcf38f;
+--tersary_color_dark:#f443367e;
+--tersary_impact_color_dark:#ea999998;
+
+--black:#00000000;
+--white:#ffffff;
 }

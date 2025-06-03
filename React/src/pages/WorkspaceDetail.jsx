@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { apiFetch } from '../services/api';
-import AdminHeader from './Adminheader';
+import AdminHeader from '../components/ui/Adminheader';
+import '../styles/WorkspaceDetail.css'; 
 
 export default function WorkspaceDetail() {
   const { workspaceId } = useParams();
@@ -14,17 +15,30 @@ export default function WorkspaceDetail() {
   const [newChannelStatus, setNewChannelStatus] = useState('1');
   const [newMemberId, setNewMemberId] = useState('');
   const [newRoleId, setNewRoleId] = useState('1');
+  const [currentUserRole, setCurrentUserRole] = useState(1);
 
   useEffect(() => {
-    apiFetch(`workspaces/${workspaceId}/channels`).then(setChannels);
-    apiFetch(`api/workspaces/${workspaceId}`).then(data => setWorkspaceName(data.name));
-    apiFetch(`workspaces/${workspaceId}/members`).then(setMembers);
-    apiFetch('api/users').then(setUsers);
+    const fetchData = async () => {
+      const user = await apiFetch('user');
+      const workspaceData = await apiFetch(`workspaces/${workspaceId}`);
+      const channelsData = await apiFetch(`workspaces/${workspaceId}/channels`);
+      const membersData = await apiFetch(`workspaces/${workspaceId}/members`);
+      const currentMember = membersData.find(m => m.user_id === user.id);
+      setCurrentUserRole(currentMember ? currentMember.role_id : 1);
+      const usersData = await apiFetch('users');
+
+      setWorkspaceName(workspaceData.name);
+      setChannels(channelsData);
+      setMembers(membersData);
+      setUsers(usersData);
+    };
+
+    fetchData();
   }, [workspaceId]);
 
   const handleCreateChannel = async () => {
     if (!newChannelName.trim()) return;
-    await apiFetch('api/channels', {
+    await apiFetch('channels', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -41,12 +55,13 @@ export default function WorkspaceDetail() {
 
   const handleAddMember = async () => {
     if (!newMemberId) return;
+    const roleIdToAssign = currentUserRole === 2 ? 1 : parseInt(newRoleId, 10);
     await apiFetch(`workspaces/${workspaceId}/members`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        user_id: parseInt(newMemberId),
-        role_id: parseInt(newRoleId)
+        user_id: parseInt(newMemberId, 10),
+        role_id: roleIdToAssign
       })
     });
     const updatedMembers = await apiFetch(`workspaces/${workspaceId}/members`);
@@ -71,7 +86,7 @@ export default function WorkspaceDetail() {
   };
 
   const handleGenerateInviteLink = async () => {
-    const response = await apiFetch(`api/workspaces/${workspaceId}/generate-invite`);
+    const response = await apiFetch(`workspaces/${workspaceId}/generate-invite`);
     setInviteLink(response.invite_link);
   };
 
@@ -85,94 +100,125 @@ export default function WorkspaceDetail() {
   return (
     <>
       <AdminHeader />
+
       <div className="workspace-detail-page">
         <h2 className="workspace-detail-title">{workspaceName}</h2>
 
-        <h3>Canaux</h3>
-        <ul className="channel-list">
-          {channels.map(channel => (
-            <li key={channel.id} className="channel-list-item">
-              <Link to={`/channels/${channel.id}`} className="channel-list-link">
+        <h3 className="section-title">Canaux</h3>
+        <div className="section-container">
+          <div className="list-container channels-list">
+            {channels.map(channel => (
+              <Link
+                to={`channels/${channel.id}`}
+                key={channel.id}
+                className="channel-link-button"
+              >
                 {channel.name}
               </Link>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
 
-        <div className="work-channel-create-form">
-          <input
-            type="text"
-            value={newChannelName}
-            onChange={(e) => setNewChannelName(e.target.value)}
-            placeholder="Nom du nouveau canal"
-            className="work-channel-input"
-          />
-          <select
-            value={newChannelStatus}
-            onChange={(e) => setNewChannelStatus(e.target.value)}
-            className="work-channel-select"
-          >
-            <option value="1">Public</option>
-            <option value="2">Privé</option>
-          </select>
-          <button onClick={handleCreateChannel} className="work-channel-create-button">
-            Créer un canal
-          </button>
+          {currentUserRole !== 1 && (
+            <div className="workspace-card">
+              <input
+                type="text"
+                value={newChannelName}
+                onChange={(e) => setNewChannelName(e.target.value)}
+                placeholder="Nom du nouveau canal"
+                className="input-regular"
+              />
+              <select
+                value={newChannelStatus}
+                onChange={(e) => setNewChannelStatus(e.target.value)}
+                className="select-regular"
+              >
+                <option value="1">Public</option>
+                <option value="2">Privé</option>
+              </select>
+              <button
+                onClick={handleCreateChannel}
+                className="button-primary"
+              >
+                Créer un canal
+              </button>
+            </div>
+          )}
         </div>
 
-        <div className="workspace-members-section">
-          <h3>Membres du workspace</h3>
-          <div className="workspace-member-list">
+        <h3 className="section-title">Membres du workspace</h3>
+        <div className="section-container">
+          <div className="list-container members-list">
             {members.map(member => (
-              <div key={member.id} className="workspace-member-row">
-                <span>{member.user_name} ({getRoleLabel(member.role_id)})</span>
-                <button
-                  onClick={() => handleDeleteMember(member.id)}
-                  className="workspace-member-delete-btn"
-                >
-                  Supprimer
-                </button>
+              <div key={member.id} className="member-row">
+                <span className="member-label">
+                  {member.user_name} ({getRoleLabel(member.role_id)})
+                </span>
+                {currentUserRole !== 1 && (
+                  <button
+                    onClick={() => handleDeleteMember(member.id)}
+                    className="button-danger-sm"
+                  >
+                    Supprimer
+                  </button>
+                )}
               </div>
             ))}
           </div>
 
-          <div>
-            <select
-              value={newMemberId}
-              onChange={(e) => setNewMemberId(e.target.value)}
-              className="work-channel-select"
-            >
-              <option value="">Sélectionner un utilisateur</option>
-              {users.map(user => (
-                <option key={user.id} value={user.id}>{user.username}</option>
-              ))}
-            </select>
+          {currentUserRole !== 1 && (
+            <div className="workspace-card">
+              <select
+                value={newMemberId}
+                onChange={(e) => setNewMemberId(e.target.value)}
+                className="select-regular"
+              >
+                <option value="">Sélectionner un utilisateur</option>
+                {users.map(user => (
+                  <option key={user.id} value={user.id}>
+                    {user.username}
+                  </option>
+                ))}
+              </select>
 
-            <select
-              value={newRoleId}
-              onChange={(e) => setNewRoleId(e.target.value)}
-              className="work-channel-select"
-            >
-              <option value="1">Membre</option>
-              <option value="2">Modérateur</option>
-              <option value="3">Admin</option>
-            </select>
+              {currentUserRole === 3 && (
+                <select
+                  value={newRoleId}
+                  onChange={(e) => setNewRoleId(e.target.value)}
+                  className="select-regular"
+                >
+                  <option value="1">Membre</option>
+                  <option value="2">Modérateur</option>
+                  <option value="3">Admin</option>
+                </select>
+              )}
 
-            <button onClick={handleAddMember} className="work-channel-create-button">
-              Ajouter le membre
-            </button>
-          </div>
+              <button
+                onClick={handleAddMember}
+                className="button-primary"
+              >
+                Ajouter le membre
+              </button>
+            </div>
+          )}
         </div>
 
-        <div className="generate-invite-section">
-          <button onClick={handleGenerateInviteLink} className="work-channel-create-button">
-            Générer un lien d'invitation
-          </button>
-
+        <h3 className="section-title">Invitation</h3>
+        <div className="invite-section">
+          {(currentUserRole === 3 || currentUserRole === 2) && (
+            <button
+              onClick={handleGenerateInviteLink}
+              className="button-invite"
+            >
+              Générer un lien d'invitation
+            </button>
+          )}
           {inviteLink && (
-            <div style={{ marginTop: '10px' }}>
-              <p>{inviteLink}</p>
-              <button onClick={handleCopyToClipboard} className="work-channel-create-button">
+            <div className="invite-link-container">
+              <span className="invite-link-text">{inviteLink}</span>
+              <button
+                onClick={handleCopyToClipboard}
+                className="button-secondary-sm"
+              >
                 Copier le lien
               </button>
             </div>

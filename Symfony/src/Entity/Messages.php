@@ -6,8 +6,11 @@ use App\Repository\MessagesRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Channels;
 use App\Entity\Users;
+use App\Entity\Hashtags;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: MessagesRepository::class)]
 class Messages
@@ -18,7 +21,7 @@ class Messages
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Channels::class)]
-    #[ORM\JoinColumn(nullable: true)] // message privé n'a pas besoin de channel
+    #[ORM\JoinColumn(nullable: true)] 
     private ?Channels $channel = null;
 
     #[ORM\ManyToOne(targetEntity: Users::class)]
@@ -27,7 +30,7 @@ class Messages
     private ?Users $user = null;
 
     #[ORM\ManyToOne(targetEntity: Users::class)]
-    #[ORM\JoinColumn(nullable: true)] // message public n'a pas besoin de destinataire
+    #[ORM\JoinColumn(nullable: true)]
     private ?Users $recipient = null;
 
     #[ORM\Column(type: 'text')]
@@ -43,6 +46,9 @@ class Messages
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'message', targetEntity: Hashtags::class)]
+    private Collection $hashtags;
 
     public function __construct()
     {
@@ -107,5 +113,9 @@ class Messages
     {
         $this->createdAt = $createdAt;
         return $this;
+    }
+    public function getHashtags(): Collection
+    {
+        return $this->hashtags;
     }
 }

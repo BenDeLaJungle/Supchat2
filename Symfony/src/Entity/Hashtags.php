@@ -21,8 +21,8 @@ class Hashtags
     #[Assert\NotNull(message: "L'Entiter est obligatoire.")]
     private ?Channels $channel = null;
 
-    #[ORM\ManyToOne(targetEntity: Messages::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Messages::class, inversedBy: 'hashtags')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Assert\NotNull(message: "L'Entiter est obligatoire.")]
     private ?Messages $message = null;
 

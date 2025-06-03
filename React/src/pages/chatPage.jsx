@@ -1,6 +1,6 @@
 import '../styles/message.css';
-import ChatWindow from '../components/ChatWindow';
-import AdminHeader from './Adminheader';
+import ChatWindow from '../components/chat/ChatWindow';
+import AdminHeader from '../components/ui/Adminheader';
 
 const PrivateMessage = () => (
   <>

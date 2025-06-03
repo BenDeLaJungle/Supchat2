@@ -1,6 +1,6 @@
 import { getToken, logout } from './auth';
 
-const API_URL = 'http://localhost:8000/';
+const API_URL = 'http://localhost:8000/api/';
 
 export async function apiFetch(endpoint, options = {}) {
   const token = getToken();
@@ -14,7 +14,6 @@ export async function apiFetch(endpoint, options = {}) {
     headers: { ...defaultHeaders, ...(options.headers || {}) },
   });
 
-  // Gère les erreurs 401 (non autorisé)
   if (response.status === 401) {
     logout();
     throw new Error("Non autorisé");

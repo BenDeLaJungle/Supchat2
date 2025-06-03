@@ -12,7 +12,7 @@ use App\Entity\Reactions;
 use App\Entity\Users;
 use App\Entity\Messages;
 
-#[Route('/reaction')]
+#[Route('/api/reaction')]
 class ReactionController extends AbstractController
 {
     #[Route('/add', name: 'reaction_add', methods: ['POST'])]

@@ -10,13 +10,13 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [mdp, setMdp] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true); // loader pour éviter clignotement
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { user, setUser } = useAuth();
 
   const fetchAndSetUser = async (token) => {
     try {
-      const user = await apiFetch("api/user", {
+      const user = await apiFetch("user", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -61,7 +61,7 @@ const Login = () => {
     setError("");
 
     try {
-      const data = await apiFetch("api/auth/login", {
+      const data = await apiFetch("auth/login", {
         method: "POST",
         body: JSON.stringify({
           emailAddress: email,
@@ -93,7 +93,7 @@ const Login = () => {
     );
 
     const handleMessage = async (event) => {
-      if (event.origin !== "http://localhost:8000") return;
+      if (event.origin !== "http://localhost:8000/api") return;
 
       const { token } = event.data;
       if (token) {

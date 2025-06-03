@@ -1,0 +1,1039 @@
+openapi: 3.0.0
+info:
+  title: Supchat
+  description: une API de chat pour une entreprise
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+    description: Serveur local Symfony
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ChannelOptions:
+      type: object
+      properties:
+        id:
+          type: integer
+        channel:
+          $ref: '#/components/schemas/Channels'
+        user:
+          $ref: '#/components/schemas/Users'
+        pushUp:
+          type: boolean
+        mail:
+          type: boolean
+        notification:
+          type: string
+          enum: [all, mention, none]
+      required: [channel, user, pushUp, mail, notification]
+
+    Channels:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          minLength: 3
+          maxLength: 255
+        workspace:
+          $ref: '#/components/schemas/Workspaces'
+        status:
+          type: boolean
+      required: [name, workspace, status]
+
+    Files:
+      type: object
+      properties:
+        id:
+          type: integer
+        message:
+          $ref: '#/components/schemas/Messages'
+        filePath:
+          type: string
+          maxLength: 255
+      required: [message, filePath]
+
+    Hashtags:
+      type: object
+      properties:
+        id:
+          type: integer
+        channel:
+          $ref: '#/components/schemas/Channels'
+        message:
+          $ref: '#/components/schemas/Messages'
+      required: [channel, message]
+
+    Mentions:
+      type: object
+      properties:
+        id:
+          type: integer
+        message:
+          $ref: '#/components/schemas/Messages'
+        user:
+          $ref: '#/components/schemas/Users'
+      required: [message, user]
+
+    Messages:
+      type: object
+      properties:
+        id:
+          type: integer
+        channel:
+          $ref: '#/components/schemas/Channels'
+        user:
+          $ref: '#/components/schemas/Users'
+        recipient:
+          $ref: '#/components/schemas/Users'
+        content:
+          type: string
+          maxLength: 5000
+        createdAt:
+          type: string
+          format: date-time
+      required: [user, content, createdAt]
+
+    Notifications:
+      type: object
+      properties:
+        id:
+          type: integer
+        message:
+          $ref: '#/components/schemas/Messages'
+        user:
+          $ref: '#/components/schemas/Users'
+        atRead:
+          type: boolean
+      required: [message, user, atRead]
+
+    Reactions:
+      type: object
+      properties:
+        id:
+          type: integer
+        message:
+          $ref: '#/components/schemas/Messages'
+        user:
+          $ref: '#/components/schemas/Users'
+        emojiCode:
+          type: string
+          minLength: 1
+          maxLength: 10
+      required: [message, user, emojiCode]
+
+    Roles:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          minLength: 3
+          maxLength: 255
+        publish:
+          type: boolean
+        moderate:
+          type: boolean
+        manage:
+          type: boolean
+      required: [name, publish, moderate, manage]
+
+    Users:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+          maxLength: 255
+        lastName:
+          type: string
+          maxLength: 255
+        userName:
+          type: string
+          maxLength: 255
+        emailAddress:
+          type: string
+          format: email
+        password:
+          type: string
+          maxLength: 255
+        role:
+          type: string
+          enum: [ROLE_USER, ROLE_ADMIN]
+        theme:
+          type: boolean
+        status:
+          type: string
+          maxLength: 255
+        oauthProvider:
+          type: string
+          nullable: true
+        oauthID:
+          type: string
+          nullable: true
+      required: [firstName, lastName, userName, emailAddress, role, theme, status]
+
+    WorkspaceMembers:
+      type: object
+      properties:
+        id:
+          type: integer
+        workspace:
+          $ref: '#/components/schemas/Workspaces'
+        user:
+          $ref: '#/components/schemas/Users'
+        role:
+          $ref: '#/components/schemas/Roles'
+        publish:
+          type: boolean
+        moderate:
+          type: boolean
+        manage:
+          type: boolean
+      required: [workspace, user, role, publish, moderate, manage]
+
+    Workspaces:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          minLength: 3
+          maxLength: 255
+        status:
+          type: boolean
+        creator:
+          $ref: '#/components/schemas/Users'
+      required: [name, status, creator]
+
+paths:
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      summary: Inscription d'un nouvel utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users'
+      responses:
+        '201':
+          description: Inscription réussie
+        '400':
+          description: Données incomplètes
+        '409':
+          description: Email déjà utilisé
+
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Connexion utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                emailAddress:
+                  type: string
+                password:
+                  type: string
+              required: [emailAddress, password]
+      responses:
+        '200':
+          description: Connexion réussie
+        '400':
+          description: Données incomplètes
+        '401':
+          description: Identifiants invalides
+
+  /api/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Déconnexion utilisateur
+      responses:
+        '200':
+          description: Déconnexion réussie
+
+  /api/auth/refresh:
+    get:
+      tags: [Auth]
+      summary: Rafraîchir un token JWT
+      responses:
+        '200':
+          description: Nouveau token généré
+        '401':
+          description: Token manquant ou invalide
+
+  /api/auth/google:
+    get:
+      tags: [OAuth]
+      summary: Redirection vers Google
+      responses:
+        '302':
+          description: Redirection vers Google
+
+  /api/auth/google/check:
+    get:
+      tags: [OAuth]
+      summary: Callback Google OAuth
+      responses:
+        '200':
+          description: Authentification Google réussie
+
+  /api/auth/facebook:
+    get:
+      tags: [OAuth]
+      summary: Redirection vers Facebook
+      responses:
+        '302':
+          description: Redirection vers Facebook
+
+  /api/auth/facebook/check:
+    get:
+      tags: [OAuth]
+      summary: Callback Facebook OAuth
+      responses:
+        '200':
+          description: Authentification Facebook réussie
+
+  /api/users/search:
+    get:
+      security:
+        - BearerAuth: []
+      tags: [User]
+      summary: Rechercher des utilisateurs
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Liste des utilisateurs
+        '400':
+          description: Paramètre de recherche manquant
+
+  /api/user:
+    get:
+      security:
+        - BearerAuth: []
+      tags: [User]
+      summary: Obtenir les infos de l'utilisateur connecté
+      responses:
+        '200':
+          description: Informations utilisateur
+        '401':
+          description: Utilisateur non connecté
+
+    put:
+      security:
+        - BearerAuth: []
+      tags: [User]
+      summary: Mettre à jour le profil utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users'
+      responses:
+        '200':
+          description: Mise à jour réussie
+        '401':
+          description: Utilisateur non connecté
+
+    delete:
+      security:
+        - BearerAuth: []
+      tags: [User]
+      summary: Supprimer le compte utilisateur
+      responses:
+        '200':
+          description: Compte supprimé
+        '401':
+          description: Utilisateur non connecté
+
+  /api/admin/users:
+    get:
+      security:
+        - BearerAuth: []
+      tags: [Admin]
+      summary: Obtenir tous les utilisateurs (admin)
+      responses:
+        '200':
+          description: Liste des utilisateurs
+
+  /api/users:
+    get:
+      security:
+        - BearerAuth: []
+      tags: [User]
+      summary: Lister les utilisateurs
+      responses:
+        '200':
+          description: Liste des utilisateurs
+
+  /api/workspaces:
+    get:
+      security:
+        - BearerAuth: []
+      tags: [Workspaces]
+      summary: Lister tous les workspaces
+      responses:
+        '200':
+          description: Liste des workspaces
+
+    post:
+      security:
+        - BearerAuth: []
+      tags: [Workspaces]
+      summary: Créer un nouveau workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Workspaces'
+      responses:
+        '201':
+          description: Workspace créé avec succès
+        '400':
+          description: Données manquantes
+        '409':
+          description: Workspace déjà existant
+
+  /api/workspaces/{id}:
+    get:
+      security:
+        - BearerAuth: []
+      tags: [Workspaces]
+      summary: Afficher un workspace
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détails du workspace
+
+    delete:
+      security:
+        - BearerAuth: []
+      tags: [Workspaces]
+      summary: Supprimer un workspace (si vide et créateur)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Workspace supprimé
+        '400':
+          description: Workspace non vide
+        '403':
+          description: Non autorisé
+
+  /api/workspaces/{id}/generate-invite:
+    get:
+      security:
+        - BearerAuth: []
+      tags: [Workspaces]
+      summary: Générer un lien d'invitation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lien d'invitation généré
+
+  /api/workspaces/invite/{token}:
+    post:
+      security:
+        - BearerAuth: []
+      tags: [Workspaces]
+      summary: Accepter une invitation via un lien
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invitation acceptée
+        '400':
+          description: Lien invalide ou expiré
+
+  /workspaces/{workspaceId}/members:
+    get:
+      security:
+        - BearerAuth: []
+      tags: [WorkspaceMembers]
+      summary: Lister les membres d’un workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Liste des membres
+
+    post:
+      security:
+        - BearerAuth: []
+      tags: [WorkspaceMembers]
+      summary: Ajouter un membre à un workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceMembers'
+      responses:
+        '201':
+          description: Membre ajouté
+        '409':
+          description: Déjà membre
+        '404':
+          description: Workspace ou utilisateur ou rôle non trouvé
+
+  /workspaces/{workspaceId}/members/{memberId}:
+    get:
+      security:
+        - BearerAuth: []
+      tags: [WorkspaceMembers]
+      summary: Afficher un membre
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: memberId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détails du membre
+        '404':
+          description: Membre ou workspace non trouvé
+
+    put:
+      security:
+        - BearerAuth: []
+      tags: [WorkspaceMembers]
+      summary: Mettre à jour un membre
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: memberId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceMembers'
+      responses:
+        '200':
+          description: Membre mis à jour
+        '404':
+          description: Ressources non trouvées
+
+    delete:
+      security:
+        - BearerAuth: []
+      tags: [WorkspaceMembers]
+      summary: Supprimer un membre
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: memberId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Membre supprimé
+        '403':
+          description: Impossible de supprimer le créateur
+        '404':
+          description: Ressources non trouvées
+
+  /roles:
+    get:
+      security:
+        - BearerAuth: []
+      tags: [Roles]
+      summary: Lister les rôles
+      responses:
+        '200':
+          description: Liste des rôles
+
+    post:
+      security:
+        - BearerAuth: []
+      tags: [Roles]
+      summary: Créer un rôle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Roles'
+      responses:
+        '201':
+          description: Rôle créé
+        '400':
+          description: Données invalides
+
+  /roles/{id}:
+    get:
+      security:
+        - BearerAuth: []
+      tags: [Roles]
+      summary: Afficher un rôle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détails du rôle
+        '404':
+          description: Rôle non trouvé
+
+    put:
+      security:
+        - BearerAuth: []
+      tags: [Roles]
+      summary: Mettre à jour un rôle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Roles'
+      responses:
+        '200':
+          description: Rôle mis à jour
+        '400':
+          description: Données invalides
+        '404':
+          description: Rôle non trouvé
+
+    delete:
+      security:
+        - BearerAuth: []
+      tags: [Roles]
+      summary: Supprimer un rôle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Rôle supprimé
+        '400':
+          description: Rôle attribué à des utilisateurs
+        '404':
+          description: Rôle non trouvé
+          
+  /channels/{id}:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+      - Channels
+      summary: Afficher un channel
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Détails du channel
+    put:
+      security:
+        - BearerAuth: []
+      tags:
+      - Channels
+      summary: Mettre à jour un channel
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Channel mis à jour
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+      - Channels
+      summary: Supprimer un channel
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Channel supprimé
+  /workspaces/{id}/channels:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+      - Channels
+      summary: Lister les channels d'un workspace
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Liste des channels
+  /api/channels:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+      - Channels
+      summary: Créer un channel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Channel créé
+  /channels/{id}/privilege:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+      - Channels
+      summary: Obtenir les privilèges sur un channel
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+      responses:
+        '200':
+          description: Droits retournés
+  /messages:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+      - Messages
+      summary: Créer un message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Message créé
+  /messages/{id}:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+      - Messages
+      summary: Afficher un message
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Message affiché
+    put:
+      security:
+        - BearerAuth: []
+      tags:
+      - Messages
+      summary: Modifier un message
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Message modifié
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+      - Messages
+      summary: Supprimer un message
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Message supprimé
+  /channels/{id}/messages:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+      - Messages
+      summary: Lister les messages d’un channel
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        schema:
+          type: integer
+      - name: before
+        in: query
+        schema:
+          type: string
+      - name: before_id
+        in: query
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Messages retournés
+  /file/upload:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+      - Files
+      summary: Uploader un fichier
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Fichier uploadé
+  /file/{id}:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+      - Files
+      summary: Obtenir les infos d’un fichier
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Fichier retourné
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+      - Files
+      summary: Supprimer un fichier
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Fichier supprimé
+  /reaction/add:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+      - Reactions
+      summary: Ajouter une réaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Réaction ajoutée
+  /reaction/remove/{id}:
+    delete:
+      security:
+        - BearerAuth: []
+      tags:
+      - Reactions
+      summary: Supprimer une réaction
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Réaction supprimée
+  /api/notifications/unread:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+      - Notifications
+      summary: Récupérer les notifications non lues
+      responses:
+        '200':
+          description: Notifications retournées
+  /api/notifications/create:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+      - Notifications
+      summary: Créer une notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Notification créée
+  /mention/add:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+      - Mentions
+      summary: Ajouter une mention
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Mention ajoutée
+  /mention/{id}:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+      - Mentions
+      summary: Récupérer une mention
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Mention retournée
+          

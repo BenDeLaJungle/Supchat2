@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../styles/calendrier.css';
-import Header from './Header';
-import AdminHeader from './Adminheader';
+import AdminHeader from '../components/ui/Adminheader';
 
 function Calendrier() {
   const [date, setDate] = useState(new Date());

@@ -9,7 +9,7 @@ export default function InviteValidation() {
   useEffect(() => {
     const validateInvitation = async () => {
       try {
-        const response = await apiFetch(`api/workspaces/invite/${token}`, { method: 'POST' });
+        const response = await apiFetch(`workspaces/invite/${token}`, { method: 'POST' });
         setStatusMessage(response.message || 'Invitation validée.');
       } catch (error) {
         setStatusMessage(error.message || 'Erreur lors de la validation.');

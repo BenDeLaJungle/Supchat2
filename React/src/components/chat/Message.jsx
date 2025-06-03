@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { apiFetch } from '../services/api';
-import { useSocket } from '../context/SocketContext';
+import { apiFetch } from '../../services/api';
+import { useSocket } from '../../context/SocketContext';
 import EmojiPicker from 'emoji-picker-react';
-import '../styles/color.css';
-import '../styles/chat.css';
+import '../../styles/color.css';
+import '../../styles/chat.css';
+import { useNavigate } from 'react-router-dom';
 
-const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal, onDelete, channelId }) => {
+
+const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal, onDelete, channelId,hashtags = [],onChannelSelected}) => {
   const { socket, isReady } = useSocket();
-
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
@@ -36,6 +38,48 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
       console.warn("Socket pas prêt, impossible de broadcaster.");
     }
   };
+
+  const parseContent = (text) => {
+    const hashtagRegex = /#([a-zA-Z0-9_-]+)/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = hashtagRegex.exec(text)) !== null) {
+      const before = text.slice(lastIndex, match.index);
+      const tag = match[1];
+
+      if (before) parts.push(before);
+
+      const found = hashtags.find(h => h.tag === tag);
+
+      if (found) {
+        parts.push(
+          <span
+            key={match.index}
+            className="hashtag-link"
+            onClick={() => {
+              console.log("Navigating to channel:", found.channel.id);
+              navigate(`/channels/${found.channel.id}`);
+            }}
+            style={{ color: 'var(--primary)', cursor: 'pointer' }}
+          >
+            #{tag}
+          </span>
+        );
+      } else {
+        parts.push(`#${tag}`);
+      }
+
+      lastIndex = hashtagRegex.lastIndex;
+    }
+
+    const after = text.slice(lastIndex);
+    if (after) parts.push(after);
+
+    return parts;
+  };
+
 
   const handleEditSubmit = async () => {
     try {
@@ -128,7 +172,7 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
             </div>
           </div>
         ) : (
-          <div className="message-content">{localContent}</div>
+          <div className="message-content">{parseContent(localContent)}</div>
         )}
 
         <div className="message-timestamp">{new Date(timestamp).toLocaleString()}</div>
@@ -157,7 +201,3 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
 };
 
 export default Message;
-
-
-
- 

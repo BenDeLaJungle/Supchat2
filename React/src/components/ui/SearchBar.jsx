@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiFetch } from "../services/api";
-import '../styles/index.css';
+import { apiFetch } from "../../services/api";
 
-const SearchBar = ({ onSearchChange }) => {
+const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState([]); 
   const [showDropdown, setShowDropdown] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -13,23 +12,23 @@ const SearchBar = ({ onSearchChange }) => {
   const navigate = useNavigate();
   const debounceTimeout = useRef(null);
 
-  
   const handleSearch = (term) => {
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
     debounceTimeout.current = setTimeout(() => {
-      if (term.trim() !== "") {
+      const trimmed = term.trim();
+      if (trimmed !== "") {
         setLoading(true);
-        apiFetch(`api/users/search?query=${term}`)
+        apiFetch(`users/search?query=${encodeURIComponent(trimmed)}`)
           .then((data) => {
             setResults(data);
-            setShowDropdown(true);
+            setShowDropdown(data.length > 0);
             setLoading(false);
             setError(null);
           })
           .catch((err) => {
-            console.error("Erreur lors de la récupération de l'utilisateur", err);
+            console.error("Erreur lors de la récupération des utilisateurs", err);
             setError("Impossible de récupérer les utilisateurs.");
             setResults([]);
             setLoading(false);
@@ -41,12 +40,10 @@ const SearchBar = ({ onSearchChange }) => {
     }, 300); 
   };
 
-  // Mise à jour à chaque changement de texte
   useEffect(() => {
     handleSearch(searchTerm);
   }, [searchTerm]);
 
-  // Gestion du clic à l'extérieur du dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -59,10 +56,9 @@ const SearchBar = ({ onSearchChange }) => {
     };
   }, []);
 
-  // Sélection d'un utilisateur
   const handleSelectUser = (user) => {
     setShowDropdown(false);
-    navigate(`/user`, { state: { user } });
+    navigate(`/users/${encodeURIComponent(user.userName)}`);
   };
 
   return (
@@ -70,15 +66,18 @@ const SearchBar = ({ onSearchChange }) => {
       <input
         type="text"
         className="search-input"
-        placeholder=" Rechercher un utilisateur..."
+        placeholder="Rechercher un utilisateur…"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        onFocus={() => setShowDropdown(results.length > 0)}
+        onFocus={() => {
+          if (results.length > 0) {
+            setShowDropdown(true);
+          }
+        }}
       />
 
-      {loading && <div className="loader">Chargement...</div>}
-
-      {error && <p className="text-red-500">{error}</p>}
+      {loading && <div className="loader">Chargement…</div>}
+      {error && <p className="search-error">{error}</p>}
 
       {showDropdown && (
         <div className="search-dropdown">
@@ -89,7 +88,7 @@ const SearchBar = ({ onSearchChange }) => {
                 className="search-dropdown-item"
                 onClick={() => handleSelectUser(user)}
               >
-                {user.username} {user.firstName} {user.lastName}
+                {user.userName}
               </div>
             ))
           ) : (

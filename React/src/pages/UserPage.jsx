@@ -1,70 +1,82 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import AdminHeader from "./Adminheader";
-import '../styles/user.css';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { apiFetch } from "../services/api";
+import AdminHeader from "../components/ui/Adminheader";
+import "../styles/User.css";
 
-const UserPage = () => {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const user = location.state?.user;
+export default function UserPage() {
+  const { username } = useParams();
 
-    if (!user) {
-        return (
-            <>
-                <AdminHeader />
-                <div className="container mx-auto p-4">
-                    <p className='text-red-500 text-xl'>
-                        Erreur : utilisateur introuvable
-                    </p>
-                    <button 
-                        className='mt-4 bg-blue-500 text-white px-4 py-2 rounded'
-                        onClick={() => navigate(-1)}
-                    >
-                        Retour
-                    </button>
-                </div>
-            </>
+  const [userInfo, setUserInfo] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const data = await apiFetch(
+          `users/by-username/${encodeURIComponent(username)}`
         );
+        setUserInfo(data);
+      } catch (err) {
+        console.error(
+          "Erreur lors de la récupération des infos de l’utilisateur : ",
+          err
+        );
+        setError(err.message || "Impossible de charger l’utilisateur");
+      }
     }
 
-    return (
-        <>
-            <AdminHeader />
-            <div className="user">
-                <h2 className='welcome-name'>Informations de l'Utilisateur</h2>
-                <div className='user-info-card'>
-                    <div className='user-info-item'>
-                        <strong>Nom d'utilisateur :</strong> {user.username}
-                    </div>
-                    <div className='user-info-item'>
-                        <strong>Email :</strong> {user.email}
-                    </div>
-                    <div className='user-info-item'>
-                        <strong>Rôle :</strong> {user.role}
-                    </div>
-                    <div className='user-info-item'>
-                        <strong>Thème :</strong> {user.theme ? 'Sombre' : 'Clair'}
-                    </div>
-                    <div className='user-info-item'>
-                        <strong>Statut :</strong> {user.status}
-                    </div>
-                    <div className='user-info-item'>
-                        <strong>Prénom :</strong> {user.firstName}
-                    </div>
-                    <div className='user-info-item'>
-                        <strong>Nom :</strong> {user.lastName}
-                    </div>
-                </div>
+    fetchUser();
+  }, [username]);
 
-                <button 
-                    className="start-conv-btn"
-                    onClick={() => navigate('/messaging', { state: { recipient: user.username } })}
-                >
-                    ✉️ Envoyer un message
-                </button>
+  return (
+    <>
+      <AdminHeader />
+
+      <div className="user-page-container">
+        {error && (
+          <div className="user-error">
+            <p>⚠️ {error}</p>
+          </div>
+        )}
+
+        {!userInfo && !error && (
+          <div className="user-page-loading">Chargement…</div>
+        )}
+
+        {userInfo && (
+          <div className="user-card">
+            <h2 className="user-card-title">
+              Informations de : {userInfo.username}
+            </h2>
+            <div className="user-card-content">
+              <p>
+                <strong>Nom d'utilisateur :</strong> {userInfo.username}
+              </p>
+              <p>
+                <strong>Email :</strong> {userInfo.email}
+              </p>
+              <p>
+                <strong>Rôle :</strong> {userInfo.role}
+              </p>
+              <p>
+                <strong>Thème :</strong>{" "}
+                {userInfo.theme === "dark" ? "Sombre" : "Clair"}
+              </p>
+              <p>
+                <strong>Statut :</strong> {userInfo.status ? "Actif" : "Inactif"}
+              </p>
+              <p>
+                <strong>Prénom :</strong> {userInfo.firstName}
+              </p>
+              <p>
+                <strong>Nom :</strong> {userInfo.lastName}
+              </p>
             </div>
-        </>
-    );
-};
-
-export default UserPage;
+            <button className="user-card-button">✉️ Envoyer un message</button>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
