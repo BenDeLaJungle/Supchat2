@@ -50,8 +50,13 @@ class Messages
     #[ORM\OneToMany(mappedBy: 'message', targetEntity: Hashtags::class)]
     private Collection $hashtags;
 
+    #[ORM\OneToMany(mappedBy: 'message', targetEntity: Notifications::class, cascade: ['remove'], orphanRemoval: true)]
+    private Collection $notifications;
+
     public function __construct()
     {
+        $this->hashtags = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -117,5 +122,32 @@ class Messages
     public function getHashtags(): Collection
     {
         return $this->hashtags;
+    }
+
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notifications $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setMessage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notifications $notification): self
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getMessage() === $this) {
+                $notification->setMessage(null);
+            }
+        }
+
+        return $this;
     }
 }

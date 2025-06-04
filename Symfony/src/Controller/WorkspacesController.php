@@ -84,7 +84,7 @@ final class WorkspacesController extends AbstractController
         $entityManager->flush();
 
         // Récupérer le rôle Admin (id = 3)
-        $role = $entityManager->getRepository(Roles::class)->find(3);
+        $role = $entityManager->getRepository(Roles::class)->find(1);
         if (!$role) {
             return $this->json(['error' => 'Rôle admin introuvable.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
