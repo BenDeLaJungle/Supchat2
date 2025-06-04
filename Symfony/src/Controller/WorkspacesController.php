@@ -24,8 +24,6 @@ final class WorkspacesController extends AbstractController
         /** @var Users $user */
         $user = $this->getUser();
 
-        // On ne récupère plus tous les workspaces, mais seulement ceux dont
-        // l'utilisateur courant est membre.
         $workspaces = $workspacesRepository->findByUser($user);
 
         $workspaceData = array_map(fn(Workspaces $workspace) => [
@@ -44,7 +42,7 @@ final class WorkspacesController extends AbstractController
     #[Route('/{id}', name: 'workspaces_show', methods: ['GET'])]
     public function show(Workspaces $workspace): JsonResponse
     {
-        $workspaceData = [
+        return $this->json([
             'id'      => $workspace->getId(),
             'name'    => $workspace->getName(),
             'status'  => $workspace->getStatus(),
@@ -52,21 +50,18 @@ final class WorkspacesController extends AbstractController
                 'id'       => $workspace->getCreator()->getId(),
                 'username' => $workspace->getCreator()->getUserName(),
             ],
-        ];
-        return $this->json($workspaceData);
+        ]);
     }
 
     #[Route('', name: 'workspaces_create', methods: ['POST'])]
-    public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function create(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         if (!$data || !isset($data['name'], $data['status'])) {
             return $this->json(['error' => 'Données manquantes.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $existingWorkspace = $entityManager
-            ->getRepository(Workspaces::class)
-            ->findOneBy(['name' => $data['name']]);
+        $existingWorkspace = $em->getRepository(Workspaces::class)->findOneBy(['name' => $data['name']]);
         if ($existingWorkspace) {
             return $this->json(['error' => 'Workspace déjà existant.'], Response::HTTP_CONFLICT);
         }
@@ -74,32 +69,30 @@ final class WorkspacesController extends AbstractController
         /** @var Users $user */
         $user = $this->getUser();
 
-        // Création du workspace
         $workspace = new Workspaces();
         $workspace->setName($data['name']);
         $workspace->setStatus($data['status']);
         $workspace->setCreator($user);
 
-        $entityManager->persist($workspace);
-        $entityManager->flush();
+        $em->persist($workspace);
+        $em->flush();
 
-        // Récupérer le rôle Admin (id = 3)
-        $role = $entityManager->getRepository(Roles::class)->find(1);
-        if (!$role) {
+        // ✅ Le créateur devient membre admin (role 3)
+        $adminRole = $em->getRepository(Roles::class)->find(3); // ID 3 = admin
+        if (!$adminRole) {
             return $this->json(['error' => 'Rôle admin introuvable.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        // Ajouter le créateur comme membre admin
         $workspaceMember = (new WorkspaceMembers())
             ->setWorkspace($workspace)
             ->setUser($user)
-            ->setRole($role)
+            ->setRole($adminRole)
             ->setPublish(true)
             ->setModerate(true)
             ->setManage(true);
 
-        $entityManager->persist($workspaceMember);
-        $entityManager->flush();
+        $em->persist($workspaceMember);
+        $em->flush();
 
         return $this->json([
             'id'         => $workspace->getId(),
@@ -114,12 +107,11 @@ final class WorkspacesController extends AbstractController
     public function delete(Workspaces $workspace, EntityManagerInterface $em): JsonResponse
     {
         /** @var Users $currentUser */
-        $currentUser   = $this->getUser();
-        $currentUserId = $currentUser->getId();
+        $currentUser = $this->getUser();
 
         $roleId = WorkspaceMembers::getUserRoleInWorkspace(
             $workspace->getId(),
-            $currentUserId,
+            $currentUser->getId(),
             $em
         );
         if (!Roles::hasPermission($roleId, 'delete_workspace')) {
@@ -127,7 +119,7 @@ final class WorkspacesController extends AbstractController
         }
 
         $members  = $em->getRepository(WorkspaceMembers::class)->count(['workspace' => $workspace]);
-        $channels = $em->getRepository(Channels::class)->count(['workspace'    => $workspace]);
+        $channels = $em->getRepository(Channels::class)->count(['workspace' => $workspace]);
 
         if ($members > 0 || $channels > 0) {
             return $this->json(['error' => 'Workspace non vide.'], Response::HTTP_BAD_REQUEST);
@@ -143,23 +135,22 @@ final class WorkspacesController extends AbstractController
     public function generateInviteLink(Workspaces $workspace, EntityManagerInterface $em): JsonResponse
     {
         /** @var Users $currentUser */
-        $currentUser   = $this->getUser();
-        $currentUserId = $currentUser->getId();
+        $currentUser = $this->getUser();
 
         $roleId = WorkspaceMembers::getUserRoleInWorkspace(
             $workspace->getId(),
-            $currentUserId,
+            $currentUser->getId(),
             $em
         );
         if (!Roles::hasPermission($roleId, 'manage_roles')) {
             return $this->json(['error' => 'Accès refusé.'], Response::HTTP_FORBIDDEN);
         }
 
-        $secret    = 'mon_secret_partage';
-        $expiry    = (new \DateTime('+1 day'))->getTimestamp();
-        $payload   = $workspace->getId() . '|' . $expiry;
-        $signature = hash_hmac('sha256', $payload, $secret);
-        $token     = base64_encode($payload . '|' . $signature);
+        $secret     = 'mon_secret_partage';
+        $expiry     = (new \DateTime('+1 day'))->getTimestamp();
+        $payload    = $workspace->getId() . '|' . $expiry;
+        $signature  = hash_hmac('sha256', $payload, $secret);
+        $token      = base64_encode($payload . '|' . $signature);
         $inviteLink = sprintf('http://localhost:5173/invite/%s', urlencode($token));
 
         return $this->json(['invite_link' => $inviteLink]);
@@ -168,46 +159,41 @@ final class WorkspacesController extends AbstractController
     #[Route('/invite/{token}', name: 'accept_invite_link', methods: ['POST'])]
     public function acceptInvite(string $token, EntityManagerInterface $em): JsonResponse
     {
-        // 1) Décodage et validation du token
         $secret  = 'mon_secret_partage';
         $decoded = base64_decode($token);
         if (!$decoded) {
             return $this->json(['error' => 'Token invalide'], Response::HTTP_BAD_REQUEST);
         }
-        list($workspaceId, $expiry, $signature) = explode('|', $decoded);
 
+        list($workspaceId, $expiry, $signature) = explode('|', $decoded);
         $expectedSignature = hash_hmac('sha256', "$workspaceId|$expiry", $secret);
+
         if (!hash_equals($expectedSignature, $signature) || (int)$expiry < time()) {
             return $this->json(['error' => 'Lien invalide ou expiré'], Response::HTTP_BAD_REQUEST);
         }
 
-        // 2) Chargement du workspace
         $workspace = $em->getRepository(Workspaces::class)->find($workspaceId);
         if (!$workspace) {
             return $this->json(['error' => 'Workspace introuvable'], Response::HTTP_NOT_FOUND);
         }
 
-        // 3) Récupération de l'utilisateur courant
         /** @var Users $user */
         $user = $this->getUser();
         if (!$user) {
             return $this->json(['error' => 'Utilisateur non connecté'], Response::HTTP_UNAUTHORIZED);
         }
 
-        // 4) Vérifier qu'il n'est pas déjà membre
         $existing = $em->getRepository(WorkspaceMembers::class)
                        ->findOneBy(['workspace' => $workspace, 'user' => $user]);
         if ($existing) {
             return $this->json(['message' => 'Vous êtes déjà membre'], Response::HTTP_CONFLICT);
         }
 
-        // 5) Récupérer le rôle Member (id = 1)
-        $role = $em->getRepository(Roles::class)->find(1);
+        $role = $em->getRepository(Roles::class)->find(1); // 1 = membre
         if (!$role) {
             return $this->json(['error' => 'Rôle membre introuvable'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        // 6) Création du membership
         $membership = (new WorkspaceMembers())
             ->setWorkspace($workspace)
             ->setUser($user)

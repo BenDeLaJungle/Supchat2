@@ -19,8 +19,26 @@ use Symfony\Component\Routing\Annotation\Route;
 class ChannelController extends AbstractController
 {
     #[Route('/api/channels/{id}', name: 'get_channel', methods: ['GET'])]
-    public function getChannel(Channels $channel): JsonResponse
+    public function getChannel(Channels $channel, EntityManagerInterface $em): JsonResponse
     {
+        /** @var \App\Entity\Users $currentUser */
+        $currentUser = $this->getUser();
+        $workspace = $channel->getWorkspace();
+
+        $workspaceMember = $em->getRepository(WorkspaceMembers::class)->findOneBy([
+            'workspace' => $workspace,
+            'user' => $currentUser
+        ]);
+
+        if (!$workspaceMember) {
+            return new JsonResponse(['error' => 'Non membre du workspace'], 403);
+        }
+
+        // Si canal privé, vérifier le rôle minimum requis
+        if ($channel->getStatus() === false && $workspaceMember->getRole()->getId() < $channel->getMinRole()) {
+            return new JsonResponse(['error' => 'Accès interdit à ce canal privé'], 403);
+        }
+
         return new JsonResponse([
             'id' => $channel->getId(),
             'name' => $channel->getName(),
@@ -51,11 +69,14 @@ class ChannelController extends AbstractController
     {
         $channels = $repo->findBy(['workspace' => $id]);
 
-        $data = array_map(fn(Channels $c) => [
-            'id' => $c->getId(),
-            'name' => $c->getName(),
-            'status' => $c->getStatus(),
-        ], $channels);
+        $data = array_map(function (Channels $channel) {
+            return [
+                'id'       => $channel->getId(),
+                'name'     => $channel->getName(),
+                'status'   => $channel->getStatus(),
+                'minRole'  => $channel->getMinRole(),
+            ];
+        }, $channels);
 
         return new JsonResponse($data);
     }
@@ -88,6 +109,10 @@ class ChannelController extends AbstractController
         $channel->setStatus($data['status']);
         $channel->setWorkspace($workspace);
 
+        // Valeur par défaut du rôle requis = 1 (membre)
+        $minRole = isset($data['min_role']) ? (int) $data['min_role'] : 1;
+        $channel->setMinRole($minRole);
+
         $em->persist($channel);
         $em->flush();
 
@@ -105,6 +130,10 @@ class ChannelController extends AbstractController
 
         if (isset($data['status'])) {
             $channel->setStatus($data['status']);
+        }
+
+        if (isset($data['min_role'])) {
+            $channel->setMinRole((int) $data['min_role']);
         }
 
         $em->flush();
@@ -136,14 +165,12 @@ class ChannelController extends AbstractController
         $userId = (int) $data['user_id'];
         $workspace = $channel->getWorkspace();
 
-        //Chercher le membre du workspace
         $workspaceMember = $workspaceMembersRepo->findOneBy([
             'workspace' => $workspace,
             'user' => $userId
         ]);
 
         if (!$workspaceMember) {
-            //Si le user n'est même pas membre ➔ aucun droit
             return $this->json([
                 'is_admin' => false,
                 'can_moderate' => false,
@@ -151,19 +178,9 @@ class ChannelController extends AbstractController
             ]);
         }
 
-        //Vérifier admin
-        $isAdmin = $workspaceMember->getUser()->getRole() === 'ROLE_ADMIN';
-
-        //Vérifier les droits (moderate + manage)
         $role = $workspaceMember->getRole();
-
-        if ($role) {
-            $canModerate = $role->canModerate();
-            $canManage = $role->canManage();    
-        } else {
-            $canModerate = $workspaceMember->canModerate(); 
-            $canManage = $workspaceMember->canManage();     
-        }
+        $canModerate = $role?->canModerate() ?? false;
+        $canManage = $role?->canManage() ?? false;
 
         return $this->json([
             'is_admin' => $role && $role->getId() === 3,
@@ -193,5 +210,4 @@ class ChannelController extends AbstractController
 
         return $this->json($data);
     }
-
 }

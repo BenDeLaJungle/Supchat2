@@ -13,44 +13,70 @@ export default function WorkspaceDetail() {
   const [inviteLink, setInviteLink] = useState(null);
   const [newChannelName, setNewChannelName] = useState('');
   const [newChannelStatus, setNewChannelStatus] = useState('1');
+  const [newChannelMinRole, setNewChannelMinRole] = useState('1');
   const [newMemberId, setNewMemberId] = useState('');
   const [newRoleId, setNewRoleId] = useState('1');
   const [currentUserRole, setCurrentUserRole] = useState(1);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const user = await apiFetch('user');
-      const workspaceData = await apiFetch(`workspaces/${workspaceId}`);
-      const channelsData = await apiFetch(`workspaces/${workspaceId}/channels`);
-      const membersData = await apiFetch(`workspaces/${workspaceId}/members`);
-      const currentMember = membersData.find(m => m.user_id === user.id);
+useEffect(() => {
+  const fetchData = async () => {
+    const user = await apiFetch('user');
+    const workspaceData = await apiFetch(`workspaces/${workspaceId}`);
+    const allChannels = await apiFetch(`workspaces/${workspaceId}/channels`);
+    const membersData = await apiFetch(`workspaces/${workspaceId}/members`);
+    const currentMember = membersData.find(m => m.user_id === user.id);
+    const usersData = await apiFetch('users');
+
+    setWorkspaceName(workspaceData.name);
+    setMembers(membersData);
+    setUsers(usersData);
+
+    // Si l'utilisateur est le créateur du workspace, il est admin par défaut
+    if (user.id === workspaceData.creator.id) {
+      setCurrentUserRole(3);
+    } else {
       setCurrentUserRole(currentMember ? currentMember.role_id : 1);
-      const usersData = await apiFetch('users');
+    }
 
-      setWorkspaceName(workspaceData.name);
-      setChannels(channelsData);
-      setMembers(membersData);
-      setUsers(usersData);
-    };
+    const userRole = (user.id === workspaceData.creator_id)
+      ? 3
+      : (currentMember?.role_id ?? 1);
 
-    fetchData();
-  }, [workspaceId]);
+    const filteredChannels = allChannels.filter(
+      ch => ch.status === true || (ch.minRole ?? 1) <= userRole
+    );
+    setChannels(filteredChannels);
+  };
+
+  fetchData();
+}, [workspaceId]);
+
 
   const handleCreateChannel = async () => {
     if (!newChannelName.trim()) return;
+
     await apiFetch('channels', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: newChannelName,
         status: newChannelStatus === "1",
-        workspace_id: workspaceId
+        workspace_id: workspaceId,
+        min_role: parseInt(newChannelMinRole, 10)
       })
     });
+
     const updatedChannels = await apiFetch(`workspaces/${workspaceId}/channels`);
-    setChannels(updatedChannels);
+    const user = await apiFetch('user');
+    const currentMember = members.find(m => m.user_id === user.id);
+    const visibleChannels = updatedChannels.filter(
+      ch => ch.status === true || (ch.minRole ?? 1) <= (currentMember?.role_id ?? 1)
+    );
+
+    setChannels(visibleChannels);
     setNewChannelName('');
     setNewChannelStatus('1');
+    setNewChannelMinRole('1');
   };
 
   const handleAddMember = async () => {
@@ -100,7 +126,6 @@ export default function WorkspaceDetail() {
   return (
     <>
       <AdminHeader />
-
       <div className="workspace-detail-page">
         <h2 className="workspace-detail-title">{workspaceName}</h2>
 
@@ -134,6 +159,15 @@ export default function WorkspaceDetail() {
               >
                 <option value="1">Public</option>
                 <option value="2">Privé</option>
+              </select>
+              <select
+                value={newChannelMinRole}
+                onChange={(e) => setNewChannelMinRole(e.target.value)}
+                className="select-regular"
+              >
+                <option value="1">Accessible à tous les membres</option>
+                <option value="2">Accessible aux modérateurs et admins</option>
+                <option value="3">Accessible uniquement aux admins</option>
               </select>
               <button
                 onClick={handleCreateChannel}
@@ -228,3 +262,4 @@ export default function WorkspaceDetail() {
     </>
   );
 }
+
