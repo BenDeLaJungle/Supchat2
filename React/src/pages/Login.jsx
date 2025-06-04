@@ -85,15 +85,17 @@ const Login = () => {
     const height = 600;
     const left = window.innerWidth / 2 - width / 2;
     const top = window.innerHeight / 2 - height / 2;
+	const addr = 'https://127.0.0.1:8000';
 
     const authWindow = window.open(
-      `http://localhost:8000/api/auth/${provider}`,
+      `${addr}/api/auth/${provider}`,
       `${provider} Login`,
       `width=${width},height=${height},top=${top},left=${left}`
     );
 
     const handleMessage = async (event) => {
-      if (event.origin !== "http://localhost:8000/api") return;
+      if (event.origin !== "https://127.0.0.1:8000") return;
+
 
       const { token } = event.data;
       if (token) {

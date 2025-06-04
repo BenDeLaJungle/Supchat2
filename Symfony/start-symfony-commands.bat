@@ -1,8 +1,17 @@
 @echo off
-echo 🚀 Lancement du serveur Symfony...
+echo Lancement du serveur Symfony en HTTPS...
 
-symfony server:start --no-tls --dir=public || echo ❌ ECHEC lancement serveur
+:: Stoppe les serveurs Symfony précédents s'il y en a
+symfony server:stop >nul 2>&1
 
-echo ✅ Symfony est lancé ! Appuyez sur une touche pour fermer cette fenêtre.
-echo documentation sur http://localhost:8000/api/doc
+:: Démarre Symfony en HTTPS sur le port 8000
+symfony server:start --port=8000 --daemon
+
+IF %ERRORLEVEL% NEQ 0 (
+    echo  ECHEC lancement serveur Symfony
+) ELSE (
+    echo  Symfony est lancé sur https://127.0.0.1:8000
+    echo  Documentation API : https://127.0.0.1:8000/api/doc
+)
+
 pause

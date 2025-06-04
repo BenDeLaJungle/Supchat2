@@ -1,6 +1,6 @@
 import { getToken, logout } from './auth';
 
-const API_URL = 'http://localhost:8000/api/';
+const API_URL = 'https://localhost:8000/api/';
 
 export async function apiFetch(endpoint, options = {}) {
   const token = getToken();
@@ -31,7 +31,7 @@ export async function apiFetch(endpoint, options = {}) {
     return data;
   } else {
     const raw = await response.text();
-    console.error("⚠️ Réponse non JSON reçue :", raw);
+    console.error(" Réponse non JSON reçue :", raw);
     throw new Error("Réponse non valide (pas du JSON)");
   }
 }

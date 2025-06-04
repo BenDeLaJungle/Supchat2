@@ -146,4 +146,39 @@ public function searchUsers(UsersRepository $userRepository, Request $request): 
 
         return $this->json($data);
     }
+	#[Route('/api/admin/user/{id}', name: 'admin_user_update', methods: ['PUT'])]
+	#[IsGranted('ROLE_ADMIN')]
+	public function updateUserAdmin(Request $request, int $id, UsersRepository $userRepository, EntityManagerInterface $em): JsonResponse
+	{
+		$user = $userRepository->find($id);
+		if (!$user) {
+			return new JsonResponse(['error' => 'Utilisateur non trouvé'], 404);
+		}
+
+		$data = json_decode($request->getContent(), true);
+		if (isset($data['role'])) {
+			$user->setRole($data['role']);
+		}
+		if (isset($data['status'])) {
+			$user->setStatus($data['status']);
+		}
+
+		$em->flush();
+
+		return new JsonResponse(['message' => 'Utilisateur mis à jour']);
+	}
+	#[Route('/api/admin/user/{id}', name: 'admin_user_delete', methods: ['DELETE'])]
+	#[IsGranted('ROLE_ADMIN')]
+	public function deleteUserAdmin(int $id, UsersRepository $userRepository, EntityManagerInterface $em): JsonResponse
+	{
+		$user = $userRepository->find($id);
+		if (!$user) {
+			return new JsonResponse(['error' => 'Utilisateur non trouvé'], 404);
+		}
+
+		$em->remove($user);
+		$em->flush();
+
+		return new JsonResponse(['message' => 'Utilisateur supprimé']);
+	}
 }
