@@ -1,6 +1,7 @@
-// src/components/Parametres.jsx
+// src/pages/Parametres.jsx
+
 import React, { useState, useEffect } from 'react';
-import '../styles/parametres.css';
+import '../styles/parametres.css';         // On importe le CSS spécifique à la page Paramètres
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
 import AdminHeader from '../components/ui/Adminheader';
@@ -8,6 +9,7 @@ import AdminHeader from '../components/ui/Adminheader';
 export default function Parametres() {
   const { user, setUser } = useAuth();
 
+  // On détermine le thème initial à partir du localStorage ou de la data utilisateur (user.theme)
   const stored = localStorage.getItem('theme');
   const defaultFromApi = user?.theme ? 'dark' : 'light';
   const initialTheme =
@@ -25,11 +27,13 @@ export default function Parametres() {
   const [errorUpdateStatut, setErrorUpdateStatut] = useState('');
   const [errorExport, setErrorExport] = useState('');
 
+  // À chaque changement de `theme`, on met à jour la classe du body ET localStorage
   useEffect(() => {
     document.body.className = `theme-${theme}`;
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+  // Met à jour le nom d'utilisateur et l'email
   const handleUpdate = async (e) => {
     e.preventDefault();
     setSuccessUpdateInfos('');
@@ -40,6 +44,7 @@ export default function Parametres() {
         method: 'PUT',
         body: JSON.stringify({ userName: username, emailAddress: email }),
       });
+      // On met à jour le contexte global user
       setUser({ ...user, username, email });
       setSuccessUpdateInfos('Informations mises à jour !');
     } catch (err) {
@@ -48,6 +53,7 @@ export default function Parametres() {
     }
   };
 
+  // Met à jour le statut
   const handleStatusUpdate = async (e) => {
     e.preventDefault();
     setSuccessUpdateStatut('');
@@ -66,6 +72,7 @@ export default function Parametres() {
     }
   };
 
+  // Exporte les données RGPD
   const handleExportData = async () => {
     try {
       const data = await apiFetch('user');
@@ -85,6 +92,7 @@ export default function Parametres() {
     }
   };
 
+  // Bascule clair ↔ sombre
   const toggleTheme = async () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
@@ -111,7 +119,7 @@ export default function Parametres() {
             {/* Gestion statut */}
             <div className="para statut">
               <h3>Gestion statut</h3>
-              <form onSubmit={handleStatusUpdate}>
+              <form onSubmit={handleStatusUpdate} className="form-statut">
                 <select
                   id="status"
                   value={status}
@@ -140,13 +148,11 @@ export default function Parametres() {
                   Conformément au Règlement Général sur la Protection des Données (RGPD),
                   vous pouvez demander l'accès à vos données personnelles, leur
                   rectification ou leur suppression.
-                  <br />
-                  <br />
+                  <br /><br />
                   Nous collectons uniquement les informations nécessaires au bon
                   fonctionnement de la plateforme (nom, email, statut, préférences).
                   Ces données ne sont partagées avec aucun tiers.
-                  <br />
-                  <br />
+                  <br /><br />
                   Pour toute question ou demande, contactez-nous à l’adresse suivante :
                   <a href="mailto:support@supchat.com"> support@supchat.com</a>.
                 </p>
@@ -156,6 +162,7 @@ export default function Parametres() {
 
           {/* Bloc droite */}
           <div className="bloc-droite">
+            {/* Thème */}
             <div className="para theme">
               <h3>Thème</h3>
               <p>Mode {theme === 'dark' ? 'sombre' : 'clair'}</p>

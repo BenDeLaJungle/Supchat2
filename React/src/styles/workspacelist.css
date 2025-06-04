@@ -1,0 +1,144 @@
+/* src/styles/workspacelist.css */
+
+/* Conteneur global */
+.workspace-page {
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Titre “Mes workspaces” */
+.workspace-title {
+  font-size: 1.9rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  color: var(--wl-title);
+}
+
+/* Conteneur des cartes */
+.workspace-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* Lien entourant chaque carte */
+.workspace-link {
+  text-decoration: none; /* on enlève le soulignement */
+}
+
+/* Style de chaque carte (workspace) */
+.workspace-card {
+  width: 180px;
+  height: 90px;
+  background-color: var(--wl-card-bg);
+  border-radius: var(--wl-card-border-radius);
+  box-shadow: var(--wl-card-shadow);
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Texte du nom du workspace */
+.workspace-card h2 {
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  margin: 0;
+  color: var(--wl-card-text);
+}
+
+/* Texte du statut */
+.workspace-card p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: var(--wl-card-text);
+}
+
+/* Survol de la carte */
+.workspace-card:hover {
+  background-color: var(--wl-card-hover-bg);
+  box-shadow: var(--wl-card-hover-shadow);
+}
+
+.workspace-card:hover h2,
+.workspace-card:hover p {
+  color: var(--wl-card-hover-text);
+}
+
+/* === Formulaire “Créer un workspace” + “Rejoindre un workspace” === */
+.work-channel-create-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+  gap: var(--wl-form-gap);
+}
+
+/* Input texte (nom du workspace ou token d’invitation) */
+.work-channel-input {
+  padding: 0.5rem 1rem;
+  background-color: var(--wl-input-bg);
+  color: var(--wl-input-text);
+  border: 1px solid var(--wl-input-border);
+  border-radius: var(--wl-input-border-radius);
+  font-size: 1rem;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+/* Select (Public / Privé) */
+.work-channel-select {
+  padding: 0.5rem 1rem;
+  background-color: var(--wl-input-bg);
+  color: var(--wl-input-text);
+  border: 1px solid var(--wl-input-border);
+  border-radius: var(--wl-input-border-radius);
+  font-size: 1rem;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+/* Boutons “Créer un workspace” et “Rejoindre un workspace” */
+.work-channel-create-button {
+  background-color: var(--wl-button-bg);
+  color: var(--wl-button-text);
+  padding: 0.6rem 5rem;
+  border: none;
+  border-radius: var(--wl-button-border-radius);
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  width: 100%;
+  max-width: 400px;
+}
+
+.work-channel-create-button:hover {
+  background-color: var(--wl-button-hover-bg);
+  color: var(--wl-button-hover-text);
+}
+
+/* --- Responsive éventuel (exemple si besoin) --- */
+@media (max-width: 520px) {
+  .workspace-card {
+    width: 140px;
+    height: 80px;
+  }
+  .work-channel-create-button {
+    padding: 0.6rem 3rem;
+  }
+}

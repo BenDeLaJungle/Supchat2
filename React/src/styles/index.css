@@ -1,3 +1,6 @@
+/* src/index.css */
+
+/* ===================== VARIABLES GLOBALES ===================== */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -25,8 +28,8 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  justify-content: center; 
-  align-items: start;       
+  justify-content: center;
+  align-items: start;
   min-width: 320px;
   min-height: 100vh;
   background-color: #f4f4f4;
@@ -55,12 +58,13 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
 /* =======================
    Dropdown de la SearchBar
 =========================== */
 .search-dropdown {
-  max-height: 300px; 
-  overflow-y: auto;  
+  max-height: 300px;
+  overflow-y: auto;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: white;
@@ -81,21 +85,11 @@ button:focus-visible {
   background-color: #f5f5f5;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
+/* ======================
+   Header (Home) 
+====================== */
 .header-home {
-  width: 100vw; 
+  width: 100vw;
   margin: 0;
   padding: 0.1rem 2rem;
   display: flex;
@@ -103,7 +97,7 @@ button:focus-visible {
   align-items: center;
   background-color: #eef5ff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 0; 
+  border-radius: 0;
   box-sizing: border-box;
   margin-bottom: 0rem;
   flex-wrap: wrap;
@@ -113,11 +107,12 @@ button:focus-visible {
   background-color: #284E7B;
 }
 
-.header-barre, .header-logo, .header-logout {
+.header-barre,
+.header-logo,
+.header-logout {
   display: flex;
   align-items: center;
 }
-
 
 .header-logo .logo {
   height: 80px;
@@ -136,18 +131,7 @@ button:focus-visible {
 }
 
 .header-logout .logout-button {
-  background-color: #ff4d4d;
-  color: white;
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.header-logout .logout-button {
-  background-color: #add4f3; 
+  background-color: #add4f3;
   color: #1f1f1f;
   padding: 0.6rem 1.2rem;
   border: none;
@@ -158,7 +142,7 @@ button:focus-visible {
 }
 
 .logout-button:hover {
-  background-color: #CA3C66; 
+  background-color: #CA3C66;
   color: white;
 }
 
@@ -170,9 +154,12 @@ button:focus-visible {
   font-size: 1rem;
 }
 
+/* ======================
+   Card container (Home) 
+====================== */
 .card-container {
   display: grid;
-  grid-template-columns: repeat(3, 120px); 
+  grid-template-columns: repeat(3, 120px);
   justify-content: center;
   gap: 1.2rem;
   padding: 0.5rem 1rem;
@@ -182,7 +169,7 @@ button:focus-visible {
   background: #add4f3;
   border-radius: 1rem;
   width: 120px;
-  height: 120px; 
+  height: 120px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   cursor: pointer;
@@ -192,7 +179,6 @@ button:focus-visible {
   justify-content: center;
   align-items: center;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  
 }
 
 .card:hover {
@@ -228,12 +214,18 @@ button:focus-visible {
   color: #eff3f5;
 }
 
+/* ======================
+   Avatar utilisateur 
+====================== */
 .logo-user-img {
   width: 100px !important;
   height: 100px !important;
   object-fit: contain;
 }
 
+/* ======================
+   Welcome Name (Home) 
+====================== */
 .welcome-name {
   text-align: center;
   margin-top: 10px;
@@ -243,6 +235,9 @@ button:focus-visible {
   margin-bottom: 1rem;
 }
 
+/* ======================
+   Messaging container 
+====================== */
 .messaging-container {
   padding: 1rem;
   max-width: 800px;
@@ -295,7 +290,8 @@ button:focus-visible {
   background-color: #add4f3;
 }
 
-.recipient-select, .message-input {
+.recipient-select,
+.message-input {
   padding: 0.6rem;
   font-size: 1rem;
   border-radius: 8px;
@@ -430,66 +426,9 @@ button:focus-visible {
   font-style: italic;
 }
 
-.workspace-page {
-  padding: 1rem;
-  max-width: 800px;
-  margin: auto;
-  text-align: center;
-}
-
-.workspace-title {
-  font-size: 1.9rem;
-  margin-top: 0.5px;
-  margin-bottom: 1rem;
-  color: #284E7B;
-}
-
-.workspace-card-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.workspace-link {
-  text-decoration: none;
-}
-
-.workspace-card {
-  width: 180px;
-  height: 90px;
-  background-color: #add4f3;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-.workspace-card h2 {
-  font-size: 16px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  margin: 0;
-}
-
-.workspace-card p {
-  margin: 5px 0 0;
-  font-size: 14px;
-}
-
-.workspace-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-}
-
+/* ======================
+   Workspace Detail (inchangé)
+====================== */
 .workspace-detail-title {
   text-align: center;
   margin-top: 20px;
@@ -527,8 +466,8 @@ button:focus-visible {
   display: inline-block;
   width: 40px;
   height: 35px;
-  padding: 0 !important; 
-  font-size: 1rem !important; 
+  padding: 0 !important;
+  font-size: 1rem !important;
   background-color: #284E7B;
   color: #fff;
   border: none;
@@ -580,7 +519,6 @@ button:focus-visible {
   color: #1f1f1f;
 }
 
-
 .workspace-members-section input,
 .workspace-members-section select,
 .workspace-members-section button {
@@ -597,69 +535,11 @@ button:focus-visible {
   margin-top: 1rem;
 }
 
-.workspace-members-section input,
-.workspace-members-section select,
-.workspace-members-section button {
-  width: 100%;
-  max-width: 400px;
-  margin-bottom: 0.5rem;
-  text-align: center;
-}
+/* Note : les règles pour la création de canaux et membres (work-channel-create-form, etc.) ont été déplacées dans workspacelist.css */
 
-.work-channel-create-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 1rem;
-  gap: 0.4rem;
-}
-
-.work-channel-create-form input,
-.work-channel-create-form select,
-.work-channel-create-form button {
-  width: 100%;
-  max-width: 400px;
-  margin-bottom: 0.5rem;
-  text-align: center;
-}
-
-.work-channel-input {
-  margin-bottom: 2px;
-}
-
-.work-channel-input,
-.work-channel-select {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  width: 100%;
-  max-width: 400px;
-}
-
-.work-channel-create-button {
-  background-color: #add4f3;
-  color: #1f1f1f;
-  padding: 0.6rem 5rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.work-channel-create-button:hover {
-  background-color: #284E7B;
-  color: #ffffff;
-}
-
-.workspace-detail-page {
-  padding: 1rem;
-  max-width: 800px;
-  margin: auto;
-  text-align: center;
-}
-
+/* ======================
+   Canaux (WorkspaceDetail)
+====================== */
 .channel-list {
   list-style: none;
   padding: 0;
@@ -693,8 +573,9 @@ button:focus-visible {
   color: #ffffff;
 }
 
-/* responsive */
-
+/* ======================
+   Responsive (global) 
+====================== */
 @media (max-width: 768px) {
   .card-container {
     display: flex;
@@ -732,38 +613,37 @@ button:focus-visible {
     color: #284E7B;
     text-align: center;
     margin-top: 2rem;
-    margin-bottom: 2rem; 
+    margin-bottom: 2rem;
   }
-  
+
   .header-home {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 0 1rem; 
-    box-sizing: border-box; 
+    padding: 0 1rem;
+    box-sizing: border-box;
   }
-  
+
   .header-logo {
     margin-bottom: 1rem;
   }
-  
+
   .header-barre {
-    width: 60%;          
-    max-width: 350px;    
-    margin-bottom: 1rem; 
-    display: flex;      
+    width: 60%;
+    max-width: 350px;
+    margin-bottom: 1rem;
+    display: flex;
     justify-content: center;
   }
 
   .header-barre input {
     width: 100%;
   }
-  
+
   .header-logout {
     width: 100%;
     justify-content: center;
     margin-bottom: 1rem;
   }
-
 }

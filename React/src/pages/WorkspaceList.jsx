@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { apiFetch } from '../services/api';
 import { Link } from 'react-router-dom';
 import AdminHeader from '../components/ui/Adminheader';
+import '../styles/workspacelist.css';
 
 export default function WorkspaceList() {
   const [workspaces, setWorkspaces] = useState([]);

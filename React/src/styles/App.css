@@ -1,42 +1,177 @@
+/* src/styles/App.css */
+
+/* ===================== VARIABLES GLOBALES ===================== */
+
+/* Mode clair (défaut) */
+:root {
+  /* Couleur de fond global et texte principal */
+  --bg-page:           #f7f7f7;    
+  --text-base:         #1c3d5a;
+
+  /* Couleurs des cartes (.para) */
+  --card-bg:           #e3f2fd;
+  --card-title-color:  #284E7B;
+  --card-border:       rgba(30, 58, 95, 0.15);
+
+  /* Couleurs des boutons */
+  --btn-bg:            #659abd;
+  --btn-text:          #ffffff;
+  --btn-hover:         #ca3c66;
+
+  /* Couleurs pour formulaires (bordures, etc.) */
+  --input-border:      #ccc;
+  --rgpd-bg:           #f3f3f3;
+  --rgpd-text:         #444;
+
+    /* Couleurs Calendrier */
+  --calendar-bg:       #fcfcfc;   /* fond du composant calendar */
+  --calendar-text:     #284E7B;   /* texte des jours et navigation */
+  --calendar-active-bg:#ca3c66;   /* couleur background tile active */
+  --calendar-active-text: #ffffff;/* texte des jours sélectionnés */
+  --calendar-hover-bg: #bbdefb;   /* hover tile */
+  --calendar-border:   #ddd;      /* bordure pour form-event */
+
+  --admin-bg-card:       #f9f9f9;   /* fond des blocs du formulaire */
+  --admin-text-title:    #2c3e50;   /* couleur des titres H1/H2 */
+  --admin-select-bg:     #ffffff;   /* fond des <select> et <input> */
+  --admin-select-border: #ccc;      /* bordure des <select> et <input> */
+  --admin-button-bg:     #e74c3c;   /* fond bouton “Supprimer” */
+  --admin-button-text:   #ffffff;   /* texte bouton “Supprimer” */
+  --admin-button-hover:  #c0392b;   /* fond bouton au survol */
+  --admin-error:         #e74c3c;   /* couleur des messages d’erreur */
+  
+
+ /* WorkspaceDetail */
+  --ws-btn-channel-text:            #ffffff;    /* Couleur du texte du bouton « canal » */
+  --ws-btn-channel-bg:              #284e7b;    /* Couleur de fond du bouton « canal » */
+  --ws-btn-channel-bg-hover:        #add4f3;    /* Fond au survol du bouton « canal » */
+  --ws-members-list-bg:             #eff3f5;    /* Fond de la carte contenant la liste des membres */
+  --ws-member-row-bg:               #f4f4f4;    /* Fond d’une ligne « membre » */
+  --ws-member-label-text:           #2c3e50;    /* Couleur du texte « Nom (Rôle) » */
+  --ws-btn-member-delete-bg:        #e74c3c;    /* Fond du bouton « Supprimer » */
+  --ws-btn-member-delete-text:      #ffffff;    /* Texte du bouton « Supprimer » */
+  --ws-btn-member-delete-hover:     #c0392b;    /* Fond au survol du bouton « Supprimer » */
+  --ws-scroll-thumb:                #888888;    /* Couleur du pouce (thumb) */
+  --ws-scroll-track:                #f0f0f0;    /* Couleur de la piste (track) */
+  --ws-btn-invite-bg:               #27ae60;    /* Fond du bouton « Générer un lien » */
+  --ws-btn-invite-text:             #ffffff;    /* Texte du bouton « Générer un lien » */
+  --ws-btn-invite-hover:            #1e8449;    /* Fond au survol du bouton « Générer un lien » */
+  --ws-btn-secondary-bg:            #27ae60;    /* Fond du bouton secondaire (ex. « Copier ») */
+  --ws-btn-secondary-text:          #ffffff;    /* Texte du bouton « Copier » */
+  --ws-btn-secondary-hover:         #1e8449;    /* Fond au survol du bouton « Copier » */
+  --ws-invite-text-color:           #34495e;    /* Couleur du texte du lien d’invitation (line en bas) */
+  --ws-input-bg:                    #eff3f5;    /* Fond des <input> et <select> */
+  --ws-input-text:                  #888888;    /* Couleur du texte dans <input> et <select> */
+  --ws-input-border:                #cccccc;
+
+  /* WORKSAPCE LIST */
+  --wl-title:               #284E7B;
+  --wl-card-bg:             #add4f3;                 /* fond de chaque carte */
+  --wl-card-text:           #1f1f1f;                 /* texte (nom + statut) */
+  --wl-card-shadow:         0 2px 8px rgba(0,0,0,0.1);/* ombre légère */
+  --wl-card-border-radius:  12px;                    /* arrondi des coins */
+  --wl-card-hover-bg:       #284E7B;                 /* fond au survol */
+  --wl-card-hover-text:     #ffffff;                 /* texte au survol */
+  --wl-card-hover-shadow:   0 6px 16px rgba(0,0,0,0.15);/* ombre survol */
+  --wl-input-bg:            #ffffff;                 /* fond des champs texte */
+  --wl-input-text:          #1f1f1f;                 /* texte dans les champs */
+  --wl-input-border:        #ccc;                    /* bordure des champs */
+  --wl-input-border-radius: 8px;                     /* arrondi des champs */
+  --wl-button-bg:           #add4f3;                 /* fond normal */
+  --wl-button-text:         #1f1f1f;                 /* texte normal */
+  --wl-button-hover-bg:     #284E7B;                 /* fond au survol */
+  --wl-button-hover-text:   #ffffff;                 /* texte au survol */
+  --wl-button-border-radius:8px;                     /* arrondi des boutons */
+  --wl-form-gap:            0.4rem;
+}
+
+
+/* Mode sombre */
+body.theme-dark {
+  --bg-page:           #0d1724; /* fond général sombre */
+  --text-base:         #add4f3; /* texte clair */
+
+  --card-bg:           #284E7B; /* fond des blocs “.para” en sombre */
+  --card-title-color:  #f0f4f8; /* titre <h3> clair */
+  --card-border:       rgba(240, 244, 248, 0.15);
+
+  --btn-bg:            #3a5a7a; /* fond bouton sombre */
+  --btn-text:          #add4f3; /* texte bouton clair */
+  --btn-hover:         #ca3c66; /* hover identique */
+
+  --input-border:      #555;    /* bordure sombre pour input/select */
+  --rgpd-bg:           #3b4a5b; /* fond zone <details> sombre */
+  --rgpd-text:         #ddd;    /* texte dans <details> clair */
+
+  /* Couleurs Calendrier en sombre */
+  --calendar-bg:         #1e324a;    /* fond du composant calendar sombre */
+  --calendar-text:       #add4f3;    /* texte des jours et navigation */
+  --calendar-active-bg:  #ca3c66;    /* couleur background tile active (idem clair) */
+  --calendar-active-text:#ffffff;    /* texte des jours sélectionnés */
+  --calendar-hover-bg:   #3a5a7a;    /* hover tile sombre */
+  --calendar-border:     #444;       /* bordure pour form-event en sombre */
+
+    
+  /* AdminSpace en sombre */
+  --admin-bg-card:       #1e2733;   /* fond des blocs du formulaire sombre */
+  --admin-text-title:    #add4f3;   /* titres H1/H2 clair */
+  --admin-select-bg:     #2c3e50;   /* fond des <select> et <input> sombre */
+  --admin-select-border: #555;
+  --admin-button-bg:     #922b21;   /* fond bouton sombre */
+  --admin-button-text:   #ffffff;   /* texte bouton clair */
+  --admin-button-hover:  #c0392b;
+  --admin-error:         #e63946;   /* message d’erreur plus lisible */
+
+   /* WorkspaceDetail */
+  --ws-btn-channel-text:            #ffffff;    /* Couleur du texte du bouton « canal » */
+  --ws-btn-channel-bg:              #659abd;    /* Couleur de fond du bouton « canal » */
+  --ws-btn-channel-bg-hover:        #add4f3;    /* Fond au survol du bouton « canal » */
+  --ws-members-list-bg:             #0d1724;    /* Fond de la carte contenant la liste des membres */
+  --ws-member-row-bg:               #0d1724;    /* Fond d’une ligne « membre » */
+  --ws-member-label-text:           #ffffff;    /* Couleur du texte « Nom (Rôle) » */
+  --ws-btn-member-delete-bg:        #e74c3c;    /* Fond du bouton « Supprimer » */
+  --ws-btn-member-delete-text:      #ffffff;    /* Texte du bouton « Supprimer » */
+  --ws-btn-member-delete-hover:     #c0392b;    /* Fond au survol du bouton « Supprimer » */
+  --ws-scroll-thumb:                #888888;    /* Couleur du pouce (thumb) */
+  --ws-scroll-track:                #0d1724;    /* Couleur de la piste (track) */
+  --ws-btn-invite-bg:               #27ae60;    /* Fond du bouton « Générer un lien » */
+  --ws-btn-invite-text:             #ffffff;    /* Texte du bouton « Générer un lien » */
+  --ws-btn-invite-hover:            #1e8449;    /* Fond au survol du bouton « Générer un lien » */
+  --ws-btn-secondary-bg:            #27ae60;    /* Fond du bouton secondaire (ex. « Copier ») */
+  --ws-btn-secondary-text:          #ffffff;    /* Texte du bouton « Copier » */
+  --ws-btn-secondary-hover:         #1e8449;    /* Fond au survol du bouton « Copier » */
+  --ws-invite-text-color:           #add4f3;    /* Couleur du texte du lien d’invitation (line en bas) */
+  --ws-input-bg:                    #284e7b;    /* Fond des <input> et <select> */
+  --ws-input-text:                  #add4f3;    /* Couleur du texte dans <input> et <select> */
+  --ws-input-border:                #add4f3;
+
+    /* WORKSAPCE LIST */
+  --wl-title:               #add4f3;
+  --wl-card-bg:             #284e7b;                 /* fond de chaque carte */
+  --wl-card-text:           #ffffff;                 /* texte (nom + statut) */
+  --wl-card-hover-bg:       #add4f3;                 /* fond au survol */
+  --wl-card-hover-text:     #284e7b;                 /* texte au survol */
+  --wl-input-bg:            #2C3E50;                 /* fond des champs texte */
+  --wl-input-text:          #add4f3;                 /* texte dans les champs */
+  --wl-input-border:        #ccc;                    /* bordure des champs */
+  --wl-button-bg:           #284e7b;                 /* fond normal */
+  --wl-button-text:         #1f1f1f;                 /* texte normal */
+  --wl-button-hover-bg:     #284E7B;                 /* fond au survol */
+  --wl-button-hover-text:   #ffffff;                 /* texte au survol */
+}
+
+
+/* ===================== STYLE GLOBAL ===================== */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-base);
+}
+
+/* Pour que tout contenu prenne la couleur et le fond global */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  min-height: 100vh;
+  background-color: var(--bg-page);
 }

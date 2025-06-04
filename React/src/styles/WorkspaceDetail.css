@@ -1,107 +1,177 @@
+/* src/styles/WorkspaceDetail.css */
+
+/* ================= STYLES GÉNÉRAUX (ne pas toucher la structure/dimensions) ================ */
 .workspace-detail-page {
   max-width: 1100px;
   margin: 20px auto;
   padding: 0 16px;
   font-family: Arial, sans-serif;
-  color: #2c3e50;
+  color: var(--text-base); /* conserve la couleur de base du texte globale */
 }
 
-/* Titre */
+/* ===== Titre principal ===== */
 .workspace-detail-title {
   text-align: center;
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 24px;
-  color: #34495e;
+  color: var(--ws-invite-text-color); /* par exemple, pour garder une teinte cohérente */
 }
 
-/*titres de section  */
+/* ===== Titres de section (“Canaux”, “Membres ”, “Invitation”) ===== */
 .section-title {
   text-align: center;
   font-size: 1.5rem;
   margin: 32px 0 16px;
-  color: #34495e;
+  color: var(--ws-invite-text-color);
 }
 
+/* ===== Conteneur flex entre liste / formulaire ===== */
 .section-container {
   display: flex;
   gap: 24px;
   margin-bottom: 32px;
 }
 
-
+/* ===================== COLONNE LISTE (Canaux ou Membres) ===================== */
+/* Style commun aux deux listes (barre défilement, fond) */
 .workspace-detail-page .list-container {
-  flex: 1; 
-  max-height: 220px;            
-  overflow-y: auto;             
+  flex: 1;                      /* occupe tout l’espace restant horizontal */
+  max-height: 220px;            /* hauteur fixe pour forcer le scroll si besoin */
+  overflow-y: auto;
+  background-color: var(--ws-members-list-bg);
   border: none;
   border-radius: 6px;
-  background-color: #eff3f5;
 }
 
+/* --- Scrollbar pour WebKit (Chrome, Edge, Safari) --- */
+.workspace-detail-page .list-container::-webkit-scrollbar {
+  width: 8px; /* épaisseur */
+}
+.workspace-detail-page .list-container::-webkit-scrollbar-track {
+  background: var(--ws-scroll-track);
+}
+.workspace-detail-page .list-container::-webkit-scrollbar-thumb {
+  background-color: var(--ws-scroll-thumb);
+  border-radius: 4px;
+  border: 2px solid var(--ws-scroll-track);
+}
+
+/* --- Scrollbar pour Firefox --- */
+.workspace-detail-page .list-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ws-scroll-thumb) var(--ws-scroll-track);
+}
+
+/* ===================== SECTION “Canaux” ===================== */
+/* Liste de boutons qui redirigent vers chaque canal */
 .workspace-detail-page .channels-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-
-.workspace-detail-page .workspace-card {
-  flex: 0 0 280px; 
-  background-color: #f4f4f4;
-  border: #f4f4f4;
-  border-radius: 8px;
-  padding: 60px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-
-.workspace-detail-page .input-regular,
-.workspace-detail-page .select-regular {
-  padding: 10px 12px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.workspace-detail-page .button-primary {
+/* Bouton pour chaque canal */
+.workspace-detail-page .channel-link-button {
+  display: block;
+  width: 95%;
   padding: 10px 16px;
-  background-color: #659abd;
-  color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
+  background-color: var(--ws-btn-channel-bg);
+  color: var(--ws-btn-channel-text);
+  text-align: center;
+  text-decoration: none;
   font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
 }
-.workspace-detail-page .button-primary:hover {
-  background-color: #284e7b;
-  color: #8F908D;
+.workspace-detail-page .channel-link-button:hover {
+  background-color: var(--ws-btn-channel-bg-hover);
+  color: var(--ws-btn-channel-text);
 }
 
-.workspace-detail-page .button-danger-sm {
+/* ===================== SECTION “Membres du workspace” ===================== */
+/* Chaque ligne « membre » */
+.workspace-detail-page .members-list .member-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  background-color: var(--ws-member-row-bg);
+}
+.workspace-detail-page .members-list .member-row:last-child {
+  border-bottom: none;
+}
+
+/* Texte « Nom (Rôle) » */
+.workspace-detail-page .members-list .member-label {
+  font-size: 1rem;
+  color: var(--ws-member-label-text);
+}
+
+/* Bouton “Supprimer” à côté d’un membre */
+.workspace-detail-page .members-list .button-danger-sm {
   padding: 6px 12px;
-  background-color: #e74c3c;
-  color: #fff;
+  background-color: var(--ws-btn-member-delete-bg);
+  color: var(--ws-btn-member-delete-text);
   border: none;
   border-radius: 4px;
   font-size: 0.9rem;
   cursor: pointer;
   transition: background-color 0.2s;
 }
-.workspace-detail-page .button-danger-sm:hover {
-  background-color: #c0392b;
+.workspace-detail-page .members-list .button-danger-sm:hover {
+  background-color: var(--ws-btn-member-delete-hover);
 }
 
+/* ===================== FORMULAIRES D’AJOUT (Canal / Membre) ===================== */
+/* Conteneur carte (droite) : reste inchangé au niveau largeur/hauteur */
+.workspace-detail-page .workspace-card {
+  flex: 0 0 280px;
+  background-color: var(--ws-input-bg); /* on peut réutiliser la même couleur qu’un input pour homogénéité */
+  border: none;
+  border-radius: 8px;
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Input & Select (Canal + Membre) */
+.workspace-detail-page .input-regular,
+.workspace-detail-page .select-regular {
+  padding: 10px 12px;
+  font-size: 1rem;
+  color: var(--ws-input-text);
+  background-color: var(--ws-input-bg);
+  border: 1px solid var(--ws-input-border);
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Bouton “Créer un canal” ou “Ajouter le membre” */
+.workspace-detail-page .button-primary {
+  padding: 10px 16px;
+  background-color: var(--ws-btn-channel-bg);
+  color: var(--ws-btn-channel-text);
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+.workspace-detail-page .button-primary:hover {
+  background-color: var(--ws-btn-channel-bg-hover);
+  color: var(--ws-btn-channel-text);
+}
+
+/* ===================== SECTION “Invitation” ===================== */
+/* Bouton « Générer un lien d’invitation » */
 .workspace-detail-page .button-invite {
   padding: 8px 12px;
-  background-color: #27ae60;
-  color: #fff;
+  background-color: var(--ws-btn-invite-bg);
+  color: var(--ws-btn-invite-text);
   border: none;
   border-radius: 6px;
   font-size: 0.8rem;
@@ -111,13 +181,15 @@
   margin-bottom: 12px;
 }
 .workspace-detail-page .button-invite:hover {
-  background-color: #1e8449;
+  background-color: var(--ws-btn-invite-hover);
+  color: var(--ws-btn-invite-text);
 }
 
+/* Bouton « Copier le lien » (petit bouton secondaire) */
 .workspace-detail-page .button-secondary-sm {
   padding: 8px 12px;
-  background-color: #27ae60;
-  color: #fff;
+  background-color: var(--ws-btn-secondary-bg);
+  color: var(--ws-btn-secondary-text);
   border: none;
   border-radius: 4px;
   font-size: 0.6rem;
@@ -126,57 +198,20 @@
   margin-top: 8px;
 }
 .workspace-detail-page .button-secondary-sm:hover {
-  background-color: #1e8449;
+  background-color: var(--ws-btn-secondary-hover);
+  color: var(--ws-btn-secondary-text);
 }
 
-.workspace-detail-page .channel-link-button {
-  display: block;
-  width: 95%;
-  padding: 10px 16px;
-  background-color: #284e7b;
-  color: #fff;
-  text-align: center;
-  text-decoration: none;
-  font-size: 1rem;
-  border-radius: 6px;
-  transition: background-color 0.2s;
-}
-.workspace-detail-page .channel-link-button:hover {
-  background-color: #add4f3;
+/* Texte brut du lien d’invitation affiché */
+.workspace-detail-page .invite-link-text {
+  white-space: nowrap;
+  color: var(--ws-invite-text-color);
+  font-size: 0.6rem;
+  margin-bottom: 8px;
 }
 
-.workspace-detail-page .member-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  background-color: #f4f4f4;
-}
-.workspace-detail-page .member-row:last-child {
-  border-bottom: none;
-}
-.workspace-detail-page .member-label {
-  font-size: 1rem;
-  color: #2c3e50;
-}
-
+/* Centrage de la section invitation */
 .workspace-detail-page .invite-section {
   text-align: center;
   margin-bottom: 4px;
-}
-.workspace-detail-page .invite-link-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 12px;
-  max-width: 100%;
-  overflow-x: auto;
-  padding: 0 8px;
-  box-sizing: border-box;
-}
-.workspace-detail-page .invite-link-text {
-  white-space: nowrap;
-  color: #34495e;
-  font-size: 0.6rem;
-  margin-bottom: 8px;
 }

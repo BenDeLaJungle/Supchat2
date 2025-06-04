@@ -1,18 +1,40 @@
-/* Admin.css - version améliorée pour l'interface compacte */
+/* src/styles/Admin.css */
+
+/* ==================================================
+   AdminSpace : style “clair” et “sombre” via variables
+   ================================================== */
 
 .admin-container {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
   font-family: Arial, sans-serif;
+  background-color: transparent; /* Laisse transparaître --bg-page */
 }
 
-h1, h2 {
+/* Titres H1 & H2 */
+.admin-container h1,
+.admin-container h2 {
   margin-bottom: 1rem;
-  color: #2c3e50;
+  color: var(--admin-text-title); /* ex : #2c3e50 en clair, #add4f3 en sombre */
 }
 
-select, input {
+/* === Style des <section> contenant select / input / bouton === */
+section {
+  margin-bottom: 2rem;
+}
+
+/* Label (pour que “Email:”, “Nom:”, etc.) */
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: var(--text-base);
+}
+
+/* === Style des listes déroulantes et input === */
+select,
+input {
   display: block;
   margin-top: 0.5rem;
   margin-bottom: 1rem;
@@ -20,38 +42,47 @@ select, input {
   font-size: 1rem;
   width: 100%;
   box-sizing: border-box;
+  background-color: var(--admin-select-bg);     /* ex: blanc ou sombre #2c3e50 */
+  border: 1px solid var(--admin-select-border);  /* ex: #ccc ou #555 */
+  color: var(--text-base);
+  border-radius: 4px;
 }
 
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-}
-
+/* === Style des boutons de suppression === */
 button {
-  background-color: #e74c3c;
-  color: white;
+  background-color: var(--admin-button-bg);   /* ex: #e74c3c ou #922b21 */
+  color: var(--admin-button-text);             /* toujours blanc */
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+  font-size: 1rem;
 }
 
+/* Hover sur bouton */
 button:hover {
-  background-color: #c0392b;
+  background-color: var(--admin-button-hover); /* ex: #c0392b */
 }
 
+/* === Style du formulaire affiché après sélection === */
 .admin-form {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
+  background-color: var(--admin-bg-card);      /* ex: #f9f9f9 ou #1e2733 */
+  border: 1px solid var(--card-border);
   border-radius: 6px;
   padding: 1rem;
   margin-top: 1rem;
+  color: var(--text-base);
 }
 
+/* === Message d’erreur === */
 .error {
-  color: red;
+  color: var(--admin-error); /* ex: rouge vif ou rouge plus clair */
   font-weight: bold;
   margin-bottom: 1rem;
+}
+
+/* Petite marge entre les sections */
+.admin-container section + section {
+  margin-top: 2rem;
 }
