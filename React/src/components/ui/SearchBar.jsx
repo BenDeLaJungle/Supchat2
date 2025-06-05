@@ -4,7 +4,7 @@ import { apiFetch } from "../../services/api";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [results, setResults] = useState([]); 
+  const [results, setResults] = useState({ users: [], workspaces: [], channels: [] });
   const [showDropdown, setShowDropdown] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -16,28 +16,33 @@ const SearchBar = () => {
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
+
     debounceTimeout.current = setTimeout(() => {
       const trimmed = term.trim();
       if (trimmed !== "") {
         setLoading(true);
-        apiFetch(`users/search?query=${encodeURIComponent(trimmed)}`)
+        apiFetch(`search?query=${encodeURIComponent(trimmed)}`)
           .then((data) => {
-            setResults(data);
-            setShowDropdown(data.length > 0);
+            setResults({
+              users: data.users || [],
+              workspaces: data.workspaces || [],
+              channels: data.channels || [],
+            });
+            setShowDropdown(true);
             setLoading(false);
             setError(null);
           })
           .catch((err) => {
-            console.error("Erreur lors de la récupération des utilisateurs", err);
-            setError("Impossible de récupérer les utilisateurs.");
-            setResults([]);
+            console.error("Erreur lors de la recherche :", err);
+            setError("Erreur lors de la recherche.");
+            setResults({ users: [], workspaces: [], channels: [] });
             setLoading(false);
           });
       } else {
-        setResults([]);
+        setResults({ users: [], workspaces: [], channels: [] });
         setShowDropdown(false);
       }
-    }, 300); 
+    }, 300);
   };
 
   useEffect(() => {
@@ -56,9 +61,21 @@ const SearchBar = () => {
     };
   }, []);
 
-  const handleSelectUser = (user) => {
+  const handleSelect = (item, type) => {
     setShowDropdown(false);
-    navigate(`/users/${encodeURIComponent(user.userName)}`);
+    switch (type) {
+      case "user":
+        navigate(`/users/${encodeURIComponent(item.userName)}`);
+        break;
+      case "workspace":
+        navigate(`/workspaces/${item.id}`);
+        break;
+      case "channel":
+        navigate(`/channels/${item.id}`);
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -66,13 +83,12 @@ const SearchBar = () => {
       <input
         type="text"
         className="search-input"
-        placeholder="Rechercher un utilisateur…"
+        placeholder="Rechercher un utilisateur, un workspace ou un canal…"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onFocus={() => {
-          if (results.length > 0) {
-            setShowDropdown(true);
-          }
+          const hasResults = results.users.length || results.workspaces.length || results.channels.length;
+          if (hasResults) setShowDropdown(true);
         }}
       />
 
@@ -81,18 +97,41 @@ const SearchBar = () => {
 
       {showDropdown && (
         <div className="search-dropdown">
-          {results.length > 0 ? (
-            results.map((user) => (
-              <div
-                key={user.id}
-                className="search-dropdown-item"
-                onClick={() => handleSelectUser(user)}
-              >
-                {user.userName}
-              </div>
-            ))
-          ) : (
-            !loading && <div className="no-results">Aucun utilisateur trouvé.</div>
+          {results.users.length > 0 && (
+            <>
+              <div className="search-category">Utilisateurs</div>
+              {results.users.map((user) => (
+                <div key={`user-${user.id}`} className="search-dropdown-item" onClick={() => handleSelect(user, "user")}>
+                   {user.userName}
+                </div>
+              ))}
+            </>
+          )}
+
+          {results.workspaces.length > 0 && (
+            <>
+              <div className="search-category">Workspaces</div>
+              {results.workspaces.map((ws) => (
+                <div key={`ws-${ws.id}`} className="search-dropdown-item" onClick={() => handleSelect(ws, "workspace")}>
+                   {ws.name}
+                </div>
+              ))}
+            </>
+          )}
+
+          {results.channels.length > 0 && (
+            <>
+              <div className="search-category">Canaux</div>
+              {results.channels.map((ch) => (
+                <div key={`ch-${ch.id}`} className="search-dropdown-item" onClick={() => handleSelect(ch, "channel")}>
+                   {ch.name}
+                </div>
+              ))}
+            </>
+          )}
+
+          {results.users.length === 0 && results.workspaces.length === 0 && results.channels.length === 0 && !loading && (
+            <div className="no-results">Aucun résultat trouvé.</div>
           )}
         </div>
       )}

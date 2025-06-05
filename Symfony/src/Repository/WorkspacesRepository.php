@@ -39,6 +39,14 @@ class WorkspacesRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+	public function findBySearchTerm(string $term): array
+	{
+		return $this->createQueryBuilder('w')
+			->where('LOWER(w.name) LIKE :term')
+			->setParameter('term', '%' . strtolower($term) . '%')
+			->getQuery()
+			->getResult();
+	}
 
     // /**
     //  * @return Workspaces[] Returns an array of Workspaces objects

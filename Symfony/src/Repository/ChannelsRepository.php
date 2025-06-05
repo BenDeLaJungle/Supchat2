@@ -15,6 +15,16 @@ class ChannelsRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Channels::class);
     }
+	
+	public function findBySearchTerm(string $term): array
+	{
+		return $this->createQueryBuilder('c')
+			->where('LOWER(c.name) LIKE :term')
+			->setParameter('term', '%' . strtolower($term) . '%')
+			->getQuery()
+			->getResult();
+	}
+
 
 //    /**
 //     * @return Channels[] Returns an array of Channels objects
