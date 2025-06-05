@@ -39,7 +39,7 @@ class GoogleAuthenticator extends OAuth2Authenticator
 
     public function authenticate(Request $request): SelfValidatingPassport
     {
-        $client = $this->clientRegistry->getClient('google'); // ✅ Récupérer le client Google
+        $client = $this->clientRegistry->getClient('google'); 
 
         $accessToken = $client->getAccessToken();
 

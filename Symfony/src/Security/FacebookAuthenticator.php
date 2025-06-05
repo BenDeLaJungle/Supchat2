@@ -102,7 +102,7 @@ class FacebookAuthenticator extends OAuth2Authenticator
 
         $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
 
-        $frontendUrl = $_ENV['FRONTEND_URL'] ?? 'http://localhost:3000';
+        $frontendUrl = $_ENV['FRONTEND_URL'] ?? 'http://localhost:5173';
 
         return new Response("
         <script>

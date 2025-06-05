@@ -19,14 +19,15 @@ security:
                 - App\Security\GoogleAuthenticator
                 - App\Security\FacebookAuthenticator
 
-        oauth2:
-            pattern: ^/api/auth/(google|facebook)/check
+
+        connect:
+            pattern: ^/connect/
             stateless: true
             provider: app_user_provider
             custom_authenticators:
-                - App\Security\GoogleAuthenticator
-                - App\Security\FacebookAuthenticator
-
+              - App\Security\GoogleAuthenticator
+              - App\Security\FacebookAuthenticator
+              
     access_control:
         - { path: ^/api/doc(?:\.json)?$, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
