@@ -1,75 +1,65 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../services/api';
-import { useParams, Link } from 'react-router-dom';
 import AdminHeader from '../components/ui/Adminheader';
 import MessageList from '../components/chat/MessageList';
 import MessageForm from '../components/chat/MessageForm';
 import { useAuth } from '../context/AuthContext';
 import '../styles/index.css';
- 
-const workspaceId = 1;
- 
-export default function Messaging() {
 
+const workspaceId = 1;
+
+export default function Messaging() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const selectedChannelIdFromUrl = parseInt(searchParams.get("channel"), 10);
+
   const [channels, setChannels] = useState([]);
   const [users, setUsers] = useState([]);
-  const [selectedChannelId, setSelectedChannelId] = useState(null);
+  const [selectedChannelId, setSelectedChannelId] = useState(selectedChannelIdFromUrl || null);
   const [selectedParticipant, setSelectedParticipant] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
-   const loadAll = useCallback(async () => {
 
+  const loadAll = useCallback(async () => {
     try {
-
       const [channelDataRaw, userData] = await Promise.all([
-
         apiFetch(`workspaces/${workspaceId}/channels`),
-
         apiFetch('users')
-
       ]);
- 
-      const channelData = Array.isArray(channelDataRaw) ? channelDataRaw : [];
- 
+
+      const channelData = Array.isArray(channelDataRaw) ? Object.values(channelDataRaw) : channelDataRaw;
       setChannels(channelData.filter(ch => ch.status === false));
-
       setUsers(userData.filter(u => u.id !== user.id));
-
       setError(null);
-
     } catch (err) {
-
       console.error('Erreur chargement:', err.message);
-
       setError("Impossible de charger les données.");
-
     }
-
   }, [user?.id]);
- 
+
   useEffect(() => {
-
-    if (user?.id) {
-
-      loadAll();
-
-    }
-
+    if (user?.id) loadAll();
   }, [user?.id, loadAll]);
- 
+
+  useEffect(() => {
+    if (selectedChannelIdFromUrl && !isNaN(selectedChannelIdFromUrl)) {
+      setSelectedChannelId(selectedChannelIdFromUrl);
+    }
+  }, [selectedChannelIdFromUrl]);
+
   const handleCreateChannel = async () => {
-
     const targetId = parseInt(selectedParticipant, 10);
-
     if (!targetId || isNaN(targetId)) {
       alert("Veuillez sélectionner un utilisateur.");
       return;
     }
- 
-    const participants = [user.id, targetId];
 
+    const participants = [user.id, targetId];
     try {
       await apiFetch('channels/simple', {
         method: 'POST',
@@ -77,145 +67,113 @@ export default function Messaging() {
         body: JSON.stringify({
           workspace_id: workspaceId,
           status: false,
-          participants,
+          participants
         })
-
       });
- 
+
       setSelectedParticipant('');
-
       setShowCreate(false);
-
       await loadAll();
-
     } catch (err) {
-
       console.error("Erreur création canal :", err.message);
-
       setError("Erreur lors de la création du canal.");
-
     }
-
   };
- 
+
   const getChannelDisplayName = (name) => {
-
     if (!name.startsWith("priv_")) return name;
-
     const ids = name.replace("priv_", "").split("_").map(n => parseInt(n, 10));
-
     const names = ids.map(id => {
-
       if (id === user.id) return "Moi";
-
       const found = users.find(u => u.id === id);
-
       return found ? found.username : `User ${id}`;
-
     });
-
     return names.join(" ↔ ");
-
   };
- 
+
+  const handleChannelClick = (channelId) => {
+    setSelectedChannelId(channelId);
+    setMessages([]); // vide pour éviter erreurs
+    navigate(`/messaging?channel=${channelId}`);
+  };
+
   return (
-<>
-<AdminHeader />
-<div className="messaging-container">
-<div className="messaging-sidebar">
-<h2 className="welcome-title">Conversations privées</h2>
- 
+    <>
+      <AdminHeader />
+      <div className="messaging-container">
+        <div className="messaging-sidebar">
+          <h2 className="welcome-title">Conversations privées</h2>
           <button className="start-conv-btn" onClick={() => setShowCreate(!showCreate)}>
-
             ➕ Nouvelle conversation
-</button>
- 
+          </button>
+
           {showCreate && (
-<div className="new-conversation-bar">
-<input
-
+            <div className="new-conversation-bar">
+              <input
                 type="text"
-
                 className="search-input"
-
                 placeholder="Rechercher un utilisateur"
-
                 value={searchTerm}
-
                 onChange={(e) => setSearchTerm(e.target.value)}
-
               />
-<select
-
+              <select
                 value={selectedParticipant}
-
                 onChange={(e) => setSelectedParticipant(e.target.value)}
-
                 className="select-regular"
->
-<option value="">-- Choisir un utilisateur --</option>
-
+              >
+                <option value="">-- Choisir un utilisateur --</option>
                 {users
-
                   .filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()))
-
                   .map(u => (
-<option key={u.id} value={u.id}>
-
+                    <option key={u.id} value={u.id}>
                       {u.username}
-</option>
-
+                    </option>
                   ))}
-</select>
-<button className="send-btn" onClick={handleCreateChannel}>Créer</button>
-</div>
-
+              </select>
+              <button className="send-btn" onClick={handleCreateChannel}>Créer</button>
+            </div>
           )}
- 
+
           {error && <div className="message-error">{error}</div>}
- 
+
           <div className="conversation-list">
             {channels.map(channel => (
-              <Link
-                to={`/channels/${channel.id}`}
+              <button
                 key={channel.id}
                 className="conversation-button"
+                onClick={() => handleChannelClick(channel.id)}
               >
                 {getChannelDisplayName(channel.name)}
-              </Link>
+              </button>
             ))}
           </div>
-</div>
- 
+        </div>
+
         <div className="messaging-main">
-
           {selectedChannelId ? (
-<>
-<MessageList channelId={selectedChannelId} />
-<MessageForm
-
+            <>
+              <MessageList
                 channelId={selectedChannelId}
-
+                messages={messages}
+                onMessagesFetched={setMessages}
                 userId={user?.id}
-
-                onMessageSent={loadAll}
-
               />
-</>
-
+              <MessageForm
+                channelId={selectedChannelId}
+                userId={user?.id}
+                onMessageSent={loadAll}
+              />
+            </>
           ) : (
-<p className="no-conv-msg">Sélectionnez un canal pour voir les messages.</p>
-
+            <p className="no-conv-msg">Sélectionnez un canal pour voir les messages.</p>
           )}
-</div>
-</div>
-</>
-
+        </div>
+      </div>
+    </>
   );
-
 }
 
- 
+
  
 
 
