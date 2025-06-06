@@ -17,7 +17,7 @@ class Notifications
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Messages::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Assert\NotNull(message: "L'Entiter est obligatoire.")]
     private ?Messages $message = null;
 
@@ -41,7 +41,7 @@ class Notifications
         return $this->message;
     }
 
-    public function setMessage(Messages $message): self
+    public function setMessage(?Messages $message): self
     {
         $this->message = $message;
         return $this;

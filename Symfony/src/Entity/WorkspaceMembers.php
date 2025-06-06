@@ -64,7 +64,7 @@ class WorkspaceMembers
         return $this;
     }
 
-    public function getUser(): ?\App\Entity\Users
+    public function getUser(): ?Users
     {
         return $this->user;
     }
@@ -75,7 +75,7 @@ class WorkspaceMembers
         return $this;
     }
 
-    public function getRole(): ?\App\Entity\Roles
+    public function getRole(): ?Roles
     {
         return $this->role;
     }

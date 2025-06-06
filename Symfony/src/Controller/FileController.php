@@ -13,7 +13,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\EntityManagerInterface;
-
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class FileController extends AbstractController
 {
@@ -120,6 +121,7 @@ class FileController extends AbstractController
 	#[IsGranted('IS_AUTHENTICATED_FULLY')]
 	public function generateDownloadUrl(int $id, UserInterface $user): JsonResponse
 	{
+        /** @var \App\Entity\Users $user */
 		$userId = $user->getId();
 		$timestamp = time(); // maintenant
 		$secret = $_ENV['APP_SECRET'];
@@ -188,6 +190,7 @@ class FileController extends AbstractController
 		}
 
 		// Vérifie que l'utilisateur connecté est bien l'auteur du message lié au fichier
+        /** @var \App\Entity\Users $user */
 		if ($file->getMessage()->getUser()->getId() !== $user->getId()) {
 			return new JsonResponse(['error' => 'Vous ne pouvez supprimer que vos fichiers.'], 403);
 		}

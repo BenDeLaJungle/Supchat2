@@ -6,6 +6,7 @@ use App\Entity\Messages;
 use App\Entity\Users;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @extends ServiceEntityRepository<Messages>
@@ -29,7 +30,10 @@ class MessagesRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('m')
             ->where('(m.user = :user1 AND m.recipient = :user2) OR (m.user = :user2 AND m.recipient = :user1)')
-            ->setParameters(['user1' => $user1, 'user2' => $user2])
+            ->setParameters(new ArrayCollection([
+                'user1' => $user1,
+                'user2' => $user2
+            ]))
             ->orderBy('m.createdAt', 'ASC')
             ->getQuery()
             ->getResult();

@@ -9,12 +9,14 @@ use App\Entity\Roles;
 use App\Repository\ChannelsRepository;
 use App\Repository\WorkspaceMembersRepository;
 use App\Repository\WorkspacesRepository;
+use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 class ChannelController extends AbstractController
 {
@@ -148,7 +150,6 @@ class ChannelController extends AbstractController
         $channel->setStatus($data['status']);
         $channel->setWorkspace($workspace);
         $channel->setMinRole(1);
-
         $em->persist($channel);
         $em->flush();
 
@@ -194,7 +195,8 @@ class ChannelController extends AbstractController
         $channel->setStatus(false); // toujours privé
         $channel->setWorkspace($workspace);
         $channel->setMinRole(1);
-
+        $minRole = isset($data['min_role']) ? (int) $data['min_role'] : 1;
+        $channel->setMinRole($minRole);
         $em->persist($channel);
         $em->flush();
 
@@ -236,7 +238,8 @@ class ChannelController extends AbstractController
     public function getChannelPrivilege(
         Channels $channel,
         Request $request,
-        WorkspaceMembersRepository $workspaceMembersRepo
+        WorkspaceMembersRepository $workspaceMembersRepo,
+        UsersRepository $usersRepo 
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -247,14 +250,22 @@ class ChannelController extends AbstractController
         $userId = (int) $data['user_id'];
         $workspace = $channel->getWorkspace();
 
+        $user = $usersRepo->find($userId);
+        if (!$user) {
+            return new JsonResponse(['error' => 'Utilisateur introuvable.'], 404);
+        }
+
+        
+        $isAdmin = $user->getRole() === 'ROLE_ADMIN';
+
         $workspaceMember = $workspaceMembersRepo->findOneBy([
             'workspace' => $workspace,
-            'user' => $userId
+            'user' => $user
         ]);
 
         if (!$workspaceMember) {
             return new JsonResponse([
-                'is_admin' => false,
+                'is_admin' => $isAdmin,
                 'can_moderate' => false,
                 'can_manage' => false
             ]);
@@ -263,9 +274,8 @@ class ChannelController extends AbstractController
         $role = $workspaceMember->getRole();
         $canModerate = $role?->canModerate() ?? false;
         $canManage = $role?->canManage() ?? false;
-
         return new JsonResponse([
-            'is_admin' => $role && $role->getId() === 3,
+            'is_admin' => $isAdmin,
             'can_moderate' => $canModerate,
             'can_manage' => $canManage
         ]);
