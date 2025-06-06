@@ -43,7 +43,7 @@ const AdminHeader = () => {
   const ws2 = lastTwoWorkspaces[1];
 
   const shortcuts = [
-    { title: "Messagerie", image: messenger, link: "/workspaces/1" },
+    { title: "Messagerie", image: messenger, link: "/messaging" },
     { title: "Fichiers", image: files },
     { title: "Notifications", image: notif },
     ...(ws1

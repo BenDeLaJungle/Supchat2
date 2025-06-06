@@ -42,7 +42,7 @@ export default function Home() {
 
 
   const cards = [
-    { title: "Messagerie", image: messenger, link: "/workspaces/1" },
+    { title: "Messagerie", image: messenger, link: "/messaging" },
     { title: "Fichiers partagés", image: files },
     { title: "Notifications", image: notif, link: "/notifications" },
     ...(ws1
