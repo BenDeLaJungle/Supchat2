@@ -4,34 +4,44 @@ import '../../styles/chat.css';
 import { apiFetch } from '../../services/api';
 import Message from './Message';
 
-const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId }) => {
+const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId, onBack }) => {
   const [error, setError] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [channelName, setChannelName] = useState('');
   const listRef = useRef();
 
   const uniqueMessages = [
     ...new Map(messages.map((msg) => [msg.id, msg])).values()
   ].filter(msg => !msg.deleted);
 
-  // Récupère les messages par pagination
+  // Fonction pour récupérer le nom du canal
+  const fetchChannelName = async () => {
+    try {
+      const data = await apiFetch(`channels/${channelId}`);
+      setChannelName(data.name || '');
+    } catch (err) {
+      console.error("Erreur nom canal :", err.message);
+      setChannelName('');
+    }
+  };
+
   const fetchMessages = async (before = null) => {
     try {
       setIsFetching(true);
-  
       let url = `channels/${channelId}/messages?limit=20`;
       if (before && before.timestamp && before.id) {
         url += `&before=${encodeURIComponent(before.timestamp)}&before_id=${before.id}`;
       }
-  
+
       const data = await apiFetch(url);
-  
+
       if (data.length === 0) {
         setHasMore(false);
       } else {
         onMessagesFetched([...data, ...messages]);
       }
-  
+
       setError(null);
     } catch (err) {
       console.error("Erreur récupération messages :", err.message);
@@ -41,27 +51,7 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId }
     }
   };
 
-  const handleLiveMessage = (newMsg) => {
-    if (newMsg.deleted) {
-      onMessagesFetched((prevMessages) =>
-        prevMessages.filter((m) => m.id !== newMsg.id)
-      );
-      return;
-    }
-
-    onMessagesFetched((prevMessages) => {
-      const exists = prevMessages.some((m) => m.id === newMsg.id);
-      if (!exists) {
-        return [...prevMessages, newMsg];
-      } else {
-        return prevMessages.map((m) =>
-          m.id === newMsg.id ? newMsg : m
-        );
-      }
-    });
-  };
-
-  // Scroll vers le haut pour charger les messages précédents
+  // Scroll vers le haut pour charger plus de messages
   const handleScroll = () => {
     const el = listRef.current;
     if (el.scrollTop <= 5 && !isFetching && hasMore) {
@@ -72,8 +62,10 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId }
     }
   };
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     fetchMessages();
+    fetchChannelName();
   }, [channelId]);
 
   useEffect(() => {
@@ -83,7 +75,6 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId }
     return () => el.removeEventListener('scroll', handleScroll);
   }, [uniqueMessages, isFetching, hasMore]);
 
-  //Garde le scroll à la même position
   useEffect(() => {
     const el = listRef.current;
     if (!el) return;
@@ -98,22 +89,32 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId }
       observer.observe(el, { childList: true, subtree: true });
     }
   }, [isFetching]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   return (
-    <div ref={listRef} className="message-list">
+    <div className="message-list-wrapper">
+      <div className="message-header">
+        <button className="back-to-list-button" onClick={onBack}>⬅ Retour</button>
+        <h3 className="channel-title">
+          {channelName.startsWith("priv_") ? "Conversation privée" : channelName}
+        </h3>
+      </div>
+
+      <div ref={listRef} className="message-list">
         {error && <div className="message-error">{error}</div>}
         {!hasMore && <div className="no-more">Tu es tout en haut</div>}
         {isFetching && <div className="loading">Chargement...</div>}
 
         {uniqueMessages.map((msg) => (
-          <Message 
-            key={msg.id} 
-            {...msg} 
-            canEditGlobal={canEdit} 
-            currentUserId={userId} 
+          <Message
+            key={msg.id}
+            {...msg}
+            canEditGlobal={canEdit}
+            currentUserId={userId}
             channelId={channelId}
           />
         ))}
+      </div>
     </div>
   );
 };

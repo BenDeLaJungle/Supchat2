@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import EmojiPicker from 'emoji-picker-react';
 import { apiFetch } from '../../services/api';
 import '../../styles/color.css';
 import '../../styles/chat.css';
@@ -6,6 +7,7 @@ import { useSocket } from '../../context/SocketContext';
 
 const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
   const [content, setContent] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { socket, isReady } = useSocket();
 
   const extractMentionsAndChannels = (text) => {
@@ -41,7 +43,6 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
     const uniqueMentions = [...new Set(mentions)];
 
     try {
-      //Créer le message
       const backendResponse = await apiFetch('messages', {
         method: 'POST',
         body: JSON.stringify({
@@ -53,10 +54,8 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
 
       const messageId = backendResponse.id;
 
-      //Créer mentions et hashtags
       const tasks = [];
 
-      // @mentions
       for (const username of uniqueMentions) {
         tasks.push(
           apiFetch(`users/by-username/${username}`)
@@ -83,7 +82,6 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
         );
       }
 
-      // #hashtags
       if (channels.length > 0) {
         tasks.push(
           apiFetch('hashtags', {
@@ -98,7 +96,6 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
 
       await Promise.all(tasks);
 
-      //Envoi via WebSocket
       const message = {
         id: messageId,
         content: trimmed,
@@ -109,15 +106,18 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
 
       socket.emit('message', message);
       setContent('');
+      setShowEmojiPicker(false);
     } catch (err) {
       console.error("Erreur à l'envoi :", err.message);
     }
   };
 
-  
+  const onEmojiClick = (emojiData) => {
+    setContent(prev => prev + emojiData.emoji);
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="message-form">
+    <form onSubmit={handleSubmit} className="message-form" style={{ position: 'relative' }}>
       <input
         type="text"
         value={content}
@@ -125,6 +125,18 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
         className="message-input"
         placeholder="Écris ton message..."
       />
+      <button
+        type="button"
+        className="emoji-toggle-button"
+        onClick={() => setShowEmojiPicker(prev => !prev)}
+      >
+        😊
+      </button>
+      {showEmojiPicker && (
+        <div style={{ position: 'absolute', bottom: '50px', right: '0', zIndex: 1000 }}>
+          <EmojiPicker onEmojiClick={onEmojiClick} />
+        </div>
+      )}
       <button type="submit" className="message-button">
         Envoyer
       </button>
@@ -133,6 +145,3 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
 };
 
 export default MessageForm;
-
-
- 
