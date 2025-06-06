@@ -29,6 +29,7 @@ security:
               - App\Security\FacebookAuthenticator
               
     access_control:
+        - { path: ^/api/files/download$, roles: PUBLIC_ACCESS }
         - { path: ^/api/doc(?:\.json)?$, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }

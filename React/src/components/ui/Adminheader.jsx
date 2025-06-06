@@ -44,7 +44,7 @@ const AdminHeader = () => {
 
   const shortcuts = [
     { title: "Messagerie", image: messenger, link: "/workspaces/1" },
-    { title: "Fichiers", image: files },
+    { title: "Fichiers ", image: files, link: "/shared-files" },
     { title: "Notifications", image: notif },
     ...(ws1
       ? [{ title: ws1.name, image: workspaceIcon, link: `/workspaces/${ws1.id}` }]

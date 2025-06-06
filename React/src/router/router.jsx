@@ -12,8 +12,9 @@ import WorkspaceList from "../pages/WorkspaceList";
 import WorkspaceDetail from "../pages/WorkspaceDetail";
 import ChatWindow from "../components/chat/ChatWindow";
 import InviteValidation from '../pages/InviteValidation';
- import Notifications from '../pages/Notifications';
+import Notifications from '../pages/Notifications';
 import { useParams } from "react-router-dom";
+import SharedFiles from '../pages/SharedFiles';
 
 function ChatWindowWrapper() {
   const { channelId } = useParams();
@@ -40,7 +41,7 @@ export default function AppRouter() {
         <Route path="/invite/:token" element={<InviteValidation />} />
         <Route path="/workspaces/:workspaceId/channels/:channelId" element={<ChatWindowWrapper />} />
         <Route path="/notifications" element={<Notifications />} />
-
+		<Route path="/shared-files" element={<SharedFiles />} />
         
       </Routes>
   );

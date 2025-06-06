@@ -43,7 +43,7 @@ export default function Home() {
 
   const cards = [
     { title: "Messagerie", image: messenger, link: "/workspaces/1" },
-    { title: "Fichiers partagés", image: files },
+    { title: "Fichiers partagés", image: files, link: "/shared-files" },
     { title: "Notifications", image: notif },
     ...(ws1
       ? [{
