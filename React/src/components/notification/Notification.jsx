@@ -8,7 +8,7 @@ function Notifications() {
         try {
             const response = await fetch('notifications/unread', {
                 headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token'), // si JWT
+                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
                     'Accept': 'application/json',
                 }
             });
@@ -32,10 +32,27 @@ function Notifications() {
         return () => clearInterval(interval);
     }, []);
 
-    if (loading) return <p>Chargement...</p>;
+    if (loading) return (
+        <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '50vh',
+            textAlign: 'center'
+        }}>
+            <p>Chargement...</p>
+        </div>
+    );
 
     return (
-        <div className="notifications">
+        <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '50vh',
+            textAlign: 'center'
+        }}>
             <h4>Notifications</h4>
             {notifications.length === 0 ? (
                 <p>Aucune notification non lue.</p>
