@@ -38,8 +38,33 @@ class MessagesRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-}
+	
+	public function findBySearchTerm(string $term, Users $user): array
+	{
+		$qb = $this->createQueryBuilder('m');
 
+		$qb
+			->join('m.channel', 'c')
+			->join('c.workspace', 'w')
+			->join('App\Entity\WorkspaceMembers', 'wm', 'WITH', 'wm.workspace = w AND wm.user = :user')
+			->join('wm.role', 'r')
+			->where($qb->expr()->like('LOWER(m.content)', ':term'))
+			->andWhere(
+				$qb->expr()->orX(
+					'r.id = 3',
+					$qb->expr()->andX('r.id = 2', 'c.minRole <= 2'),
+					$qb->expr()->andX('r.id = 1', 'c.minRole = 1'),
+					'm.user = :user'
+				)
+			)
+			->setParameter('term', '%' . strtolower($term) . '%')
+			->setParameter('user', $user);
+
+		return $qb->getQuery()->getResult();
+	}
+
+}
+	
 
 //    /**
 //     * @return Messages[] Returns an array of Messages objects
