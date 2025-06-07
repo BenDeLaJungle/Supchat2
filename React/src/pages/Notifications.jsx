@@ -35,7 +35,7 @@ export default function Notifications() {
           <ul className="notifications-list">
             {notifications.map((notif) => (
               <li key={notif.id} className="notification-item unread">
-                <p>{notif.message}</p>
+                <p>{notif.message.length > 100 ? notif.message.substring(0, 100) + '...' : notif.message}</p>
                 <p>Status : {notif.read ? "✅ Lu" : "📩 Non lu"}</p>
               </li>
             ))}
