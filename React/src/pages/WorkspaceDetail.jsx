@@ -160,15 +160,17 @@ useEffect(() => {
                 <option value="1">Public</option>
                 <option value="2">Privé</option>
               </select>
-              <select
-                value={newChannelMinRole}
-                onChange={(e) => setNewChannelMinRole(e.target.value)}
-                className="select-regular"
-              >
-                <option value="1">Accessible à tous les membres</option>
-                <option value="2">Accessible aux modérateurs et admins</option>
-                <option value="3">Accessible uniquement aux admins</option>
-              </select>
+              {newChannelStatus === "2" && (
+                <select
+                  value={newChannelMinRole}
+                  onChange={(e) => setNewChannelMinRole(e.target.value)}
+                  className="select-regular"
+                >
+                  <option value="1">Accessible à tous les membres</option>
+                  <option value="2">Accessible aux modérateurs et admins</option>
+                  <option value="3">Accessible uniquement aux admins</option>
+                </select>
+              )}
               <button
                 onClick={handleCreateChannel}
                 className="button-primary"

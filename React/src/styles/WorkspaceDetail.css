@@ -127,6 +127,7 @@
 /* Conteneur carte (droite) : reste inchangé au niveau largeur/hauteur */
 .workspace-detail-page .workspace-card {
   flex: 0 0 280px;
+  height: 150px;
   background-color: var(--ws-input-bg); /* on peut réutiliser la même couleur qu’un input pour homogénéité */
   border: none;
   border-radius: 8px;
