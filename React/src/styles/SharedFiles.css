@@ -2,14 +2,14 @@
   max-width: 800px;
   margin: 40px auto;
   padding: 20px;
-  background-color: #fefefe;
+  background-color: var(--shared-bg);
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shared-card-shadow);
 }
 
 .shared-files-container h2 {
   text-align: center;
-  color: #1f3a68;
+  color: var(--shared-text);
   margin-bottom: 20px;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .file-item {
-  background-color: #e0edff;
+  background-color: var(--shared-card-bg);
   margin-bottom: 10px;
   padding: 12px 18px;
   border-radius: 8px;
@@ -30,7 +30,7 @@
 }
 
 .file-item:hover {
-  background-color: #d0e3ff;
+  background-color: var(--shared-card-hover-bg);
 }
 
 .file-header {
@@ -40,15 +40,15 @@
   width: 100%;
 }
 
-.file-link {
+.file-link a {
   flex: 1;
-  color: #007bff;
+  color: var(--shared-link-text);
   text-decoration: none;
   font-weight: bold;
 }
 
-.file-link:hover {
-  text-decoration: underline;
+.file-link a:hover {
+  color: var(--shared-link-hover);
 }
 
 .file-actions {
@@ -68,29 +68,27 @@
 }
 
 .download-icon {
-  background-color: #007bff;
+  background-color: var(--shared-primary);
 }
-
 .download-icon:hover {
-  background-color: #0056b3;
+  background-color: var(--shared-primary-hover);
 }
 
 .delete-icon {
-  background-color: #dc3545;
+  background-color: var(--shared-secondary);
 }
-
 .delete-icon:hover {
-  background-color: #a71d2a;
+  background-color: var(--shared-secondary-hover);
 }
 
 .file-author {
   font-size: 0.85em;
-  color: #555;
+  color: var(--shared-author-text);
   margin-top: 4px;
 }
 
 .error {
-  color: red;
+  color: var(--shared-error-text);
   text-align: center;
   margin-top: 20px;
 }

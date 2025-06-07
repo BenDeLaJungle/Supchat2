@@ -14,8 +14,23 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* ===== Home (thème clair) ===== */
+  --home-header-bg:            #eef5ff;       /* fond du header */
+  --home-header-border:        rgba(0, 0, 0, 0.1); /* ombre légère */
+  --home-header-text:          #213547;       /* texte dans le header */
+
+  --home-welcome-text:         #284E7B;       /* “Bonjour …” */
+
+  --home-card-bg:              #add4f3;       /* fond des cartes */
+  --home-card-text:            #333333;       /* texte des cartes */
+  --home-card-shadow:          rgba(0, 0, 0, 0.08); /* ombre normale */
+  --home-card-hover-bg:        #284e7b;       /* fond au survol */
+  --home-card-hover-text:      #8f908d;       /* texte au survol */
+  --home-card-hover-shadow:    rgba(0, 0, 0, 0.15); /* ombre au survol */
 }
 
+/* ===================== LIENS GLOBAUX ===================== */
 a {
   font-weight: 500;
   color: #646cff;
@@ -25,6 +40,7 @@ a:hover {
   color: #535bf2;
 }
 
+/* ===================== BODY GLOBAUX ===================== */
 body {
   margin: 0;
   display: flex;
@@ -59,9 +75,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* =======================
-   Dropdown de la SearchBar
-=========================== */
+/* ===================== DROPDOWN DE LA SEARCHBAR ===================== */
 .search-dropdown {
   max-height: 300px;
   overflow-y: auto;
@@ -73,14 +87,12 @@ button:focus-visible {
   width: 100%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-
 .search-dropdown-item {
   padding: 8px 12px;
   cursor: pointer;
   font-size: 0.9rem;
   color: #333;
 }
-
 .search-dropdown-item:hover {
   background-color: #f5f5f5;
 }
@@ -95,16 +107,18 @@ button:focus-visible {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #eef5ff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--home-header-bg);
+  box-shadow: 0 2px 6px var(--home-header-border);
   border-radius: 0;
   box-sizing: border-box;
-  margin-bottom: 0rem;
+  margin-bottom: 0;
   flex-wrap: wrap;
 }
 
-.theme-dark .header-home {
-  background-color: #284E7B;
+/* Lien et bouton logout en couleur fixe */
+.header-home a,
+.header-home .logout-button {
+  color: var(--home-header-text);
 }
 
 .header-barre,
@@ -120,19 +134,16 @@ button:focus-visible {
 
 .header-barre {
   flex: 3;
+  width: 300px;
+  max-width: 800px;
   display: flex;
   justify-content: center;
   padding: 0 2rem;
 }
 
-.header-barre {
-  width: 300px;
-  max-width: 800px;
-}
-
 .header-logout .logout-button {
   background-color: #add4f3;
-  color: #1f1f1f;
+  color: var(--home-header-text);
   padding: 0.6rem 1.2rem;
   border: none;
   border-radius: 8px;
@@ -140,18 +151,32 @@ button:focus-visible {
   cursor: pointer;
   transition: background 0.3s ease;
 }
-
 .logout-button:hover {
   background-color: #CA3C66;
   color: white;
 }
 
+/* ======================
+   Search Input dans le header 
+====================== */
 .search-input {
   padding: 10px 16px;
   width: 500px;
   border-radius: 10px;
   border: 1px solid #ccc;
   font-size: 1rem;
+}
+
+/* ======================
+   Welcome Name (Home) 
+====================== */
+.welcome-name {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--home-welcome-text);
 }
 
 /* ======================
@@ -165,12 +190,15 @@ button:focus-visible {
   padding: 0.5rem 1rem;
 }
 
+/* ======================
+   Card (Home) 
+====================== */
 .card {
-  background: #add4f3;
+  background-color: var(--home-card-bg);
   border-radius: 1rem;
   width: 120px;
   height: 120px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 10px var(--home-card-shadow);
   transition: all 0.3s ease;
   cursor: pointer;
   text-align: center;
@@ -178,13 +206,7 @@ button:focus-visible {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-.card:hover {
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
-  background-color: #284e7b;
-  transform: scale(1.1);
+  font-family: inherit;
 }
 
 .card img {
@@ -197,25 +219,31 @@ button:focus-visible {
 .card h2 {
   font-size: 0.7rem;
   margin-bottom: 0.2rem;
-  color: #333;
-}
-
-.card:hover h2 {
-  color: #8f908d;
+  color: var(--home-card-text);
 }
 
 .card p {
   font-size: 0.7rem;
-  color: #666;
+  color: var(--home-card-text);
   margin: 0;
 }
 
+.card:hover {
+  background-color: var(--home-card-hover-bg);
+  box-shadow: 0 8px 18px var(--home-card-hover-shadow);
+  transform: scale(1.1);
+}
+
+.card:hover h2 {
+  color: var(--home-card-hover-text);
+}
+
 .card:hover p {
-  color: #eff3f5;
+  color: var(--home-card-hover-text);
 }
 
 /* ======================
-   Avatar utilisateur 
+   Avatar utilisateur
 ====================== */
 .logo-user-img {
   width: 100px !important;
@@ -224,357 +252,7 @@ button:focus-visible {
 }
 
 /* ======================
-   Welcome Name (Home) 
-====================== */
-.welcome-name {
-  text-align: center;
-  margin-top: 10px;
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #284E7B;
-  margin-bottom: 1rem;
-}
-
-/* ======================
-   Messaging container 
-====================== */
-.messaging-container {
-  padding: 1rem;
-  max-width: 800px;
-  margin: auto;
-}
-
-.message-item {
-  margin-bottom: 1rem;
-  background: #f0f7ff;
-  padding: 0.5rem 1rem;
-  border-radius: 1rem;
-  cursor: pointer;
-}
-
-.theme-dark .message-item {
-  background-color: #add4f3;
-}
-
-.message-input-container {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.start-conv-btn {
-  background-color: #add4f3;
-  color: #1f1f1f;
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-bottom: 1rem;
-}
-
-.new-conversation-bar {
-  position: sticky;
-  bottom: 0;
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  background: #ffffff;
-  padding: 1rem;
-  border-top: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
-  z-index: 10;
-}
-
-.theme-dark .new-conversation-bar {
-  background-color: #add4f3;
-}
-
-.recipient-select,
-.message-input {
-  padding: 0.6rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.send-btn {
-  background-color: #CA3C66;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.send-btn:hover {
-  background-color: #a32b51;
-}
-
-.acces-test {
-  color: black;
-}
-
-.acces-test:hover {
-  color: #CA3C66;
-}
-
-.messaging-container {
-  display: flex;
-  height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.messaging-sidebar {
-  width: 280px;
-  padding: 20px;
-  background-color: #eef5ff;
-  border-right: 1px solid #e0e0e0;
-  display: flex;
-  flex-direction: column;
-}
-
-.welcome-title {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  color: #2d3748;
-}
-
-.start-conv-btn {
-  background-color: #f1f3f7;
-  color: #2c5282;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.start-conv-btn:hover {
-  background-color: #c7dbff;
-}
-
-.new-conversation-bar {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 1rem;
-}
-
-.recipient-input {
-  flex: 1;
-  padding: 6px;
-  border: 1px solid #cbd5e0;
-  border-radius: 4px;
-}
-
-.send-btn {
-  background-color: #f56565;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.send-btn:hover {
-  background-color: #e53e3e;
-}
-
-.message-error {
-  color: red;
-  margin: 10px 0;
-  font-weight: bold;
-}
-
-.conversation-list {
-  flex-grow: 1;
-  overflow-y: auto;
-}
-
-.conversation-button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 8px;
-  margin-bottom: 6px;
-  background: none;
-  border: none;
-  color: #3182ce;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.conversation-button:hover {
-  text-decoration: underline;
-}
-
-.messaging-main {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-  background-color: #ffffff;
-  display: flex;
-  flex-direction: column;
-}
-
-.no-conv-msg {
-  color: #4a5568;
-  font-style: italic;
-}
-
-/* ======================
-   Workspace Detail (inchangé)
-====================== */
-.workspace-detail-title {
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  color: #284E7B;
-  font-size: 2rem;
-}
-
-.workspace-member-list {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0;
-  text-align: center;
-}
-
-.workspace-member-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.1rem;
-  width: 650px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0rem 0.5rem;
-  background-color: transparent;
-  border-bottom: 1px solid #ddd;
-}
-
-.workspace-member-info {
-  font-size: 1rem;
-  color: #333;
-}
-
-.workspace-member-delete-btn {
-  display: inline-block;
-  width: 40px;
-  height: 35px;
-  padding: 0 !important;
-  font-size: 1rem !important;
-  background-color: #284E7B;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
-  line-height: 20px;
-}
-
-.workspace-member-delete-btn:hover {
-  background-color: #add4f3;
-  color: #1f1f1f;
-}
-
-.workspace-member-item-flex {
-  display: flex;
-  justify-content: flex-start; /* Evite le stretch complet */
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.workspace-member-item-flex button {
-  background-color: #284E7B;
-  color: #ffffff;
-  padding: 0.3rem 0.8rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.workspace-member-item-flex button:hover {
-  background-color: #add4f3;
-  color: #1f1f1f;
-}
-
-.workspace-members-section button {
-  background-color: #284E7B;
-  color: #ffffff;
-  padding: 0.6rem 5rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.workspace-members-section button:hover {
-  background-color: #add4f3;
-  color: #1f1f1f;
-}
-
-.workspace-members-section input,
-.workspace-members-section select,
-.workspace-members-section button {
-  width: 100%;
-  max-width: 400px;
-  margin-bottom: 0.5rem;
-  text-align: center;
-}
-
-.workspace-members-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 1rem;
-}
-
-/* Note : les règles pour la création de canaux et membres (work-channel-create-form, etc.) ont été déplacées dans workspacelist.css */
-
-/* ======================
-   Canaux (WorkspaceDetail)
-====================== */
-.channel-list {
-  list-style: none;
-  padding: 0;
-  margin: 1rem auto;
-  max-width: 400px;
-  text-align: left;
-}
-
-.channel-list-item {
-  background-color: #add4f3;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.2s;
-}
-
-.channel-list-item:hover {
-  background-color: #284E7B;
-}
-
-.channel-list-link {
-  color: #1f1f1f;
-  text-decoration: none;
-  font-weight: bold;
-  display: block;
-  text-align: center;
-}
-
-.channel-list-item:hover .channel-list-link {
-  color: #ffffff;
-}
-
-/* ======================
-   Responsive (global) 
+   Responsive global
 ====================== */
 @media (max-width: 768px) {
   .card-container {
@@ -604,13 +282,13 @@ button:focus-visible {
   .card h2 {
     margin: 0;
     font-size: 1.3rem;
-    color: #284E7B;
+    color: var(--home-card-text);
   }
 
   .welcome-name {
     font-size: 2rem;
     font-weight: bold;
-    color: #284E7B;
+    color: var(--home-welcome-text);
     text-align: center;
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -633,9 +311,11 @@ button:focus-visible {
     width: 60%;
     max-width: 350px;
     margin-bottom: 1rem;
-    display: flex;
     justify-content: center;
+    display: flex;
+    gap: 10rem;
   }
+
 
   .header-barre input {
     width: 100%;

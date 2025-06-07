@@ -83,6 +83,129 @@
   --wl-button-hover-text:   #ffffff;                 /* texte au survol */
   --wl-button-border-radius:8px;                     /* arrondi des boutons */
   --wl-form-gap:            0.4rem;
+
+
+    /* login et register */
+  --login-bg:                     #f5f5f5;
+  --login-title-color:            #284E7B;
+  --login-title-font-size:        2.5rem;
+  --login-title-font-weight:      bold;
+  --login-title-margin-bottom:    2rem;
+  --login-form-bg:                transparent;
+  --login-form-padding:           2rem 3rem;
+  --login-form-width:             200px;
+  --login-form-gap:               1rem;
+  --login-input-bg:               transparent;
+  --login-input-border:           #284e7b;
+  --login-input-border-width:     2px;
+  --login-input-border-radius:    10px;
+  --login-input-padding:          10px;
+  --login-input-text:             #284e7b;
+  --login-input-placeholder:      #add4f3;
+  --login-input-font-weight:      bold;
+  --login-input-font-size:        1rem;
+  --login-input-transition:       border-color 0.3s;
+  --login-btn-bg:                 #659abd;
+  --login-btn-text:               #eff3f5;
+  --login-btn-padding:            10px;
+  --login-btn-border:             none;
+  --login-btn-border-radius:      10px;
+  --login-btn-font-weight:        bold;
+  --login-btn-cursor:             pointer;
+  --login-btn-transition:         background 0.3s ease;
+  --login-btn-hover-bg:           #CA3C66;
+  --login-error-color:            #e63946;
+  --login-signup-color:           #007bff;
+  --login-signup-cursor:          pointer;
+  --login-icon-size:              40px;
+  --login-icon-cursor:            pointer;
+  --login-icon-hover-scale:       1.1;
+  --login-icon-transition:        transform 0.2s ease;
+
+    /* fond de la card */
+  --user-bg-card:            #ffffff;
+  --user-text-title:         #2c3e50;  /* titre H2 */
+  --user-text-content:       #34495e;  /* paragraphe simple */
+  --user-text-strong:        #2c3e50;  /* texte en <strong> */
+
+  --user-btn-bg:             #27ae60;
+  --user-btn-text:           #ffffff;
+  --user-btn-hover-bg:       #219150;
+  --user-loading-text:       #7f8c8d;
+
+  /* === SharedFiles === */
+  --shared-bg:                #fefefe;      /* fond du conteneur principal */
+  --shared-text:              #1f3a68;      /* couleur du titre h2 */
+  --shared-card-bg:           #e0edff;      /* fond de chaque item */
+  --shared-card-hover-bg:     #d0e3ff;      /* fond au survol */
+  --shared-link-text:         #007bff;      /* couleur du lien de fichier */
+  --shared-link-hover:        #0056b3;      /* lien au hover */
+  --shared-primary:           #007bff;      /* bouton “Télécharger” fond */
+  --shared-primary-hover:     #0056b3;      /* son hover */
+  --shared-secondary:         #dc3545;      /* bouton “Supprimer” fond */
+  --shared-secondary-hover:   #a71d2a;      /* son hover */
+  --shared-author-text:       #555;         /* couleur du “Envoyé par” */
+  --shared-error-text:        #e63946;      /* couleur du message d’erreur */
+  --shared-card-shadow:       0 4px 10px rgba(0,0,0,0.05); /* ombre générale */
+
+    /* conv privée */
+  --msg-bg-container:           transparent;       /* si vous voulez un fond spécifique */
+  --msg-sidebar-bg:             #eef5ff;           /* fond de la colonne latérale */
+  --msg-sidebar-border:         #e0e0e0;           /* bordure droite */
+  --msg-sidebar-title:          #2d3748;           /* couleur du titre “Conversations privées” */
+  --msg-btn-start-bg:           #f1f3f7;           /* fond du bouton (+) */
+  --msg-btn-start-text:         #2c5282;           /* texte du bouton (+) */
+  --msg-btn-start-hover:        #c7dbff;           /* hover */
+  --msg-new-bar-bg:             #ffffff;           /* fond de la barre */
+  --msg-new-bar-border:         #ccc;              /* bordure top */
+  --msg-input-bg:               #ffffff;
+  --msg-input-border:           #cbd5e0;
+  --msg-input-text:             #000000;
+  --msg-btn-send-bg:            #CA3C66;
+  --msg-btn-send-text:          #ffffff;
+  --msg-btn-send-hover:         #a32b51;
+  --msg-conv-text:              #3182ce;           /* couleur du texte */
+  --msg-conv-hover-text:        #3182ce;           /* reste la même mais on souligne */
+  --msg-main-bg:                #ffffff;           /* fond de la zone principale */
+  --msg-no-conv-text:           #4a5568;           /* texte “Sélectionnez…” */
+  --msg-item-bg:                #f0f7ff;
+  --msg-item-hover-bg:          #e0f0ff;           /* optionnel */
+  --msg-error-text:             #e63946;
+
+    /* message */
+  --msg-bg-container:       #eef5ff;
+  --msg-sidebar-bg:         #eef5ff;
+  --msg-sidebar-border:     #e0e0e0;
+  --msg-sidebar-title:      #2d3748;
+  --msg-btn-start-bg:       #f1f3f7;
+  --msg-btn-start-text:     #2c5282;
+  --msg-btn-start-hover:    #c7dbff;
+  --msg-new-bar-bg:         #ffffff;
+  --msg-new-bar-border:     #ccc;
+  --msg-input-bg:           #ffffff;
+  --msg-input-border:       #ccc;
+  --msg-input-text:         #111;
+  --msg-btn-send-bg:        #f87171;
+  --msg-btn-send-text:      #ffffff;
+  --msg-btn-send-hover:     #ef4444;
+  --msg-error-text:         #dc3545;
+  --msg-conv-text:          #3182ce;
+  --msg-main-bg:            #ffffff;
+  --msg-no-conv-text:       #4a5568;
+  --msg-item-bg:            #111;
+  --msg-item-hover-bg:      #add4f3;
+
+    /* home */
+  --home-header-bg:            #eef5ff;       /* fond du header */
+  --home-header-border:        rgba(0, 0, 0, 0.1); /* bordure/ombre légère */
+  --home-header-text:          #213547;       /* texte, liens… */
+  --home-welcome-text:         #284E7B;       /* couleur du “Bonjour …” */
+  --home-card-bg:              #add4f3;       /* fond de chaque card */
+  --home-card-text:            #333333;       /* texte titre/descriptif */
+  --home-card-shadow:          rgba(0, 0, 0, 0.08);  /* ombre normale */
+  --home-card-hover-bg:        #284e7b;       /* fond au hover */
+  --home-card-hover-text:      #8f908d;       /* texte h2 au hover */
+  --home-card-hover-shadow:    rgba(0, 0, 0, 0.15);  /* ombre au hover */
 }
 
 
@@ -158,6 +281,124 @@ body.theme-dark {
   --wl-button-text:         #1f1f1f;                 /* texte normal */
   --wl-button-hover-bg:     #284E7B;                 /* fond au survol */
   --wl-button-hover-text:   #ffffff;                 /* texte au survol */
+
+      /* login et register */
+  --login-bg:                     #0d1724;
+  --login-title-color:            #284E7B;
+  --login-title-font-size:        2.5rem;
+  --login-title-font-weight:      bold;
+  --login-title-margin-bottom:    2rem;
+  --login-form-bg:                transparent;
+  --login-form-padding:           2rem 3rem;
+  --login-form-width:             200px;
+  --login-form-gap:               1rem;
+  --login-input-bg:               transparent;
+  --login-input-border:           #659abd;
+  --login-input-border-width:     2px;
+  --login-input-border-radius:    10px;
+  --login-input-padding:          10px;
+  --login-input-text:             #add4f3;
+  --login-input-placeholder:      #add4f3;
+  --login-input-font-weight:      bold;
+  --login-input-font-size:        1rem;
+  --login-input-transition:       border-color 0.3s;
+  --login-btn-bg:                 #659abd;
+  --login-btn-text:               #eff3f5;
+  --login-btn-padding:            10px;
+  --login-btn-border:             none;
+  --login-btn-border-radius:      10px;
+  --login-btn-font-weight:        bold;
+  --login-btn-cursor:             pointer;
+  --login-btn-transition:         background 0.3s ease;
+  --login-btn-hover-bg:           #CA3C66;
+  --login-error-color:            #e63946;
+  --login-signup-color:           #007bff;
+  --login-signup-cursor:          pointer;
+  --login-icon-size:              40px;
+  --login-icon-cursor:            pointer;
+  --login-icon-hover-scale:       1.1;
+  --login-icon-transition:        transform 0.2s ease;
+
+      /* fond de la card */
+  --user-bg-card:            #284e7b;
+  --user-text-title:         #ffffff;  /* titre H2 */
+  --user-text-content:       #add4f3;  /* paragraphe simple */
+  --user-text-strong:        #ffffff;  /* texte en <strong> */
+  --user-btn-bg:             #27ae60;
+  --user-btn-text:           #ffffff;
+  --user-btn-hover-bg:       #219150;
+  --user-loading-text:       #7f8c8d;
+
+    /* === SharedFiles === */
+  --shared-bg:                #284e7b;      /* fond du conteneur principal */
+  --shared-text:              #add4f3;      /* couleur du titre h2 */
+  --shared-card-bg:           #e0edff;      /* fond de chaque item */
+  --shared-card-hover-bg:     #d0e3ff;      /* fond au survol */
+  --shared-link-text:         #007bff;      /* couleur du lien de fichier */
+  --shared-link-hover:        #0056b3;      /* lien au hover */
+  --shared-primary:           #007bff;      /* bouton “Télécharger” fond */
+  --shared-primary-hover:     #0056b3;      /* son hover */
+  --shared-secondary:         #dc3545;      /* bouton “Supprimer” fond */
+  --shared-secondary-hover:   #a71d2a;      /* son hover */
+  --shared-author-text:       #555;         /* couleur du “Envoyé par” */
+  --shared-error-text:        #e63946;      /* couleur du message d’erreur */
+  --shared-card-shadow:       0 4px 10px rgba(0,0,0,0.05); /* ombre générale */
+
+      /* conv privée */
+  --msg-bg-container:           transparent;       /* si vous voulez un fond spécifique */
+  --msg-sidebar-bg:             #284e7b;           /* fond de la colonne latérale */
+  --msg-sidebar-border:         #add4f3;           /* bordure droite */
+  --msg-sidebar-title:          #add4f3;           /* couleur du titre “Conversations privées” */
+  --msg-btn-start-bg:           #add4f3;           /* fond du bouton (+) */
+  --msg-btn-start-text:         #2c5282;           /* texte du bouton (+) */
+  --msg-btn-start-hover:        #c7dbff;           /* hover */
+  --msg-input-bg:               #ffffff;
+  --msg-input-border:           #cbd5e0;
+  --msg-input-text:             #000000;
+  --msg-btn-send-bg:            #CA3C66;
+  --msg-btn-send-text:          #ffffff;
+  --msg-btn-send-hover:         #a32b51;
+  --msg-conv-text:              #3182ce;          
+  --msg-conv-hover-text:        #3182ce;           
+  --msg-main-bg:                #add4f3;           
+  --msg-no-conv-text:           #4a5568;          
+  --msg-item-bg:                #f0f7ff;
+  --msg-item-hover-bg:          #e0f0ff;           
+  --msg-error-text:             #e63946;
+
+      /* message */
+  --msg-bg-container:       #284e7b;
+  --msg-sidebar-bg:         #284e7bS;
+  --msg-sidebar-border:     #284e7b;
+  --msg-sidebar-title:      #add4f3;
+  --msg-btn-start-bg:       #add4F3;
+  --msg-btn-start-text:     #2c5282;
+  --msg-btn-start-hover:    #c7dbff;
+  --msg-new-bar-bg:         #add4f3;
+  --msg-new-bar-border:     #ccc;
+  --msg-input-bg:           #ffffff;
+  --msg-input-border:       #ccc;
+  --msg-input-text:         #111;
+  --msg-btn-send-bg:        #f87171;
+  --msg-btn-send-text:      #ffffff;
+  --msg-btn-send-hover:     #ef4444;
+  --msg-error-text:         #dc3545;
+  --msg-conv-text:          #3182ce;
+  --msg-main-bg:            #add4f3;
+  --msg-no-conv-text:       #4a5568;
+  --msg-item-bg:            #111;
+  --msg-item-hover-bg:      #add4f3;
+
+  --home-header-bg:            #284e7b;       /* fond du header */
+  --home-header-border:        rgba(0, 0, 0, 0.1); /* bordure/ombre légère */
+  --home-header-text:          #213547;       /* texte, liens… */
+  --home-welcome-text:         #add4f3;       /* couleur du “Bonjour …” */
+  --home-card-bg:              #284E7B;       /* fond de chaque card */
+  --home-card-text:            #add4F3;       /* texte titre/descriptif */
+  --home-card-shadow:          rgba(0, 0, 0, 0.08);  /* ombre normale */
+  --home-card-hover-bg:        #add4F3;       /* fond au hover */
+  --home-card-hover-text:      #8f908d;       /* texte h2 au hover */
+  --home-card-hover-shadow:    rgba(0, 0, 0, 0.15);  /* ombre au hover */
 }
 
 

@@ -1,15 +1,14 @@
-/* src/styles/messaging.css */
-
 /* Conteneur général */
 .messaging-container {
   padding: 1rem;
   max-width: 800px;
+  margin: auto;
   border-radius: 14px;
+  /* Si vous voulez un fond global, sinon transparent */
   background-color: var(--msg-bg-container);
   display: flex;
   height: 100vh;
   font-family: 'Segoe UI', sans-serif;
-  margin: 1.5rem auto 0;
 }
 
 /* Sidebar */
@@ -60,7 +59,7 @@
   z-index: 10;
 }
 
-/* Select / input dans la barre */
+/* Select / input */
 .new-conversation-bar .select-regular,
 .new-conversation-bar .message-input {
   background-color: var(--msg-input-bg);
@@ -86,7 +85,7 @@
   background-color: var(--msg-btn-send-hover);
 }
 
-/* Texte d’erreur */
+/* Erreur */
 .message-error {
   color: var(--msg-error-text);
   margin: 10px 0;
@@ -123,64 +122,39 @@
   background-color: var(--msg-main-bg);
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* on gère le scroll juste dans .message-list */
 }
 
-/* Liste scrollable des messages */
-.message-list {
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-  margin-bottom: 1rem;
+.conversation-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
 }
 
-/* Placeholder quand aucune conv n’est sélectionnée */
+/* Placeholder quand aucune conversation n’est sélectionnée */
 .no-conv-msg {
   color: var(--msg-no-conv-text);
   font-style: italic;
 }
 
-/* Messages individuels */
+/* Message items */
 .message-item {
   margin-bottom: 1rem;
   background: var(--msg-item-bg);
   padding: 0.5rem 1rem;
   border-radius: 1rem;
   cursor: pointer;
-  transition: background 0.2s;
 }
 .message-item:hover {
-  background: var(--msg-item-hover-bg);
+  background: var(--msg-item-hover-bg, var(--msg-item-bg));
 }
 
-/* Champ d’envoi en bas */
-.message-form {
-  display: flex;
-  gap: 0.5rem;
-}
-.message-input {
-  flex: 1;
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid var(--msg-input-border);
-  background-color: var(--msg-input-bg);
-  color: var(--msg-input-text);
-}
-.send-btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  background-color: var(--msg-btn-send-bg);
-  color: var(--msg-btn-send-text);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-.send-btn:hover {
-  background-color: var(--msg-btn-send-hover);
-}
-
-/* Responsive éventuel */
+/* Responsive (si besoin) */
 @media (max-width: 768px) {
-  .messaging-container { flex-direction: column; height: auto; }
-  .messaging-sidebar  { width: 100%; }
+  .messaging-container {
+    flex-direction: column;
+    height: auto;
+  }
+  .messaging-sidebar {
+    width: 100%;
+  }
 }
