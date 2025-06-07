@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../services/api';
 import AdminHeader from '../components/ui/Adminheader';
-import MessageList from '../components/chat/MessageList';
-import MessageForm from '../components/chat/MessageForm';
+import ChatWindow from '../components/chat/ChatWindow';
 import { useAuth } from '../context/AuthContext';
 import '../styles/index.css';
 
@@ -20,8 +19,6 @@ export default function Messaging() {
   const [users, setUsers] = useState([]);
   const [selectedChannelId, setSelectedChannelId] = useState(selectedChannelIdFromUrl || null);
   const [selectedParticipant, setSelectedParticipant] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
 
@@ -93,7 +90,6 @@ export default function Messaging() {
 
   const handleChannelClick = (channelId) => {
     setSelectedChannelId(channelId);
-    setMessages([]); // vide pour éviter erreurs
     navigate(`/messaging?channel=${channelId}`);
   };
 
@@ -109,26 +105,17 @@ export default function Messaging() {
 
           {showCreate && (
             <div className="new-conversation-bar">
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Rechercher un utilisateur"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
               <select
                 value={selectedParticipant}
                 onChange={(e) => setSelectedParticipant(e.target.value)}
                 className="select-regular"
               >
                 <option value="">-- Choisir un utilisateur --</option>
-                {users
-                  .filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()))
-                  .map(u => (
-                    <option key={u.id} value={u.id}>
-                      {u.username}
-                    </option>
-                  ))}
+                {users.map(u => (
+                  <option key={u.id} value={u.id}>
+                    {u.username}
+                  </option>
+                ))}
               </select>
               <button className="send-btn" onClick={handleCreateChannel}>Créer</button>
             </div>
@@ -151,19 +138,7 @@ export default function Messaging() {
 
         <div className="messaging-main">
           {selectedChannelId ? (
-            <>
-              <MessageList
-                channelId={selectedChannelId}
-                messages={messages}
-                onMessagesFetched={setMessages}
-                userId={user?.id}
-              />
-              <MessageForm
-                channelId={selectedChannelId}
-                userId={user?.id}
-                onMessageSent={loadAll}
-              />
-            </>
+            <ChatWindow channelId={selectedChannelId} />
           ) : (
             <p className="no-conv-msg">Sélectionnez un canal pour voir les messages.</p>
           )}
@@ -172,7 +147,6 @@ export default function Messaging() {
     </>
   );
 }
-
 
  
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/color.css';
 import '../../styles/chat.css';
 import { apiFetch } from '../../services/api';
@@ -10,12 +11,12 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId, 
   const [hasMore, setHasMore] = useState(true);
   const [channelName, setChannelName] = useState('');
   const listRef = useRef();
+  const navigate = useNavigate();
 
   const uniqueMessages = [
     ...new Map(messages.map((msg) => [msg.id, msg])).values()
   ].filter(msg => !msg.deleted);
 
-  // Fonction pour récupérer le nom du canal
   const fetchChannelName = async () => {
     try {
       const data = await apiFetch(`channels/${channelId}`);
@@ -51,7 +52,6 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId, 
     }
   };
 
-  // Scroll vers le haut pour charger plus de messages
   const handleScroll = () => {
     const el = listRef.current;
     if (el.scrollTop <= 5 && !isFetching && hasMore) {
@@ -62,7 +62,6 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId, 
     }
   };
 
-  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     fetchMessages();
     fetchChannelName();
@@ -89,12 +88,16 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId, 
       observer.observe(el, { childList: true, subtree: true });
     }
   }, [isFetching]);
-  /* eslint-enable react-hooks/exhaustive-deps */
 
   return (
     <div className="message-list-wrapper">
       <div className="message-header">
-        <button className="back-to-list-button" onClick={onBack}>⬅ Retour</button>
+        <button
+          className="back-to-list-button"
+          onClick={onBack ? onBack : () => navigate(-1)}
+        >
+          ⬅ Retour
+        </button>
         <h3 className="channel-title">
           {channelName.startsWith("priv_") ? "Conversation privée" : channelName}
         </h3>

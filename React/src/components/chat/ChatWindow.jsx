@@ -93,7 +93,7 @@ const ChatWindow = ({ channelId = 1 }) => {
   if (!privileges) {
     return (
       <>
-        <AdminHeader />
+        
         <h2 style={{ textAlign: 'center', margin: '1rem 0' }}>Chargement des privilèges...</h2>
       </>
     );
@@ -101,7 +101,7 @@ const ChatWindow = ({ channelId = 1 }) => {
 
   return (
     <>
-      <AdminHeader />
+      
       <div className="chat-window">
         <WebSocketHandler channelId={channelId} onMessage={handleIncomingMessage} />
         <MessageList
