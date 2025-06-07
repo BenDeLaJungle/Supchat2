@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Users;
 use App\Entity\Channels;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,13 +17,29 @@ class ChannelsRepository extends ServiceEntityRepository
         parent::__construct($registry, Channels::class);
     }
 	
-	public function findBySearchTerm(string $term): array
+	public function findBySearchTerm(string $term, Users $user): array
 	{
-		return $this->createQueryBuilder('c')
-			->where('LOWER(c.name) LIKE :term')
+		$qb = $this->createQueryBuilder('c');
+
+		$qb
+			->join('c.workspace', 'w')
+			->join('App\Entity\WorkspaceMembers', 'wm', 'WITH', 'wm.workspace = w AND wm.user = :user')
+			->join('wm.role', 'r')
+			->where($qb->expr()->like('LOWER(c.name)', ':term'))
+			->andWhere(
+				$qb->expr()->orX(
+					'r.id = 3', // Admin
+					$qb->expr()->andX('r.id = 2', 'c.minRole <= 2'),
+					$qb->expr()->andX('r.id = 1', 'c.minRole = 1'),
+					$qb->expr()->exists(
+						'SELECT 1 FROM App\Entity\Messages m2 WHERE m2.channel = c AND m2.user = :user'
+					)
+				)
+			)
 			->setParameter('term', '%' . strtolower($term) . '%')
-			->getQuery()
-			->getResult();
+			->setParameter('user', $user);
+
+		return $qb->getQuery()->getResult();
 	}
 
 

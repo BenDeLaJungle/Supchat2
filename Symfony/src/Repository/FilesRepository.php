@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Files;
+use App\Entity\Users;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,7 +16,19 @@ class FilesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Files::class);
     }
-
+	public function findBySearchTerm(string $term, Users $user): array
+	{
+		return $this->createQueryBuilder('f')
+			->join('f.message', 'm')
+			->join('m.channel', 'c')
+			->join('c.workspace', 'w')
+			->where('LOWER(f.filePath) LIKE :term')
+			->andWhere('w.creator = :user')
+			->setParameter('term', '%' . $term . '%')
+			->setParameter('user', $user)
+			->getQuery()
+			->getResult();
+	}
 //    /**
 //     * @return Files[] Returns an array of Files objects
 //     */
