@@ -48,7 +48,7 @@ const AdminHeader = () => {
     { title: "Fichiers ", image: files, link: "/shared-files" },
 
 
-    { title: "Notifications", image: notif },
+    { title: "Notifications", image: notif, link: "/notifications" },
     ...(ws1
       ? [{ title: ws1.name, image: workspaceIcon, link: `/workspaces/${ws1.id}` }]
       : []),
