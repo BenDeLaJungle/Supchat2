@@ -37,5 +37,5 @@ Thumbs.db
 /.phpunit.cache/
 ###< phpunit/phpunit ###
 
-/Migrations/
+Symfony/Migrations/
 
