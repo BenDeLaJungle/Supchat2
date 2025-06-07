@@ -109,52 +109,55 @@ class ChannelController extends AbstractController
 }
 
 
-    #[Route('/api/channels', name: 'channels_create', methods: ['POST'])]
-    public function createChannel(Request $request, EntityManagerInterface $em, WorkspacesRepository $workspaceRepo): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
+#[Route('/api/channels', name: 'channels_create', methods: ['POST'])]
+public function createChannel(Request $request, EntityManagerInterface $em, WorkspacesRepository $workspaceRepo): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['workspace_id'], $data['status'])) {
-            return new JsonResponse(['error' => 'Données incomplètes'], 400);
-        }
-
-        $workspace = $workspaceRepo->find($data['workspace_id']);
-        if (!$workspace) {
-            return new JsonResponse(['error' => 'Workspace introuvable'], 404);
-        }
-
-        /** @var \App\Entity\Users $currentUser */
-        $currentUser = $this->getUser();
-        $currentUserId = $currentUser->getId();
-
-        $roleId = WorkspaceMembers::getUserRoleInWorkspace($workspace->getId(), $currentUserId, $em);
-        if (!Roles::hasPermission($roleId, 'create_channel')) {
-            return new JsonResponse(['error' => 'Accès refusé.'], 403);
-        }
-
-        if ($workspace->getId() === 1) {
-            if ($data['status'] !== false) {
-                return new JsonResponse(['error' => 'Les conversations privées doivent être privées.'], 400);
-            }
-
-            if (!isset($data['participants']) || !is_array($data['participants']) || count($data['participants']) !== 2) {
-                return new JsonResponse(['error' => 'Une conversation privée doit inclure exactement 2 utilisateurs.'], 400);
-            }
-
-            sort($data['participants']);
-            $data['name'] = 'priv_' . implode('_', $data['participants']);
-        }
-
-        $channel = new Channels();
-        $channel->setName($data['name']);
-        $channel->setStatus($data['status']);
-        $channel->setWorkspace($workspace);
-        $channel->setMinRole(1);
-        $em->persist($channel);
-        $em->flush();
-
-        return new JsonResponse(['status' => 'Canal créé', 'id' => $channel->getId()], 201);
+    if (!isset($data['workspace_id'], $data['status'])) {
+        return new JsonResponse(['error' => 'Données incomplètes'], 400);
     }
+
+    $workspace = $workspaceRepo->find($data['workspace_id']);
+    if (!$workspace) {
+        return new JsonResponse(['error' => 'Workspace introuvable'], 404);
+    }
+
+    /** @var \App\Entity\Users $currentUser */
+    $currentUser = $this->getUser();
+    $currentUserId = $currentUser->getId();
+
+    $roleId = WorkspaceMembers::getUserRoleInWorkspace($workspace->getId(), $currentUserId, $em);
+    if (!Roles::hasPermission($roleId, 'create_channel')) {
+        return new JsonResponse(['error' => 'Accès refusé.'], 403);
+    }
+
+    if ($workspace->getId() === 1) {
+        if ($data['status'] !== false) {
+            return new JsonResponse(['error' => 'Les conversations privées doivent être privées.'], 400);
+        }
+
+        if (!isset($data['participants']) || !is_array($data['participants']) || count($data['participants']) !== 2) {
+            return new JsonResponse(['error' => 'Une conversation privée doit inclure exactement 2 utilisateurs.'], 400);
+        }
+
+        sort($data['participants']);
+        $data['name'] = 'priv_' . implode('_', $data['participants']);
+    }
+
+    $channel = new Channels();
+    $channel->setName($data['name']);
+    $channel->setStatus($data['status']);
+    $channel->setWorkspace($workspace);
+    $channel->setMinRole(isset($data['min_role']) ? (int)$data['min_role'] : 1);
+
+    $em->persist($channel);
+    $em->flush();
+
+    return new JsonResponse(['status' => 'Canal créé', 'id' => $channel->getId()], 201);
+}
+
+
 
     #[Route('/api/channels/simple', name: 'channels_create_simple', methods: ['POST'])]
     public function createSimplePrivateChannel(Request $request, EntityManagerInterface $em, WorkspacesRepository $workspaceRepo): JsonResponse
