@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 import { apiFetch } from '../../services/api';
 import '../../styles/color.css';
@@ -7,24 +7,20 @@ import { useSocket } from '../../context/SocketContext';
 
 const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
   const [content, setContent] = useState('');
+  const [file, setFile] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const fileInputRef = useRef(null); 
   const { socket, isReady } = useSocket();
 
   const extractMentionsAndChannels = (text) => {
     const mentionRegex = /@([a-zA-Z0-9_-]+)/g;
     const channelRegex = /#([a-zA-Z0-9_-]+)/g;
-
     const mentions = [];
     const channels = [];
-
     let match;
-    while ((match = mentionRegex.exec(text)) !== null) {
-      mentions.push(match[1]);
-    }
 
-    while ((match = channelRegex.exec(text)) !== null) {
-      channels.push(match[1]);
-    }
+    while ((match = mentionRegex.exec(text)) !== null) mentions.push(match[1]);
+    while ((match = channelRegex.exec(text)) !== null) channels.push(match[1]);
 
     return { mentions, channels };
   };
@@ -32,15 +28,13 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmed = content.trim();
-    if (!trimmed) return;
+
+    if (!trimmed && !file) return;
 
     if (!isReady || !socket) {
       alert("La connexion au chat n'est pas prête !");
       return;
     }
-
-    const { mentions, channels } = extractMentionsAndChannels(trimmed);
-    const uniqueMentions = [...new Set(mentions)];
 
     try {
       const backendResponse = await apiFetch('messages', {
@@ -48,11 +42,13 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
         body: JSON.stringify({
           channel_id: channelId,
           user_id: userId,
-          content: trimmed
+          content: trimmed || (file ? " " : "")
         })
       });
 
       const messageId = backendResponse.id;
+      const { mentions, channels } = extractMentionsAndChannels(trimmed);
+      const uniqueMentions = [...new Set(mentions)];
 
       const tasks = [];
 
@@ -60,7 +56,7 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
         tasks.push(
           apiFetch(`users/by-username/${username}`)
             .then(user => {
-              if (user && user.id) {
+              if (user?.id) {
                 return apiFetch('mention/add', {
                   method: 'POST',
                   body: JSON.stringify({
@@ -77,8 +73,7 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
                   });
                 });
               }
-            })
-            .catch(err => console.warn(`Mention "${username}" ignorée :`, err.message))
+            }).catch(err => console.warn(`Mention "${username}" ignorée :`, err.message))
         );
       }
 
@@ -94,6 +89,33 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
         );
       }
 
+      if (file && messageId) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('message_id', messageId);
+        const token = localStorage.getItem('jwt');
+
+        if (!token) {
+          console.warn("Token JWT manquant !");
+          return;
+        }
+
+        tasks.push(
+          fetch('https://localhost:8000/api/files/upload', {
+            method: 'POST',
+            body: formData,
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          })
+          .then(res => {
+            if (!res.ok) throw new Error('Erreur upload fichier');
+            return res.json();
+          })
+          .catch(err => console.warn("Erreur fichier :", err.message))
+        );
+      }
+
       await Promise.all(tasks);
 
       const message = {
@@ -106,7 +128,9 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
 
       socket.emit('message', message);
       setContent('');
+      setFile(null);
       setShowEmojiPicker(false);
+      if (fileInputRef.current) fileInputRef.current.value = ''; 
     } catch (err) {
       console.error("Erreur à l'envoi :", err.message);
     }
@@ -125,6 +149,23 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
         className="message-input"
         placeholder="Écris ton message..."
       />
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <input
+          type="file"
+          ref={fileInputRef} 
+          onChange={(e) => setFile(e.target.files[0])}
+          className="file-input"
+          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.zip"
+        />
+
+        {file && (
+          <div className="file-preview" style={{ maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {file.name}
+          </div>
+        )}
+      </div>
+
       <button
         type="button"
         className="emoji-toggle-button"
@@ -132,11 +173,13 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
       >
         😊
       </button>
+
       {showEmojiPicker && (
         <div style={{ position: 'absolute', bottom: '50px', right: '0', zIndex: 1000 }}>
           <EmojiPicker onEmojiClick={onEmojiClick} />
         </div>
       )}
+
       <button type="submit" className="message-button">
         Envoyer
       </button>

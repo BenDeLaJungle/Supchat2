@@ -8,6 +8,8 @@ use App\Entity\Notifications;
 use App\Repository\MessagesRepository;
 use App\Repository\ChannelsRepository;
 use App\Repository\UsersRepository;
+use App\Repository\FilesRepository;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -79,7 +81,7 @@ class MessageController extends AbstractController
     }
 
     #[Route('/api/messages/{id}', name: 'get_message', methods: ['GET'])]
-    public function getMessage(Messages $message): JsonResponse
+    public function getMessage(Messages $message,FilesRepository $filesRepo): JsonResponse
     {
         $hashtags = $message->getHashtags()->toArray();
         return $this->json([
@@ -91,15 +93,21 @@ class MessageController extends AbstractController
                 'username' => $message->getUser()->getUsername(),
             ],
             'channel_id' => $message->getChannel()->getId(),
-            'hashtags' => array_map(fn($h) => $this->formatHashtag($h), $hashtags)
-        ]);
-    }
+            'hashtags' => array_map(fn($h) => $this->formatHashtag($h), $hashtags),
+			'files' => array_map(fn($f) => [
+				'id' => $f->getId(),
+				'name' => basename($f->getFilePath()),
+				'path' => $f->getFilePath()
+			], $files)
+		]);
+	}
 
     #[Route('/api/channels/{id}/messages', name: 'get_channel_messages', methods: ['GET'])]
     public function getChannelMessages(
         int $id,
         ChannelsRepository $channelsRepo,
-        MessagesRepository $messagesRepo
+        MessagesRepository $messagesRepo,
+		FilesRepository $filesRepo 
     ): JsonResponse {
         $channel = $channelsRepo->find($id);
 
@@ -109,22 +117,30 @@ class MessageController extends AbstractController
 
         $messages = $messagesRepo->findBy(['channel' => $channel]);
 
-        $data = array_map(function (Messages $message) {
+        $data = array_map(function (Messages $message) use ($filesRepo) {
+			
+			$files = $filesRepo->findBy(['message' => $message]);
+			
             return [
-                'id' => $message->getId(),
-                'content' => $message->getContent(),
-                'timestamp' => $message->getCreatedAt()->format('c'),
-                'author' => [
-                    'id' => $message->getUser()->getId(),
-                    'username' => $message->getUser()->getUsername(),
-                ],
-                'channel_id' => $message->getChannel()->getId(),
-                'hashtags' => array_map(fn($h) => $this->formatHashtag($h), $message->getHashtags()->toArray())
-            ];
-        }, $messages);
+				'id' => $message->getId(),
+				'content' => $message->getContent(),
+				'timestamp' => $message->getCreatedAt()->format('c'),
+				'author' => [
+					'id' => $message->getUser()->getId(),
+					'username' => $message->getUser()->getUsername(),
+				],
+				'channel_id' => $message->getChannel()->getId(),
+				'hashtags' => array_map(fn($h) => $this->formatHashtag($h), $message->getHashtags()->toArray()),
+				'files' => array_map(fn($f) => [
+								'id' => $f->getId(),
+								'name' => basename($f->getFilePath()),
+								'download_url' => "/api/files/{$f->getId()}/generate-download-url"
+				], $files),
+			];
+		}, $messages);
 
-        return $this->json($data);
-    }
+    return $this->json($data);
+}
 
 
     #[Route('/api/messages/{id}', name: 'update_message', methods: ['PUT'])]

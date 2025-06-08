@@ -41,8 +41,8 @@ export default function SharedFiles() {
   const handleDownload = async (fileId) => {
     try {
       const res = await apiFetch(`files/${fileId}/generate-download-url`);
-      const signedUrl = `http://localhost:8000${res.url}`;
-      window.open(signedUrl, '_blank');
+      //const signedUrl = `http://localhost:8000${res.url}`;
+      window.open(res.url, '_blank');
     } catch (e) {
       alert("Erreur lors de la génération du lien de téléchargement.");
     }

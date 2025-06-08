@@ -7,7 +7,7 @@ import '../../styles/chat.css';
 import { useNavigate } from 'react-router-dom';
 
 
-const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal, onDelete, channelId,hashtags = [],onChannelSelected}) => {
+const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal, onDelete, channelId,hashtags = [],onChannelSelected,files = []}) => {
   const { socket, isReady } = useSocket();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -19,6 +19,10 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
   const menuRef = useRef(null);
 
   const canEditThisMessage = (author.id === currentUserId) || canEditGlobal;
+  
+  const isImage = (filename) => {
+	return /\.(jpg|jpeg|png)$/i.test(filename);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -136,7 +140,14 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
     setMenuOpen(false);
     setIsEditing(true);
   };
-
+ const handleDownload = async (fileId) => {
+    try {
+      const res = await apiFetch(`files/${fileId}/generate-download-url`);
+      window.open(res.url, '_blank');
+    } catch (e) {
+      alert("Erreur lors de la génération du lien de téléchargement.");
+    }
+  };
   const onEmojiClick = (emojiData) => {
     setEditedContent(prev => prev + emojiData.emoji);
   };
@@ -147,6 +158,7 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
         <div className="message-author">{author.username}</div>
 
         {isEditing ? (
+          // 🔧 Zone d’édition
           <div className="message-edit-form">
             <div>
               <textarea
@@ -172,10 +184,39 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
             </div>
           </div>
         ) : (
-          <div className="message-content">{parseContent(localContent)}</div>
+          <>
+            <div className="message-content">{parseContent(localContent)}</div>
+
+           {files.length > 0 && (
+              <div className="message-files">
+                {files.map(file => (
+                  <div key={file.id} className="file-item">
+                    <span
+                      className="file-link"
+                      style={{ color: 'var(--link-color)', cursor: 'pointer' }}
+                      onClick={() => handleDownload(file.id)}
+                    >
+                      {file.name}
+                    </span>
+                    {isImage(file.name) && (
+                      <div>
+                        <img
+                          src={file.download_url}
+                          alt={file.name}
+                          style={{ maxWidth: '200px', maxHeight: '150px', marginTop: '5px', borderRadius: '6px' }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
         )}
 
-        <div className="message-timestamp">{new Date(timestamp).toLocaleString()}</div>
+        <div className="message-timestamp">
+          {new Date(timestamp).toLocaleString()}
+        </div>
       </div>
 
       {canEditThisMessage && !isEditing && (
@@ -186,12 +227,8 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
 
           {menuOpen && (
             <div className="message-menu">
-              <button className="message-menu-item" onClick={handleEditClick}>
-                Modifier
-              </button>
-              <button className="message-menu-item" onClick={handleDeleteClick}>
-                Supprimer
-              </button>
+              <button className="message-menu-item" onClick={handleEditClick}>Modifier</button>
+              <button className="message-menu-item" onClick={handleDeleteClick}>Supprimer</button>
             </div>
           )}
         </div>

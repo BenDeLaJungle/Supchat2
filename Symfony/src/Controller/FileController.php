@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class FileController extends AbstractController
 {
@@ -121,15 +122,19 @@ class FileController extends AbstractController
 	#[IsGranted('IS_AUTHENTICATED_FULLY')]
 	public function generateDownloadUrl(int $id, UserInterface $user): JsonResponse
 	{
-        /** @var \App\Entity\Users $user */
 		$userId = $user->getId();
-		$timestamp = time(); // maintenant
+		$timestamp = time();
 		$secret = $_ENV['APP_SECRET'];
 
 		$data = "id=$id&user=$userId&ts=$timestamp";
 		$hash = hash_hmac('sha256', $data, $secret);
 
-		$signedUrl = "/api/files/download?$data&_hash=$hash";
+		$signedUrl = $this->generateUrl('file_secure_download', [
+			'id' => $id,
+			'user' => $userId,
+			'ts' => $timestamp,
+			'_hash' => $hash
+		], UrlGeneratorInterface::ABSOLUTE_URL);
 
 		return new JsonResponse(['url' => $signedUrl]);
 	}
