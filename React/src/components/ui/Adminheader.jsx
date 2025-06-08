@@ -20,7 +20,6 @@ const AdminHeader = () => {
   const { user, setUser } = useAuth();
   const [lastTwoWorkspaces, setLastTwoWorkspaces] = useState([]);
 
-  // Récupère tous les workspaces et ne garde que les 2 plus récents
   useEffect(() => {
     apiFetch("workspaces")
       .then((data) => {
@@ -38,30 +37,21 @@ const AdminHeader = () => {
     navigate("/login");
   };
 
-  // On extrait workspace1 et workspace2 s'ils existent
   const ws1 = lastTwoWorkspaces[0];
   const ws2 = lastTwoWorkspaces[1];
 
   const shortcuts = [
-
-    { title: "Messagerie", image: messenger, link: "/messaging" },
-    { title: "Fichiers ", image: files, link: "/shared-files" },
-
-
-    { title: "Notifications", image: notif, link: "/notifications" },
-    ...(ws1
-      ? [{ title: ws1.name, image: workspaceIcon, link: `/workspaces/${ws1.id}` }]
-      : []),
-    ...(ws2
-      ? [{ title: ws2.name, image: workspaceIcon, link: `/workspaces/${ws2.id}` }]
-      : []),
-    { title: "Tous les workspaces", image: workspaceIcon, link: "/workspaces" },
-    { title: "Calendrier", image: calendrier, link: "/calendrier" },
-     ...(user?.role === 'ROLE_ADMIN'
-          ? [{ title: "Espace Admin", image: adminspace, link: "/AdminSpace" }]
-          : [{ title: "Supchat", image: logo }]
-        ),
-    { title: "Paramètres", image: parametres, link: "/parametres" },
+    { title: "Messagerie",        image: messenger,     link: "/messaging"       },
+    { title: "Fichiers",          image: files,         link: "/shared-files"    },
+    { title: "Notifications",     image: notif,         link: "/notifications"   },
+    ...(ws1 ? [{ title: ws1.name, image: workspaceIcon, link: `/workspaces/${ws1.id}` }] : []),
+    ...(ws2 ? [{ title: ws2.name, image: workspaceIcon, link: `/workspaces/${ws2.id}` }] : []),
+    { title: "Tous les workspaces", image: workspaceIcon, link: "/workspaces"     },
+    { title: "Calendrier",         image: calendrier,    link: "/calendrier"      },
+    ...(user?.role === "ROLE_ADMIN"
+      ? [{ title: "Espace Admin", image: adminspace, link: "/AdminSpace" }]
+      : [{ title: "Supchat",      image: logo,       link: "/home"         }]),
+    { title: "Paramètres",        image: parametres,   link: "/parametres"     },
   ];
 
   return (
@@ -78,13 +68,12 @@ const AdminHeader = () => {
         {shortcuts.map(({ title, image, link }) => (
           <div
             key={title}
-            className="card"
+            className="admin-shortcut-card"
             onClick={() => link && navigate(link)}
             title={title}
-            style={{ width: "80px", height: "80px" }}
           >
-            <img src={image} alt={title} style={{ width: 30, height: 30 }} />
-            <h2 style={{ fontSize: "0.6rem", margin: 0 }}>{title}</h2>
+            <img src={image} alt={title} />
+            <h2>{title}</h2>
           </div>
         ))}
       </div>

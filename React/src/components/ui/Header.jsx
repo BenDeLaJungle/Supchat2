@@ -16,7 +16,7 @@ export default function Header() {
       </div>
 
       {/* Barre de recherche au centre */}
-      <div className="header-barre">
+      <div className="header-recherche">
         <SearchBar />
       </div>
 

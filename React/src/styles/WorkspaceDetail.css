@@ -31,13 +31,14 @@
   display: flex;
   gap: 24px;
   margin-bottom: 32px;
+  align-items: stretch;
 }
 
 /* ===================== COLONNE LISTE (Canaux ou Membres) ===================== */
 /* Style commun aux deux listes (barre défilement, fond) */
 .workspace-detail-page .list-container {
   flex: 1;                      /* occupe tout l’espace restant horizontal */
-  max-height: 220px;            /* hauteur fixe pour forcer le scroll si besoin */
+  max-height: 270px;            /* hauteur fixe pour forcer le scroll si besoin */
   overflow-y: auto;
   background-color: var(--ws-members-list-bg);
   border: none;

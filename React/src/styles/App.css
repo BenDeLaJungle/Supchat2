@@ -206,6 +206,8 @@
   --home-card-hover-bg:        #284e7b;       /* fond au hover */
   --home-card-hover-text:      #8f908d;       /* texte h2 au hover */
   --home-card-hover-shadow:    rgba(0, 0, 0, 0.15);  /* ombre au hover */
+    --home-card-co: #add4f3;
+    --home-card-co-hover : #284E7B;
 }
 
 
@@ -399,6 +401,8 @@ body.theme-dark {
   --home-card-hover-bg:        #add4F3;       /* fond au hover */
   --home-card-hover-text:      #8f908d;       /* texte h2 au hover */
   --home-card-hover-shadow:    rgba(0, 0, 0, 0.15);  /* ombre au hover */
+  --home-card-co: #add4F3;
+  --home-card-co-hover: #213547;
 }
 
 

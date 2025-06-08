@@ -1,105 +1,5 @@
-/* src/index.css */
 
-/* ===================== VARIABLES GLOBALES ===================== */
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: var(--white);
-  background-color: var(--black);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  /* ===== Home (thème clair) ===== */
-  --home-header-bg:            #eef5ff;       /* fond du header */
-  --home-header-border:        rgba(0, 0, 0, 0.1); /* ombre légère */
-  --home-header-text:          #213547;       /* texte dans le header */
-
-  --home-welcome-text:         #284E7B;       /* “Bonjour …” */
-
-  --home-card-bg:              #add4f3;       /* fond des cartes */
-  --home-card-text:            #333333;       /* texte des cartes */
-  --home-card-shadow:          rgba(0, 0, 0, 0.08); /* ombre normale */
-  --home-card-hover-bg:        #284e7b;       /* fond au survol */
-  --home-card-hover-text:      #8f908d;       /* texte au survol */
-  --home-card-hover-shadow:    rgba(0, 0, 0, 0.15); /* ombre au survol */
-}
-
-/* ===================== LIENS GLOBAUX ===================== */
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-/* ===================== BODY GLOBAUX ===================== */
-body {
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: start;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: #f4f4f4;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-/* ===================== DROPDOWN DE LA SEARCHBAR ===================== */
-.search-dropdown {
-  max-height: 300px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  position: absolute;
-  z-index: 10;
-  width: 100%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-.search-dropdown-item {
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: #333;
-}
-.search-dropdown-item:hover {
-  background-color: #f5f5f5;
-}
-
-/* ======================
-   Header (Home) 
-====================== */
+/* ====================== HEADER HOME ====================== */
 .header-home {
   width: 100vw;
   margin: 0;
@@ -109,41 +9,77 @@ button:focus-visible {
   align-items: center;
   background-color: var(--home-header-bg);
   box-shadow: 0 2px 6px var(--home-header-border);
-  border-radius: 0;
   box-sizing: border-box;
-  margin-bottom: 0;
   flex-wrap: wrap;
 }
 
-/* Lien et bouton logout en couleur fixe */
 .header-home a,
 .header-home .logout-button {
   color: var(--home-header-text);
-}
-
-.header-barre,
-.header-logo,
-.header-logout {
-  display: flex;
-  align-items: center;
 }
 
 .header-logo .logo {
   height: 80px;
 }
 
+.header-recherche {
+  padding: 10px 16px;
+  width: 500px;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+/* ===== BARRE DE RACCOURCIS ===== */
 .header-barre {
   flex: 3;
-  width: 300px;
   max-width: 800px;
   display: flex;
   justify-content: center;
-  padding: 0 2rem;
+  align-items: center;
+  gap: 0.5rem;               /* <-- ici on augmente l’espacement */
 }
 
+/* ===== MINI–CARDS ADMIN ===== */
+.admin-shortcut-card {
+  width: 70px;
+  height: 70px;
+  background-color: var(--home-card-bg);
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px var(--home-card-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-shortcut-card img {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 0.4rem;
+}
+
+.admin-shortcut-card h2 {
+  margin: 0;
+  font-size: 0.5rem;
+  color: var(--home-card-text);
+  text-align: center;
+}
+
+.admin-shortcut-card:hover {
+  background-color: var(--home-card-hover-bg);
+  box-shadow: 0 8px 18px var(--home-card-hover-shadow);
+  transform: scale(1.05);
+}
+
+.admin-shortcut-card:hover h2 {
+  color: var(--home-card-hover-text);
+}
+
+/* ===== BOUTON DELOG ===== */
 .header-logout .logout-button {
-  background-color: #add4f3;
-  color: var(--home-header-text);
+  background-color: var(--home-card-co);
   padding: 0.6rem 1.2rem;
   border: none;
   border-radius: 8px;
@@ -151,37 +87,21 @@ button:focus-visible {
   cursor: pointer;
   transition: background 0.3s ease;
 }
-.logout-button:hover {
-  background-color: #CA3C66;
-  color: white;
+.header-logout .logout-button:hover {
+  background-color: var(--home-card-co-hover);
+  color: #fff;
 }
 
-/* ======================
-   Search Input dans le header 
-====================== */
-.search-input {
-  padding: 10px 16px;
-  width: 500px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
-
-/* ======================
-   Welcome Name (Home) 
-====================== */
+/* ====================== WELCOME NAME ====================== */
 .welcome-name {
   text-align: center;
-  margin-top: 10px;
-  margin-bottom: 1rem;
+  margin: 10px 0;
   font-size: 1.8rem;
   font-weight: bold;
   color: var(--home-welcome-text);
 }
 
-/* ======================
-   Card container (Home) 
-====================== */
+/* ====================== CARTES (Home) ====================== */
 .card-container {
   display: grid;
   grid-template-columns: repeat(3, 120px);
@@ -190,9 +110,6 @@ button:focus-visible {
   padding: 0.5rem 1rem;
 }
 
-/* ======================
-   Card (Home) 
-====================== */
 .card {
   background-color: var(--home-card-bg);
   border-radius: 1rem;
@@ -201,31 +118,23 @@ button:focus-visible {
   box-shadow: 0 4px 10px var(--home-card-shadow);
   transition: all 0.3s ease;
   cursor: pointer;
-  text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: inherit;
 }
 
 .card img {
   width: 35px;
   height: 35px;
-  object-fit: contain;
   margin-bottom: 0.4rem;
 }
 
-.card h2 {
-  font-size: 0.7rem;
-  margin-bottom: 0.2rem;
-  color: var(--home-card-text);
-}
-
+.card h2,
 .card p {
+  margin: 0;
   font-size: 0.7rem;
   color: var(--home-card-text);
-  margin: 0;
 }
 
 .card:hover {
@@ -234,96 +143,18 @@ button:focus-visible {
   transform: scale(1.1);
 }
 
-.card:hover h2 {
-  color: var(--home-card-hover-text);
-}
-
+.card:hover h2,
 .card:hover p {
   color: var(--home-card-hover-text);
 }
 
-/* ======================
-   Avatar utilisateur
-====================== */
-.logo-user-img {
-  width: 100px !important;
-  height: 100px !important;
-  object-fit: contain;
-}
-
-/* ======================
-   Responsive global
-====================== */
+/* ====================== RÉSPONSIVE ====================== */
 @media (max-width: 768px) {
-  .card-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    padding: 0 10px;
-    margin-bottom: 20px;
-  }
-
-  .card {
-    display: flex;
-    align-items: center;
-    width: 90%;
-    padding: 10px;
-    background-color: #cbe7ff;
-    border-radius: 16px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
-  }
-
-  .card img {
-    width: 60px;
-    height: 60px;
-  }
-
-  .card h2 {
-    margin: 0;
-    font-size: 1.3rem;
-    color: var(--home-card-text);
-  }
-
-  .welcome-name {
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--home-welcome-text);
-    text-align: center;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .header-home {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 0 1rem;
-    box-sizing: border-box;
-  }
-
-  .header-logo {
-    margin-bottom: 1rem;
-  }
-
   .header-barre {
-    width: 60%;
-    max-width: 350px;
-    margin-bottom: 1rem;
-    justify-content: center;
-    display: flex;
-    gap: 10rem;
+    flex-wrap: wrap;
   }
-
-
-  .header-barre input {
-    width: 100%;
-  }
-
-  .header-logout {
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 1rem;
+  .card-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
