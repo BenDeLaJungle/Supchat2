@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../../services/api";
+import '../../styles/SearchBar.css';
+import '../../styles/index.css';
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -88,7 +90,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="search-bar-wrapper" ref={searchRef}>
+    <div className="searchbar-wrapper" ref={searchRef}>
       <input
         type="text"
         className="search-input"

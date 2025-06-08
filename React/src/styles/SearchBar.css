@@ -1,0 +1,78 @@
+
+
+/* ---------- SearchBar wrapper ---------- */
+.searchbar-wrapper {
+  position: relative;
+  width: 600px;
+  max-width: 500px;
+}
+
+/* ---------- INPUT ---------- */
+.searchbar-wrapper .search-input {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* ---------- Dropdown absolu ---------- */
+.searchbar-wrapper .search-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  background: var(--home-header-dropdown);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+/* catégories et items (en complément) */
+.search-dropdown .search-category {
+  padding: 6px 12px;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+}
+.search-dropdown .search-dropdown-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.search-dropdown .search-dropdown-item:hover {
+  background: #f5f5f5;
+}
+.search-dropdown .no-results {
+  padding: 8px 12px;
+  color: #666;
+}
+Vous avez envoyé
+/* facultatif si déjà inclues en index.css */
+
+.loader {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.search-error {
+  color: red;
+  margin-top: 4px;
+  font-size: 0.9rem;
+}
+
+/* si tu veux un scrollbar custom, tu peux ajouter : */
+
+.searchbar-wrapper .search-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+.searchbar-wrapper .search-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}

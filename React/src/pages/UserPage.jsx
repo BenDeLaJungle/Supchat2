@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { apiFetch } from "../services/api";
 import AdminHeader from "../components/ui/Adminheader";
+import { useAuth } from "../context/AuthContext";
 import "../styles/User.css";
+
+const workspaceId = 1; // ou la valeur appropriée
 
 export default function UserPage() {
   const { username } = useParams();
+  const navigate = useNavigate();
+  const { user: currentUser } = useAuth();
 
   const [userInfo, setUserInfo] = useState(null);
   const [error, setError] = useState(null);
@@ -28,6 +33,26 @@ export default function UserPage() {
 
     fetchUser();
   }, [username]);
+
+  const handleSendMessage = async () => {
+    if (!userInfo || !currentUser) return;
+
+    try {
+      const channel = await apiFetch("channels/simple", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          workspace_id: workspaceId,
+          status: false,
+          participants: [currentUser.id, userInfo.id]
+        })
+      });
+      navigate(`/messaging?channel=${channel.id}`);
+    } catch (err) {
+      console.error("Impossible de démarrer la conversation :", err);
+      alert("Une erreur est survenue. Réessayez.");
+    }
+  };
 
   return (
     <>
@@ -73,7 +98,14 @@ export default function UserPage() {
                 <strong>Nom :</strong> {userInfo.lastName}
               </p>
             </div>
-            <button className="user-card-button">✉️ Envoyer un message</button>
+
+            {/* Bouton “Envoyer un message” */}
+            <button
+              className="user-card-button"
+              onClick={handleSendMessage}
+            >
+              ✉️ Envoyer un message
+            </button>
           </div>
         )}
       </div>

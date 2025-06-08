@@ -208,6 +208,7 @@
   --home-card-hover-shadow:    rgba(0, 0, 0, 0.15);  /* ombre au hover */
     --home-card-co: #add4f3;
     --home-card-co-hover : #284E7B;
+  --home-header-dropdown: #ffffff;
 }
 
 
@@ -403,6 +404,7 @@ body.theme-dark {
   --home-card-hover-shadow:    rgba(0, 0, 0, 0.15);  /* ombre au hover */
   --home-card-co: #add4F3;
   --home-card-co-hover: #213547;
+  --home-header-dropdown: #284E7B;
 }
 
 
