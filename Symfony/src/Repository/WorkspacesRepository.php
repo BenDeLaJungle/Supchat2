@@ -50,6 +50,17 @@ class WorkspacesRepository extends ServiceEntityRepository
 			->getQuery()
 			->getResult();
 	}
+    public function findPublicNotJoinedByUser(Users $user): array
+    {
+        $qb = $this->createQueryBuilder('w')
+            ->leftJoin('w.workspaceMembers', 'wm', 'WITH', 'wm.user = :user')
+            ->where('w.status = 1') // 1 = public
+            ->andWhere('wm.id IS NULL') // non membre
+            ->setParameter('user', $user);
+
+        return $qb->getQuery()->getResult();
+    }
+
 
     // /**
     //  * @return Workspaces[] Returns an array of Workspaces objects

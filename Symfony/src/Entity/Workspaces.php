@@ -6,6 +6,9 @@ use App\Repository\WorkspacesRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Users;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\WorkspaceMembers; // ajoute aussi ce use si nécessaire
 
 #[ORM\Entity(repositoryClass: WorkspacesRepository::class)]
 class Workspaces
@@ -75,5 +78,18 @@ class Workspaces
     {
         $this->creator = $creator;
         return $this;
+    }
+
+    #[ORM\OneToMany(mappedBy: 'workspace', targetEntity: WorkspaceMembers::class)]
+    private Collection $workspaceMembers;
+
+    public function __construct()
+    {
+        $this->workspaceMembers = new ArrayCollection();
+    }
+
+    public function getWorkspaceMembers(): Collection
+    {
+        return $this->workspaceMembers;
     }
 }

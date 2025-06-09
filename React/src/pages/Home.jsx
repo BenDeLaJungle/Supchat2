@@ -40,7 +40,6 @@ export default function Home() {
   const ws1 = lastTwoWorkspaces[0];
   const ws2 = lastTwoWorkspaces[1];
 
-
   const cards = [
 
     { title: "Messagerie", image: messenger, link: "/messaging" },

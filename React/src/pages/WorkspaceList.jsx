@@ -6,13 +6,12 @@ import '../styles/workspacelist.css';
 
 export default function WorkspaceList() {
   const [workspaces, setWorkspaces] = useState([]);
+  const [publicWorkspaces, setPublicWorkspaces] = useState([]);
   const [newWorkspaceName, setNewWorkspaceName] = useState('');
   const [newWorkspaceStatus, setNewWorkspaceStatus] = useState('1');
-
-  // pour gérer l'invitation
   const [inviteLink, setInviteLink] = useState('');
+  const [showPublicList, setShowPublicList] = useState(false);
 
-  // charge la liste des workspaces dont je suis membre
   const fetchWorkspaces = async () => {
     try {
       const data = await apiFetch('workspaces');
@@ -22,11 +21,20 @@ export default function WorkspaceList() {
     }
   };
 
+  const fetchPublicWorkspaces = async () => {
+    try {
+      const data = await apiFetch('workspaces/publics');
+      setPublicWorkspaces(data);
+    } catch (err) {
+      console.error('Erreur lors de la récupération des workspaces publics :', err);
+    }
+  };
+
   useEffect(() => {
     fetchWorkspaces();
+    fetchPublicWorkspaces();
   }, []);
 
-  // création de workspace
   const handleCreateWorkspace = async () => {
     if (!newWorkspaceName.trim()) return;
     try {
@@ -47,26 +55,34 @@ export default function WorkspaceList() {
     }
   };
 
-  // rejoindre via un lien d'invitation
   const handleJoinWithLink = async () => {
     if (!inviteLink.trim()) {
       alert('Veuillez coller un lien ou un token d\'invitation.');
       return;
     }
-
-    // on extrait juste le token à la fin de l'URL ou on suppose que l'utilisateur a collé directement le token
-    const token = inviteLink.includes('/')
-      ? inviteLink.trim().split('/').pop()
-      : inviteLink.trim();
+    const token = inviteLink.includes('/') ? inviteLink.trim().split('/').pop() : inviteLink.trim();
 
     try {
       await apiFetch(`workspaces/invite/${token}`, { method: 'POST' });
       setInviteLink('');
       fetchWorkspaces();
+      fetchPublicWorkspaces();
       alert('Vous avez rejoint le workspace avec succès !');
     } catch (err) {
       console.error('Erreur lors de la jonction au workspace :', err);
       alert(`Impossible de rejoindre : ${err.message}`);
+    }
+  };
+
+  const handleJoinPublicWorkspace = async (workspaceId) => {
+    try {
+      await apiFetch(`workspaces/${workspaceId}/join`, { method: 'POST' });
+      fetchWorkspaces();
+      fetchPublicWorkspaces();
+      alert("Vous avez rejoint le workspace !");
+    } catch (err) {
+      console.error('Erreur lors de la jonction au workspace public :', err);
+      alert("Échec de la jonction.");
     }
   };
 
@@ -127,7 +143,36 @@ export default function WorkspaceList() {
             Rejoindre un workspace
           </button>
         </div>
+
+        {/* workspaces publics disponibles */}
+        {publicWorkspaces.length > 0 && (
+          <div className="public-workspaces-section">
+            <button
+              className="accordion-toggle"
+              onClick={() => setShowPublicList(!showPublicList)}
+            >
+              {showPublicList ? 'Masquer les workspaces publics' : 'Voir les workspaces publics disponibles'}
+            </button>
+
+            {showPublicList && (
+              <ul className="public-workspace-list">
+                {publicWorkspaces.map(ws => (
+                  <li key={ws.id} className="public-workspace-item">
+                    <span>{ws.name}</span>
+                    <button
+                      onClick={() => handleJoinPublicWorkspace(ws.id)}
+                      className="small-join-button"
+                    >
+                      Rejoindre
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
       </div>
     </>
   );
 }
+

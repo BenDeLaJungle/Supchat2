@@ -39,7 +39,7 @@ final class WorkspacesController extends AbstractController
         return $this->json($workspaceData);
     }
 
-    #[Route('/{id}', name: 'workspaces_show', methods: ['GET'])]
+    #[Route('/{id<\d+>}', name: 'workspaces_show', methods: ['GET'])]
     public function show(Workspaces $workspace): JsonResponse
     {
         return $this->json([
@@ -77,7 +77,6 @@ final class WorkspacesController extends AbstractController
         $em->persist($workspace);
         $em->flush();
 
-        // ✅ Le créateur devient membre admin (role 3)
         $adminRole = $em->getRepository(Roles::class)->find(3); // ID 3 = admin
         if (!$adminRole) {
             return $this->json(['error' => 'Rôle admin introuvable.'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -211,4 +210,82 @@ final class WorkspacesController extends AbstractController
             'member_id'    => $membership->getId()
         ], Response::HTTP_CREATED);
     }
+
+    #[Route('/publics', name: 'workspaces_public_list', methods: ['GET'])]
+    public function listPublic(WorkspacesRepository $workspacesRepository): JsonResponse
+    {
+        /** @var Users $user */
+        $user = $this->getUser();
+
+        $workspaces = $workspacesRepository->findPublicNotJoinedByUser($user);
+
+        $workspaceData = array_map(fn(Workspaces $workspace) => [
+            'id'      => $workspace->getId(),
+            'name'    => $workspace->getName(),
+            'status'  => $workspace->getStatus(),
+            'creator' => [
+                'id'       => $workspace->getCreator()->getId(),
+                'username' => $workspace->getCreator()->getUserName(),
+            ],
+        ], $workspaces);
+
+        return $this->json($workspaceData);
+    }
+
+    #[Route('/{id}/join', name: 'workspaces_join', methods: ['POST'])]
+    public function joinPublicWorkspace(int $id, EntityManagerInterface $em): JsonResponse
+    {
+        $workspace = $em->getRepository(Workspaces::class)->find($id);
+
+        if (!$workspace || $workspace->getStatus() !== 'public') {
+            return $this->json(['error' => 'Workspace introuvable ou non public'], 404);
+        }
+
+        /** @var Users $user */
+        $user = $this->getUser();
+
+        $existing = $em->getRepository(WorkspaceMembers::class)->findOneBy([
+            'workspace' => $workspace,
+            'user' => $user
+        ]);
+        if ($existing) {
+            return $this->json(['message' => 'Déjà membre'], 200);
+        }
+
+        $role = $em->getRepository(Roles::class)->find(1); // Membre
+        $membership = (new WorkspaceMembers())
+            ->setWorkspace($workspace)
+            ->setUser($user)
+            ->setRole($role)
+            ->setPublish(true)
+            ->setModerate(false)
+            ->setManage(false);
+
+        $em->persist($membership);
+        $em->flush();
+
+        return $this->json(['message' => 'Ajouté avec succès']);
+    }
+
+    #[Route('/{id}/leave', name: 'workspaces_leave', methods: ['DELETE'])]
+    public function leaveWorkspace(int $id, EntityManagerInterface $em): JsonResponse
+    {
+        /** @var Users $user */
+        $user = $this->getUser();
+
+        $membership = $em->getRepository(WorkspaceMembers::class)->findOneBy([
+            'user' => $user,
+            'workspace' => $id
+        ]);
+
+        if (!$membership) {
+            return $this->json(['error' => 'Non membre'], 404);
+        }
+
+        $em->remove($membership);
+        $em->flush();
+
+        return $this->json(['message' => 'Vous avez quitté le workspace']);
+    }
+
 }
