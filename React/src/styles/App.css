@@ -171,6 +171,27 @@
   --msg-item-bg:                #f0f7ff;
   --msg-item-hover-bg:          #e0f0ff;           /* optionnel */
   --msg-error-text:             #e63946;
+  --chat-bg: #eeeeee;
+  --chat-border: #8bbcf3;
+  --chat-title: #284E7B;
+  --chat-list-bg: #ffffff;
+  --chat-list-border: #8BBCF3;
+  --chat-inner-bg: #fff;
+  --chat-inner-border: #E0E0E0;
+  --chat-time: #555;
+  --chat-button: #DC3545;
+  --chat-menu-bg: #ffffff;
+  --chat-menu-item: #374151;
+  --chat-edit-button: #3b82f6;
+  --chat-edit-button2: #e5e7eb;
+  --chat-form-bg: #f9fafb;
+  --chat-form-input: #ffffff;
+  --chat-form-focus: #3b82f6;
+  --chat-file: #ffffff;
+  --chat-file-hover: #f3f4f6;
+  --chat-emoji: #ffffff;
+  --chat-button-send: #add4F3;
+  --chat-button-send-write: #ffffff;
 
     /* message */
   --msg-bg-container:       #eef5ff;
@@ -368,6 +389,27 @@ body.theme-dark {
   --msg-item-bg:                #f0f7ff;
   --msg-item-hover-bg:          #e0f0ff;           
   --msg-error-text:             #e63946;
+   --chat-bg: #add4F3;
+  --chat-border: #add4F3;
+  --chat-title: #284E7B;
+  --chat-list-bg: #ADD4F3;
+  --chat-list-border: #ADD4F3;
+  --chat-inner-bg: #284E7B;
+  --chat-inner-border: #E0E0E0;
+  --chat-time: ;
+  --chat-button: #DC3545;
+  --chat-menu-bg: #ffffff;
+  --chat-menu-item: #374151;
+  --chat-edit-button: #3b82f6;
+  --chat-edit-button2: #e5e7eb;
+  --chat-form-bg: #3A5A7A;
+  --chat-form-input: #3B4A5B;
+  --chat-form-focus: #3b82f6;
+  --chat-file: #3B4A5B;
+  --chat-file-hover: #284E7B;
+  --chat-emoji: #3B4A5B;
+  --chat-button-send: #3B4A5B;
+  --chat-button-send-write: #ffffff;
 
       /* message */
   --msg-bg-container:       #284e7b;

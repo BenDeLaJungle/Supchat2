@@ -148,7 +148,8 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
         className="message-input"
         placeholder="Écris ton message…"
         value={content}
-        onChange={e => setContent(e.target.value)}
+        onChange={e => setContent(e.target.value)
+        }
       />
 
       {/* Bouton fichier via label */}

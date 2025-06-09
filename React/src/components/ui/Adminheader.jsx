@@ -12,8 +12,9 @@ import calendrier from "../../assets/calendrier.png";
 import adminspace from "../../assets/adminspace.png";
 import parametres from "../../assets/settings.png";
 import logo from "../../assets/logo-supchat.png";
+import HeaderBar from "./HeaderBar.jsx"
 
-import "../../styles/index.css";
+import "../../styles/adminBar.css";
 
 const AdminHeader = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ const AdminHeader = () => {
   ];
 
   return (
-    <div className="header-home">
+    <div className="header-admin">
       {/* Logo */}
       <div className="header-logo">
         <Link to="/home">
@@ -73,10 +74,14 @@ const AdminHeader = () => {
             title={title}
           >
             <img src={image} alt={title} />
-            <h2>{title}</h2>
           </div>
         ))}
+        <div className="admin-search">
+        <HeaderBar />
       </div>
+      </div>
+
+
 
       {/* Déconnexion */}
       <div className="header-logout">

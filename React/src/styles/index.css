@@ -13,10 +13,13 @@
   flex-wrap: wrap;
 }
 
+
 .header-home a,
 .header-home .logout-button {
   color: var(--home-header-text);
 }
+
+
 
 .header-logo .logo {
   height: 80px;
@@ -27,60 +30,19 @@
   width: 500px;
   border-radius: 10px;
   font-size: 1rem;
-  position: relative;
+  position: absolute;
+  left: 50%;
 }
 
 .header-home, .header-barre {
   overflow: visible;
 }
 
-/* ===== BARRE DE RACCOURCIS ===== */
-.header-barre {
-  flex: 3;
-  max-width: 800px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;               /* <-- ici on augmente l’espacement */
+
+.header-logout {
+  margin-left: auto;
 }
 
-/* ===== MINI–CARDS ADMIN ===== */
-.admin-shortcut-card {
-  width: 70px;
-  height: 70px;
-  background-color: var(--home-card-bg);
-  border-radius: 1rem;
-  box-shadow: 0 4px 10px var(--home-card-shadow);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.admin-shortcut-card img {
-  width: 30px;
-  height: 30px;
-  margin-bottom: 0.4rem;
-}
-
-.admin-shortcut-card h2 {
-  margin: 0;
-  font-size: 0.5rem;
-  color: var(--home-card-text);
-  text-align: center;
-}
-
-.admin-shortcut-card:hover {
-  background-color: var(--home-card-hover-bg);
-  box-shadow: 0 8px 18px var(--home-card-hover-shadow);
-  transform: scale(1.05);
-}
-
-.admin-shortcut-card:hover h2 {
-  color: var(--home-card-hover-text);
-}
 
 /* ===== BOUTON DELOG ===== */
 .header-logout .logout-button {
@@ -141,6 +103,7 @@
   font-size: 0.7rem;
   color: var(--home-card-text);
   text-align: center;
+  overflow: auto;
 }
 
 .card:hover {
@@ -153,6 +116,8 @@
 .card:hover p {
   color: var(--home-card-hover-text);
 }
+
+
 
 /* ====================== RÉSPONSIVE ====================== */
 @media (max-width: 768px) {

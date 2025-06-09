@@ -6,8 +6,8 @@
   flex-direction: column;
   /* occupe tout l'espace vertical restant sous le header */
   height: 550px;
-  background-color: var(--primary_impact_color);
-  border: 1px solid var(--secondary_impact_color);
+  background-color: var(--chat-bg);
+  border: 1px solid var(--chat-border);
   border-radius: 8px;
   padding: 16px;
   box-sizing: border-box;
@@ -33,7 +33,7 @@
   flex: 1;
   text-align: center;
   margin: 0;
-  color: black;
+  color: var(--chat-title);
 }
 
 
@@ -43,8 +43,8 @@
   flex: 1;
   overflow-y: auto;
   padding: 8px;
-  background-color: var(--primary_color);
-  border: 1px solid var(--secondary_impact_color);
+  background-color: var(--chat-list-bg);
+  border: 1px solid var(--chat-list-border);
   border-radius: 8px;
   box-sizing: border-box;
 }
@@ -59,8 +59,8 @@
 }
 
 .message-inner {
-  background-color: #fff;
-  border: 1px solid #e0E0E0;
+  background-color: var(--chat-inner-bg);
+  border: 1px solid var(--chat-inner-border);
   border-radius: 8px;
   padding: 10px 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -84,7 +84,7 @@
 
 .message-timestamp {
   font-size: 0.7rem;
-  color: #555;
+  color: var(--chat-time);
 }
 
 .message-actions {
@@ -94,7 +94,7 @@
 }
 
 .message-button {
-  background: #DC3545;
+  background: var(--chat-button);
   border: none;
   font-size: 1rem;
   color: #fff;
@@ -107,7 +107,7 @@
   position: absolute;
   top: 24px;
   right: 0;
-  background: #ffffff;
+  background: var(--chat-menu-bg);
   border: 1px solid #e5e7eb;
   border-radius: 4px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -121,7 +121,7 @@
   border: none;
   text-align: left;
   font-size: 0.85rem;
-  color: #374151;
+  color: var(--chat-menu-item);
   cursor: pointer;
 }
 .message-menu-item:hover {
@@ -155,11 +155,11 @@
   cursor: pointer;
 }
 .edit-buttons button:first-child {
-  background-color: #3b82f6;
+  background-color: var(--chat-edit-button);
   color: #fff;
 }
 .edit-buttons button:last-child {
-  background-color: #e5e7eb;
+  background-color: var(--chat-edit-button2);
   color: #374151;
 }
 .edit-error {
@@ -185,7 +185,7 @@
   gap: 8px;
   padding: 12px;
   border-top: 1px solid #e5e7eb; /* ligne séparatrice */
-  background-color: #f9fafb;
+  background-color: var(--chat-form-bg);
   position: sticky;
   bottom: 0;
   box-shadow: 0 -1px 4px rgba(0,0,0,0.05);
@@ -199,12 +199,12 @@
   border: 1px solid #d1d5db;
   border-radius: 20px;
   font-size: 0.95rem;
-  background-color: #ffffff;
+  background-color: var(--chat-form-input);
   transition: border-color 0.2s;
 }
 .message-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--chat-form-focus);
 }
 
 .file-input {
@@ -217,12 +217,12 @@
   width: 36px;
   height: 36px;
   border-radius: 30%;
-  background-color: #ffffff;
+  background-color: var(--chat-file);
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
 }
 .file-button:hover {
-  background-color: #f3f4f6;
+  background-color: var(--chat-file-hover);
   border-color: #9ca3af;
 }
 .file-button svg {
@@ -251,19 +251,19 @@
   width: 36px;
   height: 36px;
   border: none;
-  background-color: #ffffff;
+  background-color: var(--chat-emoji);
   font-size: 1.2rem;
   cursor: pointer;
   transition: background 0.2s;
 }
 .emoji-toggle-button:hover {
-  background-color: #f3f4f6;
+  background-color: var(--chat-emoji);
 }
 
 .message-button-send {
   padding: 8px 16px;
-  background-color: #add4F3;
-  color: #ffffff;
+  background-color: var(--chat-button-send);
+  color: var(--chat-button-send-write);
   border: none;
   border-radius: 20px;
   font-size: 0.95rem;
