@@ -140,6 +140,7 @@
   margin: 0;
   font-size: 0.7rem;
   color: var(--home-card-text);
+  text-align: center;
 }
 
 .card:hover {

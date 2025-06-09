@@ -238,28 +238,32 @@ useEffect(() => {
           )}
         </div>
 
-        <h3 className="section-title">Invitation</h3>
-        <div className="invite-section">
-          {(currentUserRole === 3 || currentUserRole === 2) && (
-            <button
-              onClick={handleGenerateInviteLink}
-              className="button-invite"
-            >
-              Générer un lien d'invitation
-            </button>
-          )}
-          {inviteLink && (
-            <div className="invite-link-container">
-              <span className="invite-link-text">{inviteLink}</span>
-              <button
-                onClick={handleCopyToClipboard}
-                className="button-secondary-sm"
-              >
-                Copier le lien
-              </button>
-            </div>
-          )}
+        {currentUserRole !== 1 && (
+  <>
+    <h3 className="section-title">Invitation</h3>
+    <div className="invite-section">
+      {(currentUserRole === 3 || currentUserRole === 2) && (
+        <button
+          onClick={handleGenerateInviteLink}
+          className="button-invite"
+        >
+          Générer un lien d'invitation
+        </button>
+      )}
+      {inviteLink && (
+        <div className="invite-link-container">
+          <span className="invite-link-text">{inviteLink}</span>
+          <button
+            onClick={handleCopyToClipboard}
+            className="button-secondary-sm"
+          >
+            Copier le lien
+          </button>
         </div>
+      )}
+    </div>
+  </>
+)}
       </div>
     </>
   );
