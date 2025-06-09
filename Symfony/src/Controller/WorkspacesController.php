@@ -237,12 +237,15 @@ final class WorkspacesController extends AbstractController
     {
         $workspace = $em->getRepository(Workspaces::class)->find($id);
 
-        if (!$workspace || $workspace->getStatus() !== 'public') {
+        if (!$workspace || $workspace->getStatus() !== true) {
             return $this->json(['error' => 'Workspace introuvable ou non public'], 404);
         }
 
         /** @var Users $user */
         $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['error' => 'Non authentifié'], 403);
+        }
 
         $existing = $em->getRepository(WorkspaceMembers::class)->findOneBy([
             'workspace' => $workspace,
@@ -253,6 +256,10 @@ final class WorkspacesController extends AbstractController
         }
 
         $role = $em->getRepository(Roles::class)->find(1); // Membre
+        if (!$role) {
+            return $this->json(['error' => 'Rôle introuvable'], 500);
+        }
+
         $membership = (new WorkspaceMembers())
             ->setWorkspace($workspace)
             ->setUser($user)
@@ -287,5 +294,4 @@ final class WorkspacesController extends AbstractController
 
         return $this->json(['message' => 'Vous avez quitté le workspace']);
     }
-
 }

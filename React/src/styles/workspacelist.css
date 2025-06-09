@@ -171,6 +171,30 @@
   cursor: pointer;
 }
 
+.leave-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin: 2rem 1rem 1rem 1rem; /* ← marge bas augmentée */
+  width: 100%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.button-leave-right {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.bottom-padding {
+  height: 1px;
+}
+
 /* --- Responsive éventuel (exemple si besoin) --- */
 @media (max-width: 520px) {
   .workspace-card {

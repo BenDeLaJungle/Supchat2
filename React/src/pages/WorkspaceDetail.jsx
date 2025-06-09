@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { apiFetch } from '../services/api';
 import AdminHeader from '../components/ui/Adminheader';
-import '../styles/WorkspaceDetail.css'; 
+import '../styles/WorkspaceDetail.css';
 
 export default function WorkspaceDetail() {
   const { workspaceId } = useParams();
   const [workspaceName, setWorkspaceName] = useState('');
+  const [workspaceStatus, setWorkspaceStatus] = useState(true); // pour l'invitation
   const [channels, setChannels] = useState([]);
   const [members, setMembers] = useState([]);
   const [users, setUsers] = useState([]);
@@ -17,40 +18,43 @@ export default function WorkspaceDetail() {
   const [newMemberId, setNewMemberId] = useState('');
   const [newRoleId, setNewRoleId] = useState('1');
   const [currentUserRole, setCurrentUserRole] = useState(1);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [creatorId, setCreatorId] = useState(null);
 
-useEffect(() => {
-  const fetchData = async () => {
-    const user = await apiFetch('user');
-    const workspaceData = await apiFetch(`workspaces/${workspaceId}`);
-    const allChannels = await apiFetch(`workspaces/${workspaceId}/channels`);
-    const membersData = await apiFetch(`workspaces/${workspaceId}/members`);
-    const currentMember = membersData.find(m => m.user_id === user.id);
-    const usersData = await apiFetch('users');
+  useEffect(() => {
+    const fetchData = async () => {
+      const user = await apiFetch('user');
+      const workspaceData = await apiFetch(`workspaces/${workspaceId}`);
+      const allChannels = await apiFetch(`workspaces/${workspaceId}/channels`);
+      const membersData = await apiFetch(`workspaces/${workspaceId}/members`);
+      const currentMember = membersData.find(m => m.user_id === user.id);
+      const usersData = await apiFetch('users');
 
-    setWorkspaceName(workspaceData.name);
-    setMembers(membersData);
-    setUsers(usersData);
+      setWorkspaceName(workspaceData.name);
+      setWorkspaceStatus(workspaceData.status); // true = public
+      setMembers(membersData);
+      setUsers(usersData);
+      setCurrentUserId(user.id);
+      setCreatorId(workspaceData.creator.id);
 
-    // Si l'utilisateur est le créateur du workspace, il est admin par défaut
-    if (user.id === workspaceData.creator.id) {
-      setCurrentUserRole(3);
-    } else {
-      setCurrentUserRole(currentMember ? currentMember.role_id : 1);
-    }
+      if (user.id === workspaceData.creator.id) {
+        setCurrentUserRole(3);
+      } else {
+        setCurrentUserRole(currentMember ? currentMember.role_id : 1);
+      }
 
-    const userRole = (user.id === workspaceData.creator_id)
-      ? 3
-      : (currentMember?.role_id ?? 1);
+      const userRole = (user.id === workspaceData.creator_id)
+        ? 3
+        : (currentMember?.role_id ?? 1);
 
-    const filteredChannels = allChannels.filter(
-      ch => ch.status === true || (ch.minRole ?? 1) <= userRole
-    );
-    setChannels(filteredChannels);
-  };
+      const filteredChannels = allChannels.filter(
+        ch => ch.status === true || (ch.minRole ?? 1) <= userRole
+      );
+      setChannels(filteredChannels);
+    };
 
-  fetchData();
-}, [workspaceId]);
-
+    fetchData();
+  }, [workspaceId]);
 
   const handleCreateChannel = async () => {
     if (!newChannelName.trim()) return;
@@ -120,6 +124,18 @@ useEffect(() => {
     if (inviteLink) {
       navigator.clipboard.writeText(inviteLink);
       alert('Lien copié dans le presse-papiers');
+    }
+  };
+
+  const handleLeaveWorkspace = async () => {
+    if (!window.confirm("Voulez-vous vraiment quitter ce workspace ?")) return;
+    try {
+      await apiFetch(`workspaces/${workspaceId}/leave`, { method: 'DELETE' });
+      alert("Vous avez quitté le workspace.");
+      window.location.href = "/workspaces";
+    } catch (err) {
+      console.error('Erreur lors de la sortie du workspace :', err);
+      alert("Impossible de quitter ce workspace.");
     }
   };
 
@@ -238,32 +254,41 @@ useEffect(() => {
           )}
         </div>
 
-        {currentUserRole !== 1 && (
-  <>
-    <h3 className="section-title">Invitation</h3>
-    <div className="invite-section">
-      {(currentUserRole === 3 || currentUserRole === 2) && (
-        <button
-          onClick={handleGenerateInviteLink}
-          className="button-invite"
-        >
-          Générer un lien d'invitation
-        </button>
-      )}
-      {inviteLink && (
-        <div className="invite-link-container">
-          <span className="invite-link-text">{inviteLink}</span>
-          <button
-            onClick={handleCopyToClipboard}
-            className="button-secondary-sm"
-          >
-            Copier le lien
-          </button>
-        </div>
-      )}
-    </div>
-  </>
-)}
+        {(currentUserRole === 3 || currentUserRole === 2) && workspaceStatus === true && (
+          <>
+            <h3 className="section-title">Invitation</h3>
+            <div className="invite-section">
+              <button
+                onClick={handleGenerateInviteLink}
+                className="button-invite"
+              >
+                Générer un lien d'invitation
+              </button>
+              {inviteLink && (
+                <div className="invite-link-container">
+                  <span className="invite-link-text">{inviteLink}</span>
+                  <button
+                    onClick={handleCopyToClipboard}
+                    className="button-secondary-sm"
+                  >
+                    Copier le lien
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {currentUserId !== creatorId && (
+          <>
+            <div className="leave-button-container">
+              <button onClick={handleLeaveWorkspace} className="button-leave-right">
+                Quitter ce workspace
+              </button>
+            </div>
+            <div className="bottom-padding" />
+          </>
+        )}
       </div>
     </>
   );
