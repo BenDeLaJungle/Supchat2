@@ -92,12 +92,6 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId, 
   return (
     <div className="message-list-wrapper">
       <div className="message-header">
-        <button
-          className="back-to-list-button"
-          onClick={onBack ? onBack : () => navigate(-1)}
-        >
-          ⬅ Retour
-        </button>
         <h3 className="channel-title">
           {channelName.startsWith("priv_") ? "Conversation privée" : channelName}
         </h3>
@@ -105,7 +99,6 @@ const MessageList = ({ channelId, messages, onMessagesFetched, canEdit, userId, 
 
       <div ref={listRef} className="message-list">
         {error && <div className="message-error">{error}</div>}
-        {!hasMore && <div className="no-more">Tu es tout en haut</div>}
         {isFetching && <div className="loading">Chargement...</div>}
 
         {uniqueMessages.map((msg) => (

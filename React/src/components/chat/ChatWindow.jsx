@@ -124,4 +124,3 @@ const ChatWindow = ({ channelId = 1 }) => {
 };
 
 export default ChatWindow;
-

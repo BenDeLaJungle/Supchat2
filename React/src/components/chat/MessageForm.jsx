@@ -140,47 +140,52 @@ const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
     setContent(prev => prev + emojiData.emoji);
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="message-form" style={{ position: 'relative' }}>
+    return (
+    <form onSubmit={handleSubmit} className="message-form">
+      {/* Champ texte */}
       <input
         type="text"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
         className="message-input"
-        placeholder="Écris ton message..."
+        placeholder="Écris ton message…"
+        value={content}
+        onChange={e => setContent(e.target.value)}
       />
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <input
-          type="file"
-          ref={fileInputRef} 
-          onChange={(e) => setFile(e.target.files[0])}
-          className="file-input"
-          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.zip"
-        />
-
-        {file && (
-          <div className="file-preview" style={{ maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {file.name}
-          </div>
-        )}
-      </div>
-
-      <button
-        type="button"
-        className="emoji-toggle-button"
-        onClick={() => setShowEmojiPicker(prev => !prev)}
-      >
-        😊
-      </button>
-
-      {showEmojiPicker && (
-        <div style={{ position: 'absolute', bottom: '50px', right: '0', zIndex: 1000 }}>
-          <EmojiPicker onEmojiClick={onEmojiClick} />
+      {/* Bouton fichier via label */}
+      <label htmlFor="file-upload" className="file-button" title="Joindre un fichier">
+        📎
+      </label>
+      <input
+        id="file-upload"
+        type="file"
+        ref={fileInputRef}
+        className="file-input"
+        onChange={e => setFile(e.target.files[0])}
+        accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.zip"
+      />
+      {file && (
+        <div className="file-preview">
+          {file.name}
         </div>
       )}
 
-      <button type="submit" className="message-button">
+      {/* Bouton emoji */}
+      <button
+        type="button"
+        className="emoji-toggle-button"
+        onClick={() => setShowEmojiPicker(v => !v)}
+        title="Ajouter un emoji"
+      >
+        😊
+      </button>
+      {showEmojiPicker && (
+        <div className="emoji-picker-container">
+          <EmojiPicker onEmojiClick={(_, data) => setContent(c => c + data.emoji)} />
+        </div>
+      )}
+
+      {/* Bouton Envoyer */}
+      <button type="submit" className="message-button-send">
         Envoyer
       </button>
     </form>
