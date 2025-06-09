@@ -132,6 +132,45 @@
   color: var(--wl-button-hover-text);
 }
 
+.accordion-toggle {
+  margin-top: 30px;
+  background-color: var(--wl-button-bg);
+  color: var(--wl-button-text);
+  border: none;
+  padding: 10px 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.public-workspace-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.public-workspace-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f5faff;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.small-join-button {
+  background-color: #284E7B;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 /* --- Responsive éventuel (exemple si besoin) --- */
 @media (max-width: 520px) {
   .workspace-card {
