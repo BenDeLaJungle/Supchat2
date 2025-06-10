@@ -157,3 +157,46 @@
     top: 140px;
   }
 }
+
+@media (max-width: 1200px) {
+    .card {
+    width: 120px;
+    margin-top: 1.5rem;
+  }
+
+  .card h2 {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+
+  .card-container {
+    gap: 0.8rem;
+    margin-left: 1rem;
+  }
+
+  .welcome-name {
+    margin-top: 2.5rem;
+  }
+
+  .header-home {
+    flex-direction: column;
+    height: 100px;
+  }
+
+  .header-logo {
+    position: absolute;
+    left: 25px;
+    top: 15px;
+  }
+
+  .header-logo img {
+    width: 130px;
+    height: 130px;
+  }
+
+  .header-logout {
+    position: absolute;
+    right: 25px;
+    top: 35px;
+  }
+}

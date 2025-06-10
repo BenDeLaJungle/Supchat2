@@ -91,3 +91,12 @@ Vous avez envoyé
     width: 250px;
   }
 }
+
+@media (max-width: 1200px) {
+  .searchbar-wrapper {
+    position: absolute;
+    left: 350px;
+    top : 25px;
+    width: 450px;
+  }
+}
