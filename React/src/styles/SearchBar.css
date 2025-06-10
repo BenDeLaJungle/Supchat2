@@ -79,3 +79,15 @@ Vous avez envoyé
   background: rgba(0,0,0,0.2);
   border-radius: 3px;
 }
+
+
+/* ====================== RÉSPONSIVE ====================== */
+
+@media (max-width: 926px) {
+  .searchbar-wrapper {
+    position: absolute;
+    left: 70px;
+    top : 75px;
+    width: 250px;
+  }
+}

@@ -153,3 +153,44 @@ Vous avez envoyé
 .header-admin .header-logout .logout-button {
   color: #1C3D5A;
 }
+
+@media (max-width: 926px) {
+
+  .header-admin .header-logo {
+    position: absolute;
+    left: 160px;
+    top: 10px;
+  }
+
+  .header-barre {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 300px;
+    top: 100px;
+    position: absolute;
+    left: 20px;
+  }
+
+  .header-admin {
+    height: 370px;
+  }
+
+  .header-admin .header-logout {
+    position: absolute;
+    top: 300px;
+  }
+
+
+  .header-admin .admin-search {
+    position: absolute;
+    top: 120px;
+    left: 5px;
+  }
+
+  .searchbar-admin .search-input {
+    font-size: 0.8rem;
+  }
+}

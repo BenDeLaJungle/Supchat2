@@ -140,4 +140,20 @@
   .welcome-name {
     margin-top: 2.5rem;
   }
+
+  .header-home {
+    flex-direction: column;
+    height: 200px;
+  }
+
+  .header-logo {
+    position: absolute;
+    left: 155px;
+  }
+
+  .header-logout {
+    position: absolute;
+    left: 120px;
+    top: 140px;
+  }
 }
