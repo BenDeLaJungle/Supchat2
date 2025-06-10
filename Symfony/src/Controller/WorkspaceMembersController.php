@@ -153,6 +153,4 @@ final class WorkspaceMembersController extends AbstractController
 
         return $this->json(['message' => 'Membre supprimé avec succès']);
     }
-
-    // … vos autres méthodes updateMember(), getMember(), etc. restent inchangées
 }
