@@ -1,12 +1,17 @@
+import { useParams } from 'react-router-dom';
 import '../styles/message.css';
 import ChatWindow from '../components/chat/ChatWindow';
 import AdminHeader from '../components/ui/Adminheader';
 
-const PrivateMessage = () => (
-  <>
-    <AdminHeader />
-    <ChatWindow channelId={1} />
-  </>
-);
+const ChatPage = () => {
+  const { channelId} = useParams();
 
-export default PrivateMessage;
+  return (
+    <>
+      <AdminHeader />
+      {channelId && <ChatWindow key={channelId} channelId={parseInt(channelId)} />}
+    </>
+  );
+};
+
+export default ChatPage;

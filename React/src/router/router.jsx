@@ -6,20 +6,13 @@ import Calendrier from '../pages/calendrier';
 import AdminSpace from '../pages/AdminSpace';
 import Messaging from "../pages/Messaging";
 import Parametres from '../pages/parametres';
-import chatPage from "../pages/chatPage";
+import ChatPage from "../pages/chatPage";
 import UserPage from "../pages/UserPage";
 import WorkspaceList from "../pages/WorkspaceList";
 import WorkspaceDetail from "../pages/WorkspaceDetail";
-import ChatWindow from "../components/chat/ChatWindow";
 import InviteValidation from '../pages/InviteValidation';
 import Notifications from '../pages/Notifications';
-import { useParams } from "react-router-dom";
 import SharedFiles from '../pages/SharedFiles';
-
-function ChatWindowWrapper() {
-  const { channelId } = useParams();
-  return <ChatWindow key={channelId} channelId={parseInt(channelId)} />;
-}
 
 export default function AppRouter() {
   return (
@@ -33,13 +26,13 @@ export default function AppRouter() {
         <Route path="/AdminSpace" element={<AdminSpace />} />
 		    <Route path="/users/:username" element={<UserPage />} />
         <Route path="/parametres" element={<Parametres />} />
-        <Route path="/test-messages" element={<chatPage />} />
+        <Route path="/test-messages" element={<ChatPage />} />
         <Route path="/workspaces" element={<WorkspaceList />} />
         <Route path="/workspaces/:workspaceId" element={<WorkspaceDetail />} />
-        <Route path="/channels/:channelId" element={<ChatWindowWrapper />} />
-        <Route path="/private-message/:recipientId" element={<chatPage />} />
+        <Route path="/channels/:channelId" element={<ChatPage />} />
+        <Route path="/private-message/:channelId" element={<ChatPage />} />
         <Route path="/invite/:token" element={<InviteValidation />} />
-        <Route path="/workspaces/:workspaceId/channels/:channelId" element={<ChatWindowWrapper />} />
+        <Route path="/workspaces/:workspaceId/channels/:channelId" element={<ChatPage />} />
         <Route path="/notifications" element={<Notifications />} />
 		<Route path="/shared-files" element={<SharedFiles />} />
         
