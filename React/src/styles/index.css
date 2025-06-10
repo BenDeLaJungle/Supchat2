@@ -120,12 +120,24 @@
 
 
 /* ====================== RÉSPONSIVE ====================== */
-@media (max-width: 768px) {
-  .header-barre {
-    flex-wrap: wrap;
+
+@media (max-width: 926px) {
+    .card {
+    width: 100px;
+    margin-top: 1.5rem;
   }
+
+  .card h2 {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+
   .card-container {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 0.3rem;
+    margin-left: 1rem;
+  }
+
+  .welcome-name {
+    margin-top: 2.5rem;
   }
 }

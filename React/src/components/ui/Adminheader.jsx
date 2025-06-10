@@ -38,15 +38,11 @@ const AdminHeader = () => {
     navigate("/login");
   };
 
-  const ws1 = lastTwoWorkspaces[0];
-  const ws2 = lastTwoWorkspaces[1];
 
   const shortcuts = [
     { title: "Messagerie",        image: messenger,     link: "/messaging"       },
     { title: "Fichiers",          image: files,         link: "/shared-files"    },
     { title: "Notifications",     image: notif,         link: "/notifications"   },
-    ...(ws1 ? [{ title: ws1.name, image: workspaceIcon, link: `/workspaces/${ws1.id}` }] : []),
-    ...(ws2 ? [{ title: ws2.name, image: workspaceIcon, link: `/workspaces/${ws2.id}` }] : []),
     { title: "Tous les workspaces", image: workspaceIcon, link: "/workspaces"     },
     { title: "Calendrier",         image: calendrier,    link: "/calendrier"      },
     ...(user?.role === "ROLE_ADMIN"

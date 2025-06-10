@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { apiFetch } from '../services/api';
 import AdminHeader from '../components/ui/Adminheader';
-import '../styles/index.css';
+
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);

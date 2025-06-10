@@ -85,7 +85,7 @@ Vous avez envoyé
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0.35rem;               /* <-- ici on augmente l’espacement */
+  gap: 1px;               /* <-- ici on augmente l’espacement */
   margin-bottom: 0.5rem;
   margin-left: 2rem;
 }
@@ -147,6 +147,7 @@ Vous avez envoyé
   box-shadow: 0 2px 6px var(--home-header-border);
   box-sizing: border-box;
   flex-wrap: wrap;
+  gap: 1px;
 }
 
 .header-admin .header-logout .logout-button {

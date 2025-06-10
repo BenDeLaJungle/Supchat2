@@ -149,12 +149,10 @@
 }
 
 /* Responsive (si besoin) */
-@media (max-width: 768px) {
+@media (max-width: 926px) {
   .messaging-container {
     flex-direction: column;
     height: auto;
   }
-  .messaging-sidebar {
-    width: 100%;
-  }
+
 }
