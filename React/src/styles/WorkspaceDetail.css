@@ -219,7 +219,7 @@
 }
 
 
-@media (max-width: 926px) {
+@media (max-width: 399px) {
   .section-container {
     display: flex;
     flex-direction: column;
@@ -233,5 +233,35 @@
     overflow-y: auto;
     padding: 16px;
     width: 330px;
+  }
+}
+
+@media (min-width: 400px) and (max-width: 499px) {
+  .section-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .workspace-detail-page .workspace-card {
+    height: auto;
+    max-height: 270px;
+    overflow-y: auto;
+    padding: 16px;
+    width: 380px;
+  }
+}
+
+@media (min-width: 900px){
+  .invite-link-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .invite-link-container .button-secondary-sm {
+    width: 80px;
+    margin-left: 510px;
+    height: 35px;
   }
 }

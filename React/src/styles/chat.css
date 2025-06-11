@@ -277,7 +277,7 @@
 
 
 /* Responsive : sur petits écrans, on fusionne certains boutons */
-@media (max-width: 600px) {
+@media (mIN-width: 900px) {
   .file-button,
   .emoji-toggle-button {
     width: 32px;
@@ -287,5 +287,9 @@
   .message-button {
     padding: 6px 12px;
     font-size: 0.85rem;
+  }
+
+  .chat-window {
+    height: 780px;
   }
 }

@@ -121,7 +121,7 @@
 
 /* ====================== RÉSPONSIVE ====================== */
 
-@media (max-width: 926px) {
+@media (min-width: 400px) and (max-width: 499px) {
     .card {
     width: 100px;
     margin-top: 1.5rem;
@@ -148,17 +148,17 @@
 
   .header-logo {
     position: absolute;
-    left: 155px;
+    left: 175px;
   }
 
   .header-logout {
     position: absolute;
-    left: 120px;
+    left: 140px;
     top: 140px;
   }
 }
 
-@media (max-width: 1200px) {
+@media (min-width: 900px) {
     .card {
     width: 120px;
     margin-top: 1.5rem;
@@ -198,5 +198,42 @@
     position: absolute;
     right: 25px;
     top: 35px;
+  }
+}
+
+@media (max-width: 399px) {
+      .card {
+    width: 100px;
+    margin-top: 1.5rem;
+  }
+
+  .card h2 {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+
+  .card-container {
+    gap: 0.3rem;
+    margin-left: 1rem;
+  }
+
+  .welcome-name {
+    margin-top: 2.5rem;
+  }
+
+  .header-home {
+    flex-direction: column;
+    height: 200px;
+  }
+
+  .header-logo {
+    position: absolute;
+    left: 160px;
+  }
+
+  .header-logout {
+    position: absolute;
+    left: 120px;
+    top: 140px;
   }
 }

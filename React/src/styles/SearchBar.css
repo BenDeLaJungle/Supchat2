@@ -83,20 +83,29 @@ Vous avez envoyé
 
 /* ====================== RÉSPONSIVE ====================== */
 
-@media (max-width: 926px) {
+@media (min-width: 400px) and (max-width: 499px) {
   .searchbar-wrapper {
     position: absolute;
-    left: 70px;
+    left: 90px;
     top : 75px;
     width: 250px;
   }
 }
 
-@media (max-width: 1200px) {
+@media (min-width: 900px) {
   .searchbar-wrapper {
     position: absolute;
     left: 350px;
     top : 25px;
     width: 450px;
+  }
+}
+
+@media (max-width: 399px) {
+  .searchbar-wrapper {
+    position: absolute;
+    left: 80px;
+    top : 75px;
+    width: 250px;
   }
 }
