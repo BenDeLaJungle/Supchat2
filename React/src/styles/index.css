@@ -158,7 +158,7 @@
   }
 }
 
-@media (min-width: 900px) {
+@media (min-width: 900px) and (max-width: 1200px) {
     .card {
     width: 120px;
     margin-top: 1.5rem;

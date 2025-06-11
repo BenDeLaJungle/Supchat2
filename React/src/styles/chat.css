@@ -277,7 +277,7 @@
 
 
 /* Responsive : sur petits écrans, on fusionne certains boutons */
-@media (mIN-width: 900px) {
+@media (min-width: 900px) and (max-width:1200px) {
   .file-button,
   .emoji-toggle-button {
     width: 32px;

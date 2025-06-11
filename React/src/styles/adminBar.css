@@ -237,7 +237,7 @@ Vous avez envoyé
   }
 }
 
-@media (min-width: 900px) {
+@media (min-width: 900px) and (max-width: 1200px) {
 
   .header-admin .header-logo {
     position: absolute;

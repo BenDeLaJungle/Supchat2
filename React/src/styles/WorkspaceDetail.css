@@ -253,7 +253,7 @@
   }
 }
 
-@media (min-width: 900px){
+@media (min-width: 900px) and (max-width: 1200px) {
   .invite-link-container {
     display: flex;
     flex-direction: column;
