@@ -63,7 +63,6 @@ const Message = ({ id, author, content, timestamp, currentUserId, canEditGlobal,
             key={match.index}
             className="hashtag-link"
             onClick={() => {
-              console.log("Navigating to channel:", found.channel.id);
               navigate(`/channels/${found.channel.id}`);
             }}
             style={{ color: 'var(--primary)', cursor: 'pointer' }}

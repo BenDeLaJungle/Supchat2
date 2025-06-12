@@ -77,8 +77,6 @@ const AdminHeader = () => {
       </div>
       </div>
 
-
-
       {/* Déconnexion */}
       <div className="header-logout">
         <button className="logout-button" onClick={handleLogout}>

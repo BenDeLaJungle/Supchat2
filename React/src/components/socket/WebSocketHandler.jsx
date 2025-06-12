@@ -8,12 +8,9 @@ const WebSocketHandler = ({ channelId, onMessage }) => {
   useEffect(() => {
     if (!isReady || !socket) return;
 
-    console.log('📡 Envoi de subscribe après connexion confirmée !');
     socket.emit('subscribe', channelId);
 
     const handleMessage = (rawMessage) => {
-      console.log("💌 Message reçu via Socket.IO :", rawMessage);
-      
       if (rawMessage?.deleted && rawMessage.id) {
         onMessage(rawMessage);
         return;

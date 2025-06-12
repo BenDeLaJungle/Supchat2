@@ -9,8 +9,7 @@ function NotificationListener() {
     if (!socket) return;
 
     socket.on('notification', (data) => {
-      console.log('📥 Notification reçue :', data); // ← Ajout ici
-      toast.info(data.message); // Affiche le toast
+      toast.info(data.message);
     });
 
     return () => {
@@ -18,7 +17,7 @@ function NotificationListener() {
     };
   }, [socket]);
 
-  return null; // Pas d'affichage visuel nécessaire
+  return null; 
 }
 
 export default NotificationListener;

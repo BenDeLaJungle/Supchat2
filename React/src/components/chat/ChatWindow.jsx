@@ -25,8 +25,6 @@ const ChatWindow = ({ channelId = 1 }) => {
           body: JSON.stringify({ user_id: user.id })
         });
 
-        console.log("Privilèges récupérés :", data); 
-
         setPrivileges({
           isAdmin: data.is_admin,
           canModerate: data.can_moderate,

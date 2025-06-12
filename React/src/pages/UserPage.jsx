@@ -5,7 +5,7 @@ import AdminHeader from "../components/ui/Adminheader";
 import { useAuth } from "../context/AuthContext";
 import "../styles/User.css";
 
-const workspaceId = 1; // ou la valeur appropriée
+const workspaceId = 1;
 
 export default function UserPage() {
   const { username } = useParams();

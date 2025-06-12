@@ -27,13 +27,13 @@ export default function Parametres() {
   const [errorUpdateStatut, setErrorUpdateStatut] = useState('');
   const [errorExport, setErrorExport] = useState('');
 
-  // À chaque changement de `theme`, on met à jour la classe du body ET localStorage
+  // À chaque changement de theme, on met à jour la classe du body ET localStorage
   useEffect(() => {
     document.body.className = `theme-${theme}`;
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  // Met à jour le nom d'utilisateur et l'email
+  // Mise à jour le nom d'utilisateur et l'email
   const handleUpdate = async (e) => {
     e.preventDefault();
     setSuccessUpdateInfos('');
@@ -92,7 +92,7 @@ export default function Parametres() {
     }
   };
 
-  // Bascule clair ↔ sombre
+  // Bascule clair/sombre
   const toggleTheme = async () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
