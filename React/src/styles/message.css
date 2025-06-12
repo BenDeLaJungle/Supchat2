@@ -1,6 +1,3 @@
-/* src/styles/messaging.css */
-
-/* Conteneur général */
 .messaging-container {
   padding: 1rem;
   max-width: 800px;
@@ -12,7 +9,6 @@
   margin: 1.5rem auto 0;
 }
 
-/* Sidebar */
 .messaging-sidebar {
   width: 280px;
   padding: 20px;
@@ -29,7 +25,6 @@
   color: var(--msg-sidebar-title);
 }
 
-/* Bouton “Nouvelle conversation” */
 .start-conv-btn {
   background-color: var(--msg-btn-start-bg);
   color: var(--msg-btn-start-text);
@@ -45,7 +40,6 @@
   background-color: var(--msg-btn-start-hover);
 }
 
-/* Barre de création */
 .new-conversation-bar {
   position: sticky;
   bottom: 0;
@@ -60,7 +54,6 @@
   z-index: 10;
 }
 
-/* Select / input dans la barre */
 .new-conversation-bar .select-regular,
 .new-conversation-bar .message-input {
   background-color: var(--msg-input-bg);
@@ -71,7 +64,7 @@
   font-size: 1rem;
 }
 
-/* Bouton “Créer” */
+
 .new-conversation-bar .send-btn {
   background-color: var(--msg-btn-send-bg);
   color: var(--msg-btn-send-text);
@@ -86,14 +79,12 @@
   background-color: var(--msg-btn-send-hover);
 }
 
-/* Texte d’erreur */
 .message-error {
   color: var(--msg-error-text);
   margin: 10px 0;
   font-weight: bold;
 }
 
-/* Liste des conversations */
 .conversation-list {
   flex-grow: 1;
   overflow-y: auto;
@@ -116,17 +107,15 @@
   text-decoration: underline;
 }
 
-/* Zone principale de chat */
 .messaging-main {
   flex: 1;
   padding: 20px;
   background-color: var(--msg-main-bg);
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* on gère le scroll juste dans .message-list */
+  overflow: hidden; 
 }
 
-/* Liste scrollable des messages */
 .message-list {
   flex: 1;
   overflow-y: none;
@@ -134,13 +123,11 @@
   margin-bottom: 1rem;
 }
 
-/* Placeholder quand aucune conv n’est sélectionnée */
 .no-conv-msg {
   color: var(--msg-no-conv-text);
   font-style: italic;
 }
 
-/* Messages individuels */
 .message-item {
   margin-bottom: 1rem;
   background: var(--msg-item-bg);
@@ -153,7 +140,6 @@
   background: var(--msg-item-hover-bg);
 }
 
-/* Champ d’envoi en bas */
 .message-form {
   display: flex;
   gap: 0.5rem;
@@ -179,7 +165,7 @@
   background-color: var(--msg-btn-send-hover);
 }
 
-/* Responsive éventuel */
+/* responsive */
 @media (max-width: 768px) {
   .messaging-container { flex-direction: column; height: auto; }
   .messaging-sidebar  { width: 100%; }

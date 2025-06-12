@@ -4,7 +4,6 @@
   max-width: 800px;
   margin: auto;
   border-radius: 14px;
-  /* Si vous voulez un fond global, sinon transparent */
   background-color: var(--msg-bg-container);
   display: flex;
   height: 100vh;
@@ -28,7 +27,6 @@
   color: var(--msg-sidebar-title);
 }
 
-/* Bouton “Nouvelle conversation” */
 .start-conv-btn {
   background-color: var(--msg-btn-start-bg);
   color: var(--msg-btn-start-text);
@@ -44,7 +42,6 @@
   background-color: var(--msg-btn-start-hover);
 }
 
-/* Barre de création */
 .new-conversation-bar {
   position: sticky;
   bottom: 0;
@@ -59,7 +56,6 @@
   z-index: 10;
 }
 
-/* Select / input */
 .new-conversation-bar .select-regular,
 .new-conversation-bar .message-input {
   background-color: var(--msg-input-bg);
@@ -70,7 +66,6 @@
   font-size: 1rem;
 }
 
-/* Bouton “Créer” */
 .new-conversation-bar .send-btn {
   background-color: var(--msg-btn-send-bg);
   color: var(--msg-btn-send-text);
@@ -85,14 +80,12 @@
   background-color: var(--msg-btn-send-hover);
 }
 
-/* Erreur */
 .message-error {
   color: var(--msg-error-text);
   margin: 10px 0;
   font-weight: bold;
 }
 
-/* Liste des conversations */
 .conversation-list {
   flex-grow: 1;
   overflow-y: auto;
@@ -115,7 +108,6 @@
   text-decoration: underline;
 }
 
-/* Zone principale de chat */
 .messaging-main {
   flex: 1;
   padding: 20px;
@@ -130,13 +122,11 @@
     padding: 0.5rem;
 }
 
-/* Placeholder quand aucune conversation n’est sélectionnée */
 .no-conv-msg {
   color: var(--msg-no-conv-text);
   font-style: italic;
 }
 
-/* Message items */
 .message-item {
   margin-bottom: 1rem;
   background: var(--msg-item-bg);
@@ -148,7 +138,7 @@
   background: var(--msg-item-hover-bg, var(--msg-item-bg));
 }
 
-/* Responsive (si besoin) */
+/* responsive */
 @media (max-width: 926px) {
   .messaging-container {
     flex-direction: column;

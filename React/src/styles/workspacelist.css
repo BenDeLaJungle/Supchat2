@@ -1,6 +1,4 @@
-/* src/styles/workspacelist.css */
 
-/* Conteneur global */
 .workspace-page {
   padding: 1rem;
   max-width: 800px;
@@ -8,7 +6,6 @@
   text-align: center;
 }
 
-/* Titre “Mes workspaces” */
 .workspace-title {
   font-size: 1.9rem;
   margin-top: 0.5rem;
@@ -16,7 +13,6 @@
   color: var(--wl-title);
 }
 
-/* Conteneur des cartes */
 .workspace-card-container {
   display: flex;
   flex-wrap: wrap;
@@ -25,12 +21,10 @@
   margin-bottom: 20px;
 }
 
-/* Lien entourant chaque carte */
 .workspace-link {
-  text-decoration: none; /* on enlève le soulignement */
+  text-decoration: none; 
 }
 
-/* Style de chaque carte (workspace) */
 .workspace-card {
   width: 180px;
   height: 90px;
@@ -49,7 +43,6 @@
     box-shadow 0.2s ease;
 }
 
-/* Texte du nom du workspace */
 .workspace-card h2 {
   font-size: 16px;
   white-space: nowrap;
@@ -60,14 +53,12 @@
   color: var(--wl-card-text);
 }
 
-/* Texte du statut */
 .workspace-card p {
   margin: 5px 0 0;
   font-size: 14px;
   color: var(--wl-card-text);
 }
 
-/* Survol de la carte */
 .workspace-card:hover {
   background-color: var(--wl-card-hover-bg);
   box-shadow: var(--wl-card-hover-shadow);
@@ -78,7 +69,7 @@
   color: var(--wl-card-hover-text);
 }
 
-/* === Formulaire “Créer un workspace” + “Rejoindre un workspace” === */
+/* formualire */
 .work-channel-create-form {
   display: flex;
   flex-direction: column;
@@ -87,7 +78,6 @@
   gap: var(--wl-form-gap);
 }
 
-/* Input texte (nom du workspace ou token d’invitation) */
 .work-channel-input {
   padding: 0.5rem 1rem;
   background-color: var(--wl-input-bg);
@@ -100,7 +90,6 @@
   box-sizing: border-box;
 }
 
-/* Select (Public / Privé) */
 .work-channel-select {
   padding: 0.5rem 1rem;
   background-color: var(--wl-input-bg);
@@ -113,7 +102,6 @@
   box-sizing: border-box;
 }
 
-/* Boutons “Créer un workspace” et “Rejoindre un workspace” */
 .work-channel-create-button {
   background-color: var(--wl-button-bg);
   color: var(--wl-button-text);
@@ -174,7 +162,7 @@
 .leave-button-container {
   display: flex;
   justify-content: flex-end;
-  margin: 2rem 1rem 1rem 1rem; /* ← marge bas augmentée */
+  margin: 2rem 1rem 1rem 1rem; 
   width: 100%;
   max-width: 1000px;
   margin-left: auto;
@@ -195,7 +183,8 @@
   height: 1px;
 }
 
-/* --- Responsive éventuel (exemple si besoin) --- */
+/* responsive */ 
+
 @media (max-width: 520px) {
   .workspace-card {
     width: 140px;

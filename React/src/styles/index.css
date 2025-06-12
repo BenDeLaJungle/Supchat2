@@ -1,5 +1,5 @@
 
-/* ====================== HEADER HOME ====================== */
+/* header home */
 .header-home {
   width: 100vw;
   margin: 0;
@@ -44,7 +44,7 @@
 }
 
 
-/* ===== BOUTON DELOG ===== */
+/* logout */
 .header-logout .logout-button {
   background-color: var(--home-card-co);
   padding: 0.6rem 1.2rem;
@@ -59,7 +59,7 @@
   color: #fff;
 }
 
-/* ====================== WELCOME NAME ====================== */
+/* titre */
 .welcome-name {
   text-align: center;
   margin: 10px 0;
@@ -68,7 +68,7 @@
   color: var(--home-welcome-text);
 }
 
-/* ====================== CARTES (Home) ====================== */
+/* card */
 .card-container {
   display: grid;
   grid-template-columns: repeat(3, 120px);
@@ -119,7 +119,7 @@
 
 
 
-/* ====================== RÉSPONSIVE ====================== */
+/* responsive*/
 
 @media (min-width: 400px) and (max-width: 499px) {
     .card {
@@ -202,7 +202,7 @@
 }
 
 @media (max-width: 399px) {
-      .card {
+  .card {
     width: 100px;
     margin-top: 1.5rem;
   }
@@ -234,6 +234,46 @@
   .header-logout {
     position: absolute;
     left: 120px;
+    top: 140px;
+  }
+}
+
+@media (min-width: 500px) and (max-width: 899px) {
+    .card {
+  width: 120px;
+  height: 120px;
+  }
+
+  .card h2 {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+
+  .card-container {
+  gap: 2.2rem;
+  padding: 2.5rem 3rem;
+  margin-top: 4rem;
+  }
+
+  .welcome-name {
+    margin-top: 3.5rem;
+    font-size: 2rem;
+  }
+
+
+  .header-home {
+    flex-direction: column;
+    height: 200px;
+  }
+
+  .header-logo {
+    position: absolute;
+    left: 47%;
+  }
+
+  .header-logout {
+    position: absolute;
+    left: 42%;
     top: 140px;
   }
 }

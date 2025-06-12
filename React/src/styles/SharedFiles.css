@@ -93,6 +93,8 @@
   margin-top: 20px;
 }
 
+/* respnsive */
+
 @media (max-width: 926px) {
   .file-header {
     flex-direction: column;

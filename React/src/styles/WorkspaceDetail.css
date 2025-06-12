@@ -1,24 +1,20 @@
-/* src/styles/WorkspaceDetail.css */
 
-/* ================= STYLES GÉNÉRAUX (ne pas toucher la structure/dimensions) ================ */
 .workspace-detail-page {
   max-width: 1100px;
   margin: 20px auto;
   padding: 0 16px;
   font-family: Arial, sans-serif;
-  color: var(--text-base); /* conserve la couleur de base du texte globale */
+  color: var(--text-base); 
 }
 
-/* ===== Titre principal ===== */
 .workspace-detail-title {
   text-align: center;
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 24px;
-  color: var(--ws-invite-text-color); /* par exemple, pour garder une teinte cohérente */
+  color: var(--ws-invite-text-color);
 }
 
-/* ===== Titres de section (“Canaux”, “Membres ”, “Invitation”) ===== */
 .section-title {
   text-align: center;
   font-size: 1.5rem;
@@ -26,7 +22,7 @@
   color: var(--ws-invite-text-color);
 }
 
-/* ===== Conteneur flex entre liste / formulaire ===== */
+
 .section-container {
   display: flex;
   gap: 24px;
@@ -34,20 +30,17 @@
   align-items: stretch;
 }
 
-/* ===================== COLONNE LISTE (Canaux ou Membres) ===================== */
-/* Style commun aux deux listes (barre défilement, fond) */
 .workspace-detail-page .list-container {
-  flex: 1;                      /* occupe tout l’espace restant horizontal */
-  max-height: 270px;            /* hauteur fixe pour forcer le scroll si besoin */
+  flex: 1;                     
+  max-height: 270px;            
   overflow-y: auto;
   background-color: var(--ws-members-list-bg);
   border: none;
   border-radius: 6px;
 }
 
-/* --- Scrollbar pour WebKit (Chrome, Edge, Safari) --- */
 .workspace-detail-page .list-container::-webkit-scrollbar {
-  width: 8px; /* épaisseur */
+  width: 8px; 
 }
 .workspace-detail-page .list-container::-webkit-scrollbar-track {
   background: var(--ws-scroll-track);
@@ -58,21 +51,19 @@
   border: 2px solid var(--ws-scroll-track);
 }
 
-/* --- Scrollbar pour Firefox --- */
 .workspace-detail-page .list-container {
   scrollbar-width: thin;
   scrollbar-color: var(--ws-scroll-thumb) var(--ws-scroll-track);
 }
 
-/* ===================== SECTION “Canaux” ===================== */
-/* Liste de boutons qui redirigent vers chaque canal */
+/* canaux */
+
 .workspace-detail-page .channels-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-/* Bouton pour chaque canal */
 .workspace-detail-page .channel-link-button {
   display: block;
   width: 95%;
@@ -90,8 +81,8 @@
   color: var(--ws-btn-channel-text);
 }
 
-/* ===================== SECTION “Membres du workspace” ===================== */
-/* Chaque ligne « membre » */
+/* membre */
+
 .workspace-detail-page .members-list .member-row {
   display: flex;
   justify-content: space-between;
@@ -103,13 +94,12 @@
   border-bottom: none;
 }
 
-/* Texte « Nom (Rôle) » */
 .workspace-detail-page .members-list .member-label {
   font-size: 1rem;
   color: var(--ws-member-label-text);
 }
 
-/* Bouton “Supprimer” à côté d’un membre */
+
 .workspace-detail-page .members-list .button-danger-sm {
   padding: 6px 12px;
   background-color: var(--ws-btn-member-delete-bg);
@@ -124,12 +114,12 @@
   background-color: var(--ws-btn-member-delete-hover);
 }
 
-/* ===================== FORMULAIRES D’AJOUT (Canal / Membre) ===================== */
-/* Conteneur carte (droite) : reste inchangé au niveau largeur/hauteur */
+/* form ajout */
+
 .workspace-detail-page .workspace-card {
   flex: 0 0 280px;
   height: 150px;
-  background-color: var(--ws-input-bg); /* on peut réutiliser la même couleur qu’un input pour homogénéité */
+  background-color: var(--ws-input-bg); 
   border: none;
   border-radius: 8px;
   padding: 60px;
@@ -138,7 +128,7 @@
   gap: 6px;
 }
 
-/* Input & Select (Canal + Membre) */
+
 .workspace-detail-page .input-regular,
 .workspace-detail-page .select-regular {
   padding: 10px 12px;
@@ -151,7 +141,6 @@
   box-sizing: border-box;
 }
 
-/* Bouton “Créer un canal” ou “Ajouter le membre” */
 .workspace-detail-page .button-primary {
   padding: 10px 16px;
   background-color: var(--ws-btn-channel-bg);
@@ -168,8 +157,8 @@
   color: var(--ws-btn-channel-text);
 }
 
-/* ===================== SECTION “Invitation” ===================== */
-/* Bouton « Générer un lien d’invitation » */
+/* invit*/
+
 .workspace-detail-page .button-invite {
   padding: 8px 12px;
   background-color: var(--ws-btn-invite-bg);
@@ -187,7 +176,6 @@
   color: var(--ws-btn-invite-text);
 }
 
-/* Bouton « Copier le lien » (petit bouton secondaire) */
 .workspace-detail-page .button-secondary-sm {
   padding: 8px 12px;
   background-color: var(--ws-btn-secondary-bg);
@@ -204,7 +192,6 @@
   color: var(--ws-btn-secondary-text);
 }
 
-/* Texte brut du lien d’invitation affiché */
 .workspace-detail-page .invite-link-text {
   white-space: nowrap;
   color: var(--ws-invite-text-color);
@@ -212,12 +199,12 @@
   margin-bottom: 8px;
 }
 
-/* Centrage de la section invitation */
 .workspace-detail-page .invite-section {
   text-align: center;
   margin-bottom: 4px;
 }
 
+/* respnsive */
 
 @media (max-width: 399px) {
   .section-container {
