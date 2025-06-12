@@ -3,8 +3,8 @@ import MessageList from './MessageList';
 import MessageForm from './MessageForm';
 import WebSocketHandler from '../socket/WebSocketHandler';
 import { useAuth } from '../../context/AuthContext';
-import '../../styles/color.css';
-import '../../styles/chat.css';
+import '../../styles/Color.css';
+import '../../styles/Chat.css';
 import { apiFetch } from '../../services/api';
 import AdminHeader from '../ui/Adminheader';
 

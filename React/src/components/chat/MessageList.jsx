@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/color.css';
-import '../../styles/chat.css';
+import '../../styles/Color.css';
+import '../../styles/Chat.css';
 import { apiFetch } from '../../services/api';
 import Message from './Message';
 

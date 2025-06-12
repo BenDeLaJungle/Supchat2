@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../../services/api";
-import '../../styles/adminBar.css';
+import '../../styles/AdminBar.css';
 
 
 const SearchBar = () => {

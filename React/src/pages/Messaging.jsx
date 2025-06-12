@@ -4,7 +4,7 @@ import { apiFetch } from '../services/api';
 import AdminHeader from '../components/ui/Adminheader';
 import ChatWindow from '../components/chat/ChatWindow';
 import { useAuth } from '../context/AuthContext';
-import '../styles/index.css';
+import '../styles/Index.css';
 
 const workspaceId = 1;
 

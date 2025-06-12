@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { apiFetch } from '../../services/api';
 import { useSocket } from '../../context/SocketContext';
 import EmojiPicker from 'emoji-picker-react';
-import '../../styles/color.css';
-import '../../styles/chat.css';
+import '../../styles/Color.css';
+import '../../styles/Chat.css';
 import { useNavigate } from 'react-router-dom';
 
 

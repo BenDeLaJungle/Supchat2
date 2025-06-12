@@ -1,7 +1,7 @@
 // src/pages/Parametres.jsx
 
 import React, { useState, useEffect } from 'react';
-import '../styles/parametres.css';
+import '../styles/Parametres.css';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
 import AdminHeader from '../components/ui/Adminheader';

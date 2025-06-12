@@ -13,7 +13,7 @@ import calendrier from '../assets/calendrier.png';
 import adminspace from '../assets/adminspace.png';
 import parametres from '../assets/settings.png';
 import logo from '../assets/logo-supchat.png';
-import '../styles/index.css';
+import '../styles/Index.css';
 
 export default function Home() {
   const [lastTwoWorkspaces, setDernierWorkspaces] = useState([]);

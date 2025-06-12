@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../../services/api";
 import '../../styles/SearchBar.css';
-import '../../styles/index.css';
+import '../../styles/Index.css';
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");

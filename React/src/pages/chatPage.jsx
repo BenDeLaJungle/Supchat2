@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import '../styles/message.css';
+import '../styles/Message.css';
 import ChatWindow from '../components/chat/ChatWindow';
 import AdminHeader from '../components/ui/Adminheader';
 

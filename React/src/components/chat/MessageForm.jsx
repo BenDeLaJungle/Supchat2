@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 import { apiFetch } from '../../services/api';
-import '../../styles/color.css';
-import '../../styles/chat.css';
+import '../../styles/Color.css';
+import '../../styles/Chat.css';
 import { useSocket } from '../../context/SocketContext';
 
 const MessageForm = ({ channelId, userId, username, onMessageSent }) => {
