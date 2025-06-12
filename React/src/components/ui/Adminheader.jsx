@@ -14,7 +14,7 @@ import parametres from "../../assets/settings.png";
 import logo from "../../assets/logo-supchat.png";
 import HeaderBar from "./HeaderBar.jsx"
 
-import "../../styles/adminBar.css";
+import "../../styles/AdminBar.css";
 
 const AdminHeader = () => {
   const navigate = useNavigate();
