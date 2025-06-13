@@ -37,7 +37,6 @@ class OAuthController extends AbstractController
     #[Route('/api/auth/google/check', name: 'api_auth_google_check', methods: ['GET'])]
     public function googleCheck()
     {
-        // Ce code ne sera jamais atteint, Symfony intercepte la requête pour OAuth2
         return new JsonResponse(['message' => 'Authentification Google réussie']);
     }
 
@@ -56,7 +55,6 @@ class OAuthController extends AbstractController
     #[Route('/api/auth/facebook/check', name: 'api_auth_facebook_check', methods: ['GET'])]
     public function facebookCheck()
     {
-        // Ce code ne sera jamais atteint, Symfony intercepte la requête pour OAuth2
         return new JsonResponse(['message' => 'Authentification Facebook réussie']);
     }
 
@@ -78,7 +76,7 @@ class OAuthController extends AbstractController
             $newPayload = [
                 'id' => $decoded->id,
                 'email' => $decoded->email,
-                'exp' => time() + (60 * 60) // Nouvel expiration dans 1 heure
+                'exp' => time() + (60 * 60) //expiration 1h
             ];
 
             $newToken = JWT::encode($newPayload, $this->jwtSecret, 'HS256');

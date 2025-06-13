@@ -17,7 +17,6 @@
         "knpuniversity/oauth2-client-bundle": "*",
         "league/oauth2-facebook": "^2.2",
         "league/oauth2-google": "*",
-        "nelmio/api-doc-bundle": "^5.3",
         "nelmio/cors-bundle": "^2.5",
         "symfony/asset": "7.2.*",
         "symfony/console": "7.2.*",

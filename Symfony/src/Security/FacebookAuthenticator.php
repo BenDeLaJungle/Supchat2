@@ -39,7 +39,7 @@ class FacebookAuthenticator extends OAuth2Authenticator
 
     public function authenticate(Request $request): SelfValidatingPassport
     {
-        $client = $this->clientRegistry->getClient('facebook'); // ✅ Récupérer le client Facebook
+        $client = $this->clientRegistry->getClient('facebook');
 
         $accessToken = $client->getAccessToken();
 

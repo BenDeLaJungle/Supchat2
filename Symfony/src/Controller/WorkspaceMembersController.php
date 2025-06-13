@@ -69,19 +69,19 @@ final class WorkspaceMembersController extends AbstractController
             return $this->json(['message' => 'Utilisateur non authentifié'], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Vérifier que l’utilisateur courant peut gérer les membres
+        //Vérifier que l’utilisateur courant peut gérer les membres
         $myRoleId = WorkspaceMembers::getUserRoleInWorkspace($workspaceId, $currentUser->getId(), $this->em);
         if (!Roles::hasPermission($myRoleId, 'manage_members')) {
             return $this->json(['message' => 'Accès refusé'], Response::HTTP_FORBIDDEN);
         }
 
-        // Charger le workspace
+        //Charger le workspace
         $workspace = $this->em->getRepository(Workspaces::class)->find($workspaceId);
         if (!$workspace) {
             return $this->json(['message' => 'Workspace non trouvé'], Response::HTTP_NOT_FOUND);
         }
 
-        // Récupérer les données du POST
+        //Récupérer les données du POST
         $data = json_decode($request->getContent(), true);
         if (json_last_error() !== JSON_ERROR_NONE 
             || empty($data['user_id']) 
@@ -89,21 +89,21 @@ final class WorkspaceMembersController extends AbstractController
             return $this->json(['message' => 'Format JSON invalide ou paramètres manquants'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Charger user et role
+        //Charger user et role
         $userToAdd = $this->em->getRepository(Users::class)->find($data['user_id']);
         $role       = $this->em->getRepository(Roles::class)->find($data['role_id']);
         if (!$userToAdd || !$role) {
             return $this->json(['message' => 'Utilisateur ou rôle introuvable'], Response::HTTP_NOT_FOUND);
         }
 
-        // S’assurer qu’il n’est pas déjà membre
+        //S’assurer qu’il n’est pas déjà membre
         $exists = $this->em->getRepository(WorkspaceMembers::class)
             ->findOneBy(['workspace' => $workspace, 'user' => $userToAdd]);
         if ($exists) {
             return $this->json(['message' => 'Cet utilisateur est déjà membre'], Response::HTTP_CONFLICT);
         }
 
-        // Créer le WorkspaceMembers en reprenant les droits depuis le rôle
+        //Créer WorkspaceMembers en reprenant les droits depuis le rôle
         $membership = (new WorkspaceMembers())
             ->setWorkspace($workspace)
             ->setUser($userToAdd)

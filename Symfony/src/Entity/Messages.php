@@ -142,7 +142,6 @@ class Messages
     public function removeNotification(Notifications $notification): self
     {
         if ($this->notifications->removeElement($notification)) {
-            // set the owning side to null (unless already changed)
             if ($notification->getMessage() === $this) {
                 $notification->setMessage(null);
             }

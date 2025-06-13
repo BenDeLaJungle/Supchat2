@@ -34,7 +34,7 @@ class FileController extends AbstractController
             return new JsonResponse(['error' => 'Fichier ou message_id manquant'], 400);
         }
 
-        // Vérifie le type MIME autorisé
+        
         $allowedMimeTypes = ['application/pdf', 'image/jpeg', 'image/png'];
         if (!in_array($file->getMimeType(), $allowedMimeTypes)) {
             return new JsonResponse(['error' => 'Type de fichier interdit'], 400);
@@ -102,7 +102,7 @@ class FileController extends AbstractController
 			->join('m.channel', 'c')
 			->join('c.workspace', 'w')
 			->join('App\Entity\WorkspaceMembers', 'wm', 'WITH', 'wm.workspace = w AND wm.user = :user')
-			->join('m.user', 'u') // auteur du message
+			->join('m.user', 'u')
 			->where('m.user != :user')
 			->setParameter('user', $user);
 
@@ -122,6 +122,7 @@ class FileController extends AbstractController
 	#[IsGranted('IS_AUTHENTICATED_FULLY')]
 	public function generateDownloadUrl(int $id, UserInterface $user): JsonResponse
 	{
+		/** @var \App\Entity\Users $user */
 		$userId = $user->getId();
 		$timestamp = time();
 		$secret = $_ENV['APP_SECRET'];
@@ -139,7 +140,6 @@ class FileController extends AbstractController
 		return new JsonResponse(['url' => $signedUrl]);
 	}
     
-
 	#[Route('/api/files/download', name: 'file_secure_download', methods: ['GET'])]
 	public function secureDownload(Request $request, EntityManagerInterface $em): Response
 	{
@@ -161,7 +161,7 @@ class FileController extends AbstractController
 			return new JsonResponse(['error' => 'Signature invalide'], 403);
 		}
 
-		// Vérification de l'expiration (10 minutes = 600 secondes)
+		// Vérification de l'expiration (10min)
 		if (abs(time() - (int)$timestamp) > 600) {
 			return new JsonResponse(['error' => 'Lien expiré'], 403);
 		}
@@ -194,7 +194,7 @@ class FileController extends AbstractController
 			return new JsonResponse(['error' => 'Fichier introuvable'], Response::HTTP_NOT_FOUND);
 		}
 
-		// Vérifie que l'utilisateur connecté est bien l'auteur du message lié au fichier
+		// Vérifie que l'utilisateur connecté est bien l'auteur du message
         /** @var \App\Entity\Users $user */
 		if ($file->getMessage()->getUser()->getId() !== $user->getId()) {
 			return new JsonResponse(['error' => 'Vous ne pouvez supprimer que vos fichiers.'], 403);

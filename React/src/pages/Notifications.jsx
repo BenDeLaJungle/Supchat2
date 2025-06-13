@@ -25,7 +25,7 @@ export default function Notifications() {
     <>
       <AdminHeader />
       <div className="notifications-container">
-        <h2 className="notifications-title">🔔 Notifications non lues</h2>
+        <h2 className="notifications-title">Notifications non lues</h2>
 
         {error && <div className="message-error">{error}</div>}
 
@@ -36,7 +36,7 @@ export default function Notifications() {
             {notifications.map((notif) => (
               <li key={notif.id} className="notification-item unread">
                 <p>{notif.message.length > 100 ? notif.message.substring(0, 100) + '...' : notif.message}</p>
-                <p>Status : {notif.read ? "✅ Lu" : "📩 Non lu"}</p>
+                <p>Status : {notif.read ? "Lu" : "Non lu"}</p>
               </li>
             ))}
           </ul>

@@ -69,7 +69,6 @@ class AppFixtures extends Fixture
             $users[] = $user;
         }
 
-        // Flush users AVANT de les utiliser pour les messages
         $manager->flush();
 
         // 2. Workspace
@@ -102,7 +101,6 @@ class AppFixtures extends Fixture
             }
         }
 
-        // Final flush
         $manager->flush();
     }
 }

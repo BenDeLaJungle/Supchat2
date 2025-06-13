@@ -28,7 +28,7 @@ function Notifications() {
 
     useEffect(() => {
         fetchNotifications();
-        const interval = setInterval(fetchNotifications, 10000); // refresh toutes les 10s
+        const interval = setInterval(fetchNotifications, 10000);
         return () => clearInterval(interval);
     }, []);
 
@@ -60,7 +60,7 @@ function Notifications() {
                 <ul>
                     {notifications.map((notif) => (
                         <li key={notif.id}>
-                            📩 {notif.message}
+                            {notif.message}
                         </li>
                     ))}
                 </ul>

@@ -19,7 +19,7 @@ class MessagesRepository extends ServiceEntityRepository
     }
 
     /**
-     * Récupère tous les messages échangés entre deux utilisateurs (user1 <-> user2)
+     * Récupère tous les messages échangés entre deux utilisateurs
      *
      * @param Users $user1
      * @param Users $user2

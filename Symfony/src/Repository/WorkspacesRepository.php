@@ -19,8 +19,7 @@ class WorkspacesRepository extends ServiceEntityRepository
     }
 
     /**
-     * Retourne les workspaces dont l'utilisateur est membre, triés du plus récent au plus ancien.
-     *
+     * Retourne les workspaces dont l'utilisateur est membre
      * @param Users $user
      * @return Workspaces[]
      */

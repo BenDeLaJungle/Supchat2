@@ -213,9 +213,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         $this->oauthID = $oauthID;
         return $this;
     }
-	 /**
-     * Symfony attend un tableau de rôles, même si l'utilisateur n'en a qu'un.
-     */
+
     public function getRoles(): array
     {
         return [$this->role];
@@ -224,9 +222,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 	{
 		return $this->emailAddress ?? throw new \LogicException('L\'utilisateur doit avoir un email.');
 	}
-	public function eraseCredentials(): void
-{
-    // Supprimer ici toute donnée sensible stockée temporairement (ex: mot de passe en clair).
-}
+	public function eraseCredentials(): void {}
 }
 

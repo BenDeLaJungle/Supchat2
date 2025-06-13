@@ -26,9 +26,6 @@ class AuthController extends AbstractController
         $this->jwtSecret = $_ENV['JWT_SECRET'] ?? 'default_secret';
     }
 
-    /**
-     * Inscription d'un nouvel utilisateur (Authentification classique)
-     */
     #[Route('/api/auth/register', name: 'register', methods: ['POST'])]
     public function register(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
@@ -59,9 +56,6 @@ class AuthController extends AbstractController
         return new JsonResponse(['message' => 'Inscription réussie', 'userId' => $user->getId()], Response::HTTP_CREATED);
     }
 
-    /**
-     * Connexion utilisateur (Authentification classique)
-     */
     #[Route('/api/auth/login', name: 'login', methods: ['POST','OPTIONS'])]
     public function login(Request $request, UsersRepository $usersRepository): JsonResponse
     {
@@ -97,18 +91,12 @@ class AuthController extends AbstractController
         ]);
     }
 
-    /**
-     * Déconnexion utilisateur
-     */
     #[Route('/api/auth/logout', name: 'logout', methods: ['POST'])]
     public function logout(): JsonResponse
     {
         return new JsonResponse(['message' => 'Déconnexion réussie']);
     }
 
-    /**
-     * Rafraîchir un token JWT expiré
-     */
     #[Route('/api/auth/refresh', name: 'refresh_token', methods: ['GET'])]
     public function refreshToken(Request $request): JsonResponse
     {
@@ -134,7 +122,5 @@ class AuthController extends AbstractController
         } catch (\Exception $e) {
             return new JsonResponse(['error' => 'Token invalide'], Response::HTTP_UNAUTHORIZED);
         }
-    }
-
-    
+    } 
 }

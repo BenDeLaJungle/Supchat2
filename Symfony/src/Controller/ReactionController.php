@@ -34,7 +34,7 @@ class ReactionController extends AbstractController
 
         // Création de la réaction
         $reaction = new Reactions();
-        $reaction->setEmojiCode($data['emoji']);  // Correction ici
+        $reaction->setEmojiCode($data['emoji']);
         $reaction->setUser($user);
         $reaction->setMessage($message);
 
@@ -45,7 +45,7 @@ class ReactionController extends AbstractController
             'message' => 'Réaction ajoutée',
             'reaction' => [
                 'id' => $reaction->getId(),
-                'emoji' => $reaction->getEmojiCode(), // Correction ici
+                'emoji' => $reaction->getEmojiCode(),
                 'user' => [
                     'id' => $user->getId(),
                     'username' => $user->getUserName(),
@@ -66,10 +66,8 @@ class ReactionController extends AbstractController
             return new JsonResponse(['error' => 'Réaction non trouvée'], Response::HTTP_NOT_FOUND);
         }
 
-        // Récupération de l'utilisateur connecté
         $currentUser = $this->getUser();
 
-        // Vérification que l'utilisateur est bien l'auteur OU un administrateur
         if ($reaction->getUser()->getId() !== $currentUser->getId() && !in_array('ROLE_ADMIN', $currentUser->getRoles())) {
             return new JsonResponse(['error' => 'Vous n\'avez pas l\'autorisation de supprimer cette réaction'], Response::HTTP_FORBIDDEN);
         }
@@ -79,7 +77,6 @@ class ReactionController extends AbstractController
 
         return new JsonResponse(['message' => 'Réaction supprimée']);
     }
-
 }
 
 

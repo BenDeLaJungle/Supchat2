@@ -14,12 +14,12 @@ class FileUploader
 
     public function upload(UploadedFile $file): string
     {
-        $originalName = $file->getClientOriginalName(); // nom original
+        $originalName = $file->getClientOriginalName();
         $safeName = uniqid() . '__' . $originalName;
 
         $file->move($this->targetDirectory, $safeName);
 
-        return '/uploads/files/' . $safeName; // chemin à stocker
+        return '/uploads/files/' . $safeName;
     }
 
     public function getTargetDirectory(): string

@@ -23,16 +23,13 @@ class MentionController extends AbstractController
             return $this->json(['error' => 'Données invalides'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Récupérer l'utilisateur et le message depuis la base de données
         $user = $em->getRepository(Users::class)->find($data['userId']);
         $message = $em->getRepository(Messages::class)->find($data['messageId']);
 
-        // Vérifier que l'utilisateur et le message existent
         if (!$user || !$message) {
             return $this->json(['error' => 'Utilisateur ou message introuvable'], Response::HTTP_NOT_FOUND);
         }
 
-        // Créer une nouvelle mention et l'associer à l'utilisateur et au message
         $mention = new Mentions();
         $mention->setUser($user);
         $mention->setMessage($message);

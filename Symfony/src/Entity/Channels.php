@@ -31,10 +31,11 @@ class Channels
     #[Assert\NotNull(message: "L'Entiter est obligatoire.")]
     private ?Workspaces $workspace = null;
 
+    //true for public, false for private
     #[ORM\Column(type: 'boolean')]
     #[Assert\NotNull(message: "La valeur ne peut pas être nulle.")]
     #[Assert\Type(type: "bool", message: "La valeur doit être un booléen.")]
-    private ?bool $status = null; // true for public, false for private
+    private ?bool $status = null;
 
     // Rôle minimum requis pour accéder au canal (1 = membre, 2 = modérateur, 3 = admin)
     #[ORM\Column(type: 'integer', options: ['default' => 1])]

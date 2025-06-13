@@ -173,12 +173,11 @@ public function createChannel(Request $request, EntityManagerInterface $em, Work
             return new JsonResponse(['error' => 'Workspace introuvable'], 404);
         }
 
-        // Vérifie que deux utilisateurs exactement sont fournis
         if (!is_array($data['participants']) || count($data['participants']) !== 2) {
             return new JsonResponse(['error' => 'Une conversation privée doit inclure exactement 2 utilisateurs.'], 400);
         }
 
-        // Génère le nom du canal sous forme priv_1_2
+        // Génère le nom du canal
         sort($data['participants']);
         $channelName = 'priv_' . implode('_', $data['participants']);
 
@@ -195,7 +194,7 @@ public function createChannel(Request $request, EntityManagerInterface $em, Work
 
         $channel = new Channels();
         $channel->setName($channelName);
-        $channel->setStatus(false); // toujours privé
+        $channel->setStatus(false);
         $channel->setWorkspace($workspace);
         $channel->setMinRole(1);
         $minRole = isset($data['min_role']) ? (int) $data['min_role'] : 1;

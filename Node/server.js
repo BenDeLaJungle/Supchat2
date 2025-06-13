@@ -6,14 +6,14 @@ import { Server } from 'socket.io';
 const app = express();
 const server = http.createServer(app);
 
-// Middleware CORS pour l'API REST
+//Middleware CORS pour l'API REST
 app.use(cors({
   origin: 'http://localhost:5173',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type']
 }));
 
-// Initialisation de socket.io
+//Initialisation de socket.io
 const io = new Server(server, {
   cors: {
     origin: 'http://localhost:5173',
@@ -21,7 +21,7 @@ const io = new Server(server, {
   }
 });
 
-// Map des sockets et leur channel
+//Map des sockets et leur channel
 const clientsChannels = new Map();
 
 io.on('connection', (socket) => {
@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// API REST pour broadcast
+//API REST pour broadcast
 app.post('/broadcast', express.json(), (req, res) => {
   const { id, content, timestamp, author, channel, deleted } = req.body;
 
@@ -76,7 +76,7 @@ app.post('/broadcast', express.json(), (req, res) => {
   res.status(200).json({ success: true });
 });
 
-// API REST pour envoi de notification vers un utilisateur
+//API REST pour envoi de notification vers un utilisateur
 app.post('/notify', express.json(), (req, res) => {
   const { userId, message } = req.body;
 
@@ -84,7 +84,7 @@ app.post('/notify', express.json(), (req, res) => {
     return res.status(400).json({ error: 'userId et message sont requis.' });
   }
 
-  console.log(`🔔 Envoi notification à #${userId} :`, message);
+  console.log(`Envoi notification à #${userId} :`, message);
 
   io.to(userId).emit('notification', { message });
 
@@ -92,14 +92,13 @@ app.post('/notify', express.json(), (req, res) => {
 });
 
 
-// Endpoint de test
+//Endpoint de test
 app.get('/', (req, res) => {
   res.send('Hello Socket.IO World!');
 });
 
-// Lancement du serveur
+//Lancement du serveur
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Serveur HTTP + Socket.IO lancé sur http://localhost:${PORT}`);
 });
-

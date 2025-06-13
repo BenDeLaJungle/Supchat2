@@ -16,9 +16,6 @@ class MentionsRepository extends ServiceEntityRepository
         parent::__construct($registry, Mentions::class);
     }
 
-//    /**
-//     * @return Mentions[] Returns an array of Mentions objects
-//     */
 //    public function findByExampleField($value): array
 //    {
 //        return $this->createQueryBuilder('m')

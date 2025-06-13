@@ -49,7 +49,7 @@ class SeedCommand extends Command
             $this->em->persist($admin);
             $output->writeln('<info>✔ Utilisateur admin créé.</info>');
         } else {
-            $output->writeln('<comment>ℹ Utilisateur admin déjà présent (ID 1).</comment>');
+            $output->writeln('<comment>Utilisateur admin déjà présent (ID 1).</comment>');
         }
 
         //Création du workspace privé (ID 1)
@@ -63,9 +63,9 @@ class SeedCommand extends Command
             $workspace->setCreator($admin);
 
             $this->em->persist($workspace);
-            $output->writeln('<info>✔ Workspace "Messages Privés" créé.</info>');
+            $output->writeln('<info>Workspace "Messages Privés" créé.</info>');
         } else {
-            $output->writeln('<comment>ℹ Workspace déjà présent (ID 1).</comment>');
+            $output->writeln('<comment>Workspace déjà présent (ID 1).</comment>');
         }
 
         $this->em->flush();

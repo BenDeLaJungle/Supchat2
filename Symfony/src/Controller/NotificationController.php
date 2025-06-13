@@ -80,16 +80,14 @@ class NotificationController extends AbstractController
         return $this->json(['success' => true, 'id' => $notif->getId()]);
     }
 
+    public function notifyNewMessage(Messages $message, Users $receiver, EntityManagerInterface $em): void
+    {
+        $notification = new Notifications();
+        $notification->setUser($receiver);
+        $notification->setMessage($message);
+        $notification->setAtRead(false);
 
-public function notifyNewMessage(Messages $message, Users $receiver, EntityManagerInterface $em): void
-{
-    $notification = new Notifications();
-    $notification->setUser($receiver);
-    $notification->setMessage($message);
-    $notification->setAtRead(false);
-
-    $em->persist($notification);
-    $em->flush();
-}
-
+        $em->persist($notification);
+        $em->flush();
+    }
 }

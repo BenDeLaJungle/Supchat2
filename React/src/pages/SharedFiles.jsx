@@ -37,7 +37,7 @@ export default function SharedFiles() {
 		alert("Erreur lors de la suppression.");
 	  }
 	};
-  //  Fonction qui récupère l’URL sécurisée
+  //récupère l’URL sécurisée
   const handleDownload = async (fileId) => {
     try {
       const res = await apiFetch(`files/${fileId}/generate-download-url`);
@@ -77,14 +77,14 @@ export default function SharedFiles() {
 					className="download-icon"
 					title={`Télécharger ${file.name}`}
 				  >
-					⬇️
+					⬇
 				  </button>
 				  <button
 					onClick={() => handleDelete(file.id)}
 					className="delete-icon"
 					title="Supprimer"
 				  >
-					❌
+					X
 				  </button>
 				</div>
 			  </div>

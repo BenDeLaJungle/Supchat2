@@ -59,13 +59,11 @@ class MessageController extends AbstractController
 
         // Création de la notification
         $notification = new Notifications();
-        $notification->setUser($user); // ou destinataire différent si besoin
+        $notification->setUser($user);
         $notification->setMessage($message);
-        $notification->setAtRead(false); // Par défaut, non lue
+        $notification->setAtRead(false);
 
         $em->persist($notification);
-
-        // Enregistrement
         $em->flush();
 
         return $this->json([
@@ -84,6 +82,7 @@ class MessageController extends AbstractController
     public function getMessage(Messages $message,FilesRepository $filesRepo): JsonResponse
     {
         $hashtags = $message->getHashtags()->toArray();
+        $files = $filesRepo->findBy(['message' => $message]);
         return $this->json([
             'id' => $message->getId(),
             'content' => $message->getContent(),
@@ -158,7 +157,6 @@ class MessageController extends AbstractController
             'new_content' => $message->getContent(),
         ]);
     }
-
 
     #[Route('/api/messages/{id}', name: 'delete_message', methods: ['DELETE'])]
     public function deleteMessage(Messages $message, EntityManagerInterface $em): JsonResponse

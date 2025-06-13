@@ -1,10 +1,8 @@
 @echo off
 echo Lancement du serveur Symfony en HTTPS...
 
-:: Stoppe les serveurs Symfony précédents s'il y en a
 symfony server:stop >nul 2>&1
 
-:: Démarre Symfony en HTTPS sur le port 8000
 symfony server:start --port=8000 --daemon
 
 IF %ERRORLEVEL% NEQ 0 (

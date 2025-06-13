@@ -77,7 +77,8 @@ final class WorkspacesController extends AbstractController
         $em->persist($workspace);
         $em->flush();
 
-        $adminRole = $em->getRepository(Roles::class)->find(3); // ID 3 = admin
+        // id 3 = admin
+        $adminRole = $em->getRepository(Roles::class)->find(3);
         if (!$adminRole) {
             return $this->json(['error' => 'Rôle admin introuvable.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -255,7 +256,8 @@ final class WorkspacesController extends AbstractController
             return $this->json(['message' => 'Déjà membre'], 200);
         }
 
-        $role = $em->getRepository(Roles::class)->find(1); // Membre
+        //id 1 membre
+        $role = $em->getRepository(Roles::class)->find(1);
         if (!$role) {
             return $this->json(['error' => 'Rôle introuvable'], 500);
         }

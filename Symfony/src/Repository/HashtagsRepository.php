@@ -16,9 +16,6 @@ class HashtagsRepository extends ServiceEntityRepository
         parent::__construct($registry, Hashtags::class);
     }
 
-//    /**
-//     * @return Hashtags[] Returns an array of Hashtags objects
-//     */
 //    public function findByExampleField($value): array
 //    {
 //        return $this->createQueryBuilder('h')
